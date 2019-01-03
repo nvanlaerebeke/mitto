@@ -2,10 +2,10 @@
 using System;
 
 namespace Messaging.Base {
-	public class MessageRequest {
+	internal class MessageRequest {
 		private Delegate _objAction;
 
-		public  void Request<R>(MessageClient pClient, RequestMessage pMessage, Action<R> action) where R : ResponseMessage {
+		internal void Request<R>(MessageClient pClient, RequestMessage pMessage, Action<R> action) where R : ResponseMessage {
 			//only wait when the message actually expects a response, which is only RequestMessage and (Un)SubscribeMessage
 			if (
 				pMessage.Type == MessageType.Request ||
@@ -21,7 +21,7 @@ namespace Messaging.Base {
 			}
 		}
 
-		public  void SetResponse(ResponseMessage pResponse) {
+		internal void SetResponse(ResponseMessage pResponse) {
 			//((Action<ResponseMessage>)_objAction).Invoke(pResponse); // -- no idea how to get it like this as it's typesafe
 			_objAction.DynamicInvoke(pResponse);
 		}

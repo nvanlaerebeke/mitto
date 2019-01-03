@@ -28,7 +28,7 @@ namespace Messaging.Base {
 			}) { IsBackground = true }.Start();
         }
 
-        internal static void RunAction(Job pJob, IMessage pMessage) {
+        private static void RunAction(Job pJob, IMessage pMessage) {
             //Run the handler on a seperate thread
             try {
                 Log.Info("Client received message type " + pMessage.Type.ToString());

@@ -50,15 +50,17 @@ namespace Messaging.Json {
 		}
 
 		public byte[] GetBytes(IMessage pMessage) {
-			if (MessageFormat.Json == MessageFormat.Bson) {
-				using (MemoryStream stream = new MemoryStream()) {
+			//ToDo: Dynamic switching between bson and json
+			//      Larger messages are more efficient as bson
+			//if (MessageFormat.Json == MessageFormat.Bson) {
+				/*using (MemoryStream stream = new MemoryStream()) {
 					stream.Write(new byte[2] { (byte)pMessage.Type, (byte)pMessage.GetCode() }, 0, 2);
 					using (BsonWriter writer = new BsonWriter(stream)) {
 						new JsonSerializer().Serialize(writer, this);
 						return stream.ToArray();
 					}
-				}
-			} else {
+				}*/
+			//} else {
 				var strJson = JsonConvert.SerializeObject(pMessage);
 				Log.Debug("Creating Message Json:");
 				Log.Debug(strJson);
@@ -69,7 +71,7 @@ namespace Messaging.Json {
 				lstRawMessage.Add((byte)pMessage.GetCode());
 				lstRawMessage.AddRange(System.Text.Encoding.UTF8.GetBytes(strJson));
 				return lstRawMessage.ToArray();
-			}
+			//}
 		}
 	}
 }

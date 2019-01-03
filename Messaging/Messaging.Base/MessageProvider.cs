@@ -1,7 +1,6 @@
 ﻿using IMessaging;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -88,7 +87,7 @@ namespace Messaging.Base {
 			return lstTypes;
 		}
 
-		public static Type GetResponseType(string pName) {
+		private static Type GetResponseType(string pName) {
 			Type objResponseType = typeof(Response.ACK); // -- default
 			foreach (Type objType in GetTypes()) {
 				if (objType.IsSubclassOf(typeof(ResponseMessage)) && objType.Name == pName) {
@@ -120,25 +119,13 @@ namespace Messaging.Base {
 			return null;
 		}
 
-		/*internal static Type GetRequestType(Message pMessage) {
-            foreach (Type objType in GetTypes()) {
-                if (
-                    objType.IsSubclassOf(typeof(RequestMessage)) &&
-                    pMessage.Name == objType.Name
-                ) {
-                    return objType;
-                }
-            }
-            return null;
-        }*/
-
 		/// <summary>
 		/// ToDo: Replace finding response type from Message to <T>, else we can't do Request<MyResponseMessage2>(new MyRequestMessage1())
 		/// </summary>
 		/// <param name="pMessage"></param>
 		/// <param name="pCode"></param>
 		/// <returns></returns>
-		public static ResponseMessage GetResponseMessage(IMessage pMessage, ResponseCode pCode) {
+		internal static ResponseMessage GetResponseMessage(IMessage pMessage, ResponseCode pCode) {
 			var objResponseType = GetResponseType(pMessage.Name);
 			if (objResponseType != null) {
 				var objResponse = ((ResponseMessage)Activator.CreateInstance(objResponseType, pMessage, pCode));
@@ -147,13 +134,13 @@ namespace Messaging.Base {
 			return null;
 		}
 
-		public static SubscriptionHandler GetSubscriptionHandler(Message pMessage) {
+		/*internal static SubscriptionHandler GetSubscriptionHandler(Message pMessage) {
 			Contract.Ensures(Contract.Result<SubscriptionHandler>() != null);
 			if (_dicSubscriptionHandlers.Count == 0) { GetTypes(); }
 			if (_dicSubscriptionHandlers.ContainsKey(pMessage.Name + "Handler")) {
 				return _dicSubscriptionHandlers[pMessage.Name + "Handler"];
 			}
 			return null;
-		}
+		}*/
 	}
 }

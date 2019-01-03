@@ -10,8 +10,6 @@ namespace Connection.Websocket.Server {
 
 		private WebSocketServer _objServer;
 
-		public event ConnectionHandler Disconnected;
-
 		public void Start(IPAddress pIPAddress, int pPort, Action<IClientConnection> pCallback) {
             Start(pIPAddress, pPort, "", "", pCallback);
         }

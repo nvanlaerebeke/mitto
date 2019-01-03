@@ -7,8 +7,8 @@ using IConnection;
 
 namespace Connection.Websocket.Server {
 
-    public class Client : WebSocketBehavior, IClientConnection {
-		private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+    internal class Client : WebSocketBehavior, IClientConnection {
+		private new static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public event ConnectionHandler Disconnected;
         public event DataHandler Rx;

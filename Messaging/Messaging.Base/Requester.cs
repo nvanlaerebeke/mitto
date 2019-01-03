@@ -1,7 +1,5 @@
-﻿using IMessaging;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 
 namespace Messaging.Base {
 	public static class Requester {

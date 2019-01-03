@@ -1,8 +1,4 @@
-﻿using IMessaging;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Messaging.Base {
+﻿namespace Messaging.Base {
 	public class MessageClient {
 		public string ClientID { get; private set; }
 		public IQueue.IQueue Queue { get; private set; }
