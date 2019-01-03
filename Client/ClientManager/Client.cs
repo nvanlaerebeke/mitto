@@ -87,7 +87,7 @@ namespace ClientManager {
 		}*/
 
 		public void Request<R>(RequestMessage pRequest, Action<R> pResponseAction) where R: ResponseMessage {
-			Requester.Send<R>(new MessageClient(_objClient.ID, this), pRequest, pResponseAction);
+			Requester.Request<R>(new MessageClient(_objClient.ID, this), pRequest, pResponseAction);
 		}
 
 		#region Connection Queue implemenation (IConnection traffic)
