@@ -9,18 +9,18 @@ using System.Linq;
 
 namespace Messaging.Json {
 	public class MessageCreator : IMessageCreator {
+		private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public IMessage Create(byte[] pData) {
-			Console.WriteLine("Creating Message");
 			try {
 				List<byte> lstData = new List<byte>(pData);
 
 				MessageFormat enuFormat = (MessageFormat)lstData.First<byte>();
-				Console.WriteLine("Detected message format " + enuFormat.ToString());
+				Log.Debug("Detected message format " + enuFormat.ToString());
 				lstData.RemoveAt(0);
 
 				MessageType enuType = (MessageType)lstData.First<byte>();
-				Console.WriteLine("Detected message type " + enuType.ToString());
+				Log.Debug("Detected message type " + enuType.ToString());
 				lstData.RemoveAt(0);
 
 				Type type = MessageProvider.GetType(enuType, lstData.First<byte>());
@@ -36,15 +36,15 @@ namespace Messaging.Json {
 						}
 					} else {
 						string json = System.Text.Encoding.UTF8.GetString(lstData.ToArray());
-						Console.WriteLine("Recieved Message");
-						Console.WriteLine(json);
+						Log.Info("Recieved Message");
+						Log.Debug(json);
 						objMessage = JsonConvert.DeserializeObject(json, type) as Message;
 					}
 					return objMessage;
 				}
 			} catch (Exception ex) {
-				Console.WriteLine("Failed to create message, ignoring");
-				Console.WriteLine(ex);
+				Log.Error("Failed to create message, ignoring");
+				Log.Error(ex);
 			}
 			return null;
 		}
@@ -60,8 +60,8 @@ namespace Messaging.Json {
 				}
 			} else {
 				var strJson = JsonConvert.SerializeObject(pMessage);
-				Console.WriteLine("Creating Message Json:");
-				Console.WriteLine(strJson);
+				Log.Debug("Creating Message Json:");
+				Log.Debug(strJson);
 
 				List<byte> lstRawMessage = new List<byte>();
 				lstRawMessage.Add((byte)MessageFormat.Json);

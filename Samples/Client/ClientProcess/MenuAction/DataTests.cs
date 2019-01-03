@@ -1,7 +1,7 @@
 ﻿using ConnectionClient.MenuAction.DataTests;
 using ConsoleManager;
 
-namespace ClientUI.MenuAction {
+namespace ClientProcess.MenuAction {
 	class DataTests : IMenuAction {
 		public Menu GetMenu() {
 			Menu objMenu = new Menu();

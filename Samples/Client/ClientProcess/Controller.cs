@@ -1,6 +1,6 @@
 ﻿using ConsoleManager;
 
-namespace ClientUI {
+namespace ClientProcess {
 	public static class Controller {
 		public static void Start() {
 			MenuManager objManager = new MenuManager(GetMainMenu());

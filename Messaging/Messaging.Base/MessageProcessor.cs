@@ -4,6 +4,8 @@ using System.Threading;
 
 namespace Messaging.Base {
 	public class MessageProcessor {
+		private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
 		public static void Process(IQueue.IQueue pQueue, IQueue.Message pMessage) {
 			new Thread(() => {
 				try {
@@ -11,7 +13,7 @@ namespace Messaging.Base {
 
 					IMessage objMessage = MessagingFactory.GetMessageCreator().Create(objJob.Data);
 					if (objMessage == null) {  // --- don't know what we're receiving, so skip it
-						Console.WriteLine("Unknown Message");
+						Log.Error("Unknown Message");
 						return;
 					}
 
@@ -21,7 +23,7 @@ namespace Messaging.Base {
 						RunAction(objJob, objMessage);
 					}
 				} catch (Exception ex) {
-					Console.WriteLine("Failed to process message", ex);
+					Log.Error("Failed to process message", ex);
 				}
 			}) { IsBackground = true }.Start();
         }
@@ -29,7 +31,7 @@ namespace Messaging.Base {
         internal static void RunAction(Job pJob, IMessage pMessage) {
             //Run the handler on a seperate thread
             try {
-                Console.WriteLine("Client received message type " + pMessage.Type.ToString());
+                Log.Info("Client received message type " + pMessage.Type.ToString());
 
                 var objActionType = MessageProvider.GetActionType(pMessage);
 
@@ -64,7 +66,7 @@ namespace Messaging.Base {
 				 *   The reason for this is that we are not interested in exception handling in handlers
 				 *   We don't care about the context, an exception = stop, so stop => return response
 				 */
-				Console.WriteLine(ex.Message);
+				Log.Error(ex.Message);
 
 				ResponseCode enmCode = ResponseCode.Error;
                 if (ex is MessagingException) {
@@ -87,8 +89,8 @@ namespace Messaging.Base {
 					}
                 }
 
-                Console.WriteLine("Failed processing message " + pMessage.Name.ToString() + " with id " + pMessage.ID.ToString());
-                Console.WriteLine(ex); // -- log as debug, we don't want this spammed in a production enviroment as it's 'just' logging
+                Log.Error("Failed processing message " + pMessage.Name.ToString() + " with id " + pMessage.ID.ToString());
+                Log.Info(ex); 
             }
         }
     }

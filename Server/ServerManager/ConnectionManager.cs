@@ -5,6 +5,8 @@ using IConnection;
 
 namespace ServerManager {
 	internal static class ConnectionManager {
+		private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
 		static Dictionary<string, IClientConnection> _dicClients = new Dictionary<string, IClientConnection>();
 
 		public static void Add(IClientConnection pClient) {
@@ -12,14 +14,14 @@ namespace ServerManager {
 			pClient.Rx += PClient_Rx;
 			lock (_dicClients) {
 				_dicClients.Add(pClient.ID, pClient);
-				Console.WriteLine("Client Added, " + _dicClients.Count + " clients connected");
+				Log.Debug("Client Added, " + _dicClients.Count + " clients connected");
 			}
 		}
 
 		#region Tx & Rx for Connection + Client Disconnect
 		private static void PClient_Rx(IConnection.IConnection pClient, byte[] pData) {
-			Console.WriteLine("Received " + pData.Length + " bytes for " + pClient.ID);
-			Console.WriteLine("Adding Data on the Queue to be processed");
+			Log.Debug("Received " + pData.Length + " bytes for " + pClient.ID);
+			Log.Debug("Adding Data on the Queue to be processed");
 			Queue.Transmit(new Message(pClient.ID, pData));
 		}
 
@@ -29,7 +31,7 @@ namespace ServerManager {
 					_dicClients.Remove(pClient.ID);
 				}
 			}
-			Console.WriteLine("Client disconnected, " + _dicClients.Count + " clients connected");
+			Log.Info("Client disconnected, " + _dicClients.Count + " clients connected");
 		}
 		#endregion
 
@@ -45,7 +47,7 @@ namespace ServerManager {
 			}
 		}
 		private static void _objQueue_Rx(Message pMessage) {
-			Console.WriteLine("Received  " + pMessage.Data.Length + " bytes on Queue for " + pMessage.ClientID);
+			Log.Debug("Received  " + pMessage.Data.Length + " bytes on Queue for " + pMessage.ClientID);
 			_dicClients[pMessage.ClientID].Transmit(pMessage.Data);
 		}
 		#endregion

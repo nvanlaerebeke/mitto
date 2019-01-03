@@ -1,3 +1,6 @@
 [submodule "Lib/websocketsharp"]
 	path = Lib/websocketsharp
 	url = https://github.com/sta/websocket-sharp.git
+[submodule "Lib/CommandLineMenu"]
+	path = Lib/CommandLineMenu
+	url = https://github.com/nvanlaerebeke/CommandLineMenu.git

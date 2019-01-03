@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ClientUI.MenuAction.ConnectionTests {
+namespace ClientProcess.MenuAction.ConnectionTests {
 	class MultiConnectionTest : ITest {
 		private List<IConnection.IConnection> _lstClient = new List<IConnection.IConnection>();
 

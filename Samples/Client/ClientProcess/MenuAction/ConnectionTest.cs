@@ -1,8 +1,8 @@
-﻿using ClientUI.MenuAction.ConnectionTests;
+﻿using ClientProcess.MenuAction.ConnectionTests;
 using ConsoleManager;
 using System.Collections.Generic;
 
-namespace ClientUI.MenuAction {
+namespace ClientProcess.MenuAction {
 	class ConnectionTest : IMenuAction {
 		private List<SingleConnectionTest> _lstSingleConnectionTests = new List<SingleConnectionTest>();
 		private List<MultiConnectionTest> _lstMultiConnectionTests = new List<MultiConnectionTest>();

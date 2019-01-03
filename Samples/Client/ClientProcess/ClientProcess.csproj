@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E1B611DD-5A86-4517-8BBE-E9F4B374E1D6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ClientProcess</RootNamespace>
+    <AssemblyName>ClientProcess</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controller.cs" />
+    <Compile Include="MenuAction\ConnectionTest.cs" />
+    <Compile Include="MenuAction\ConnectionTests\MultiConnectionTest.cs" />
+    <Compile Include="MenuAction\ConnectionTests\SingleConnectionTest.cs" />
+    <Compile Include="MenuAction\DataTests.cs" />
+    <Compile Include="MenuAction\DataTests\SendSinglePacketTest.cs" />
+    <Compile Include="MenuAction\ITest.cs" />
+    <Compile Include="MenuAction\MessageTests.cs" />
+    <Compile Include="MenuAction\MessageTests\MultiPingMessageTest.cs" />
+    <Compile Include="MenuAction\MessageTests\PingMessageTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MenuAction\App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Client\ClientManager\ClientManager.csproj">
+      <Project>{ca4b0313-343a-4837-a437-76060c3db728}</Project>
+      <Name>ClientManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Connection\IConnection\IConnection.csproj">
+      <Project>{9eb141ca-0964-433e-a146-3a75ca61d720}</Project>
+      <Name>IConnection</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Lib\CommandLineMenu\src\ConsoleManager.csproj">
+      <Project>{5b35b6a9-0c6e-4134-8c62-62b9c5c4d60a}</Project>
+      <Name>ConsoleManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Messaging\IMessaging\IMessaging.csproj">
+      <Project>{a963e580-7777-4ff8-b08f-c9fd5fb15500}</Project>
+      <Name>IMessaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Messaging\Messaging.Base\Messaging.Base.csproj">
+      <Project>{c29037e3-9c2f-4996-8434-36600735d465}</Project>
+      <Name>Messaging.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Queuing\IQueue\IQueue.csproj">
+      <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
+      <Name>IQueue</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Messaging.App\Messaging.App.csproj">
+      <Project>{bad50a63-cbf1-4c53-93ab-e2d5b4becac5}</Project>
+      <Name>Messaging.App</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Messaging.App.Client\Messaging.App.Client.csproj">
+      <Project>{e721f8fd-7a12-40e1-a87c-f9be901d64fb}</Project>
+      <Name>Messaging.App.Client</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

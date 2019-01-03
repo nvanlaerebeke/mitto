@@ -8,7 +8,9 @@ using IConnection;
 namespace Connection.Websocket.Server {
 
     public class Client : WebSocketBehavior, IClientConnection {
-        public event ConnectionHandler Disconnected;
+		private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+		public event ConnectionHandler Disconnected;
         public event DataHandler Rx;
 
         private BlockingCollection<byte[]> _colQueue;
@@ -67,7 +69,7 @@ namespace Connection.Websocket.Server {
 						var arrData = _colQueue.Take(_objCancelationToken);
 						base.Send(arrData);
                     } catch (Exception ex) {
-                        Console.WriteLine("Failed sending data, closing connection: " + ex.Message);
+                        Log.Error("Failed sending data, closing connection: " + ex.Message);
                     }
                 }
             }) {

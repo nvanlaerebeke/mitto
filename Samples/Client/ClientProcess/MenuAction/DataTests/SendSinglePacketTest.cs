@@ -1,8 +1,13 @@
-﻿using IConnection;
+﻿using ClientProcess;
+using IConnection;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ClientUI.MenuAction.ConnectionTests {
-	class SingleConnectionTest : ITest {
+namespace ConnectionClient.MenuAction.DataTests {
+	public class SendSinglePacketTest : ITest {
 		private IClient _objClient;
 
 		public void Test() {
@@ -18,7 +23,9 @@ namespace ClientUI.MenuAction.ConnectionTests {
 		}
 
 		private void ObjClient_Connected(IConnection.IConnection pClient) {
-			Console.WriteLine("Client Connected");
+			Console.WriteLine("Client Connected, sending some data");
+
+			_objClient.Transmit(new byte[] { 0, 2, 4, 8 });
 		}
 
 		private void ObjClient_Disconnected(IConnection.IConnection pClient) {

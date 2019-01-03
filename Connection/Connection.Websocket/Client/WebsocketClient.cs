@@ -6,6 +6,8 @@ using WebSocketSharp;
 
 namespace Connection.Websocket.Client {
 	public class WebsocketClient : IClient{
+		private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
 		private string _strID;
 		private WebSocket Connection;
 
@@ -89,7 +91,7 @@ namespace Connection.Websocket.Client {
 						var arrData = _colQueue.Take(_objCancelationToken);
 						Connection.Send(arrData);
 					} catch (Exception ex) {
-						Console.WriteLine("Failed sending data, closing connection: " + ex.Message);
+						Log.Error("Failed sending data, closing connection: " + ex.Message);
 					}
 				}
 			}) {
