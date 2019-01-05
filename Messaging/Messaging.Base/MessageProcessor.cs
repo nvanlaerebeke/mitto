@@ -5,7 +5,24 @@ using System.Threading;
 namespace Messaging.Base {
 	public class MessageProcessor {
 		private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
+		/// <summary>
+		/// Takes in a messages and process it
+		/// 
+		/// ToDo: 
+		///       1. 
+		///       Should the MessageProcessor know about the IQueue?, shouldn't it just return 
+		///       a message?, but not every request needs a response - So keep it like this?
+		///       Maybe in that case the IQueue should be part of the actual message?
+		///       
+		///      2.
+		///      Process shouldn't be getting an IQueue.Message, but just the byte[] that represends the Messaging.Message
+		///      The message processing shouldn't care about more then what message we're getting
+		///      The queue can be argued because that's where we respond to, but the IQueue.Message is obsolete and shouldn't be cared about
+		///      All we're interested in is the IQueue.Message.Data (byte[])
+		/// 
+		/// </summary>
+		/// <param name="pQueue"></param>
+		/// <param name="pMessage"></param>
 		public static void Process(IQueue.IQueue pQueue, IQueue.Message pMessage) {
 			new Thread(() => {
 				try {
@@ -50,7 +67,7 @@ namespace Messaging.Base {
 						var objResponse = (ResponseMessage)objActionType.GetMethod("Start").Invoke(Activator.CreateInstance(objActionType, pJob, pMessage), new object[] { });
 						var arrData = MessagingFactory.GetMessageCreator().GetBytes(objResponse);
 						var objMessage = new IQueue.Message(pJob.Client.ClientID, arrData);
-						pJob.Client.Queue.Respond(objMessage);
+						pJob.Client.Queue.Transmit(objMessage);
 						break;
                     case MessageType.Response: // -- nothing to do
                         break;

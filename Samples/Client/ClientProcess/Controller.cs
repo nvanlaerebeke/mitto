@@ -2,7 +2,15 @@
 
 namespace ClientProcess {
 	public static class Controller {
-		public static void Start() {
+		public static string Host { get; private set; }
+		public static int Port { get; private set; }
+		public static bool Secure { get; private set; }
+
+		public static void Start(string pHostname, int pPort, bool pSecure) {
+			Host = pHostname;
+			Port = pPort;
+			Secure = pSecure;
+
 			MenuManager objManager = new MenuManager(GetMainMenu());
 			objManager.Start();
 		}

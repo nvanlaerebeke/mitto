@@ -29,20 +29,20 @@ namespace ClientUI {
 	class Program {
 		static ManualResetEvent _quit = new ManualResetEvent(false);
 		static void Main(string[] args) {
+			ConfigureLogger();
+
 			QueueFactory.UnityContainer.RegisterType<IQueue.IQueue, PassThrough>();
 			ConnectionFactory.UnityContainer.RegisterType<IClient, WebsocketClient>();
 			ConnectionFactory.UnityContainer.RegisterType<IServer, WebsocketServer>();
 			MessagingFactory.UnityContainer.RegisterType<IMessageCreator, MessageCreator>();
 			MessagingFactory.UnityContainer.RegisterType<IMessageProvider, ClientMessageProvider>();
 
-			ConfigureLogger();
-
-			Controller.Start();
+			Controller.Start("localhost", 80, false);
 		}
 
 		static void ConfigureLogger() {
 			BasicConfigurator.Configure(new ConsoleAppender() {
-				Threshold = log4net.Core.Level.Info,
+				Threshold = log4net.Core.Level.Error,
 				Name = "ConsoleAppender",
 				Layout = new log4net.Layout.SimpleLayout()
 			});

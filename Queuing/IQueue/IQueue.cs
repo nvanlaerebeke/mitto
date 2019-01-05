@@ -23,6 +23,6 @@
 	public interface IQueue {
 		event DataHandler Rx;
 		void Transmit(Message pMessage);
-		void Respond(Message pMessage);
+		void Receive(Message pMessage);
 	}
 }

@@ -13,19 +13,19 @@ namespace Messaging.App {
 			lock (_lstCustomTypes) {
 				if (_lstCustomTypes.Count == 0) {
 					_lstCustomTypes.Clear();
-
+					string strAssemblyNamespace = "Messaging.App";
 					foreach (string strNamespace in new string[] {
-							this.GetType().Namespace + ".Event",
-							this.GetType().Namespace + ".Notification",
-							this.GetType().Namespace + ".Request",
-							this.GetType().Namespace + ".Response",
-							this.GetType().Namespace + ".Subscribe",
-							this.GetType().Namespace + ".UnSubscribe",
-							this.GetType().Namespace + ".Action.Event",
-							this.GetType().Namespace + ".Action.Notification",
-							this.GetType().Namespace + ".Action.Request",
-							this.GetType().Namespace + ".Action.Subscribe",
-							this.GetType().Namespace + ".Action.UnSubscribe",
+							strAssemblyNamespace + ".Event",
+							strAssemblyNamespace + ".Notification",
+							strAssemblyNamespace + ".Request",
+							strAssemblyNamespace + ".Response",
+							strAssemblyNamespace + ".Subscribe",
+							strAssemblyNamespace + ".UnSubscribe",
+							strAssemblyNamespace + ".Action.Event",
+							strAssemblyNamespace + ".Action.Notification",
+							strAssemblyNamespace + ".Action.Request",
+							strAssemblyNamespace + ".Action.Subscribe",
+							strAssemblyNamespace + ".Action.UnSubscribe",
 
 					}) {
 						var lstAll = (from t in Assembly.GetExecutingAssembly().GetTypes()
@@ -41,7 +41,7 @@ namespace Messaging.App {
 								objType.IsSubclassOf(typeof(SubscribeMessage)) ||
 								objType.IsSubclassOf(typeof(UnSubscribeMessage)) ||
 								objType.IsSubclassOf(typeof(SubscriptionHandler)) ||
-								objType.Namespace.Contains(this.GetType().Namespace + ".Action.") //objType.IsSubclassOf(typeof(WebSocketMessaging.Action.BaseAction)) <= generic type, this is easier
+								objType.Namespace.Contains(strAssemblyNamespace + ".Action.") //objType.IsSubclassOf(typeof(WebSocketMessaging.Action.BaseAction)) <= generic type, this is easier
 							) {
 								_lstCustomTypes.Add(objType);
 							}

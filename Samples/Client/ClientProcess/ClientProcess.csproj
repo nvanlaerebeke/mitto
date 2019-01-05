@@ -48,7 +48,9 @@
     <Compile Include="MenuAction\DataTests\SendSinglePacketTest.cs" />
     <Compile Include="MenuAction\ITest.cs" />
     <Compile Include="MenuAction\MessageTests.cs" />
+    <Compile Include="MenuAction\MessageTests\MultiEchoMessageTest.cs" />
     <Compile Include="MenuAction\MessageTests\MultiPingMessageTest.cs" />
+    <Compile Include="MenuAction\MessageTests\EchoMessageTest.cs" />
     <Compile Include="MenuAction\MessageTests\PingMessageTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -2,6 +2,7 @@
 using ClientManager;
 using System;
 using Messaging.Base.Response;
+using IConnection;
 
 namespace ConnectionClient.MenuAction.MessageTests {
 	public class PingMesasgeTest : ITest {
@@ -9,13 +10,13 @@ namespace ConnectionClient.MenuAction.MessageTests {
 
 		public void Test() {
 			if (_objClient != null) {
-				_objClient.Close();
+				Close();
 			}
 			_objClient = new Client();
 			_objClient.Connected += ObjClient_Connected;
 			_objClient.Disconnected += ObjClient_Disconnected;
 
-			_objClient.ConnectAsync("localhost", 80, false);
+			_objClient.ConnectAsync(Controller.Host, Controller.Port, Controller.Secure);
 		}
 
 		private void ObjClient_Connected(Client pClient) {
@@ -32,6 +33,7 @@ namespace ConnectionClient.MenuAction.MessageTests {
 
 		internal void Close() {
 			_objClient.Close();
+			_objClient = null;
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using IConnection;
+using IQueue;
 using Messaging.Base;
 
 namespace ClientManager {
@@ -110,6 +111,10 @@ namespace ClientManager {
 		/// <param name="pMessage"></param>
 		public void Respond(IQueue.Message pMessage) {
 			InternalQueue.Transmit(pMessage);
+		}
+
+		public void Receive(IQueue.Message pMessage) {
+			Rx?.Invoke(pMessage);
 		}
 		#endregion
 	}
