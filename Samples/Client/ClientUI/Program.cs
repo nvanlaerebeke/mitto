@@ -1,14 +1,6 @@
 ﻿using ClientProcess;
-using Connection.Websocket.Client;
-using Connection.Websocket.Server;
-using IConnection;
-using IMessaging;
-using IQueue;
 using log4net.Appender;
 using log4net.Config;
-using Messaging.App.Client;
-using Messaging.Json;
-using Queue.PassThrough;
 using System.Threading;
 using Unity;
 
@@ -31,11 +23,10 @@ namespace ClientUI {
 		static void Main(string[] args) {
 			ConfigureLogger();
 
-			QueueFactory.UnityContainer.RegisterType<IQueue.IQueue, PassThrough>();
-			ConnectionFactory.UnityContainer.RegisterType<IClient, WebsocketClient>();
-			ConnectionFactory.UnityContainer.RegisterType<IServer, WebsocketServer>();
-			MessagingFactory.UnityContainer.RegisterType<IMessageCreator, MessageCreator>();
-			MessagingFactory.UnityContainer.RegisterType<IMessageProvider, ClientMessageProvider>();
+			IQueue.QueueFactory.UnityContainer.RegisterType<IQueue.IQueue, Queue.PassThrough.PassThrough>();
+			IConnection.ConnectionFactory.UnityContainer.RegisterType<IConnection.IClient, Connection.Websocket.Client.WebsocketClient>();
+			IMessaging.MessagingFactory.UnityContainer.RegisterType<IMessaging.IMessageCreator, Messaging.Json.MessageCreator>();
+			IMessaging.MessagingFactory.UnityContainer.RegisterType<IMessaging.IMessageProvider, Messaging.App.Client.ClientMessageProvider>();
 
 			Controller.Start("localhost", 80, false);
 		}

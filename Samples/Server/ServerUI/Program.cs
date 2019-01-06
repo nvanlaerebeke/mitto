@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Net;
 using System.Threading;
-using Connection.Websocket.Server;
-using IConnection;
-using IMessaging;
-using IQueue;
 using log4net.Appender;
 using log4net.Config;
-using Queue.PassThrough;
 using ServerManager;
 using Unity;
 
@@ -16,10 +11,10 @@ namespace ConnectionServer {
 		static ManualResetEvent _objClose = new ManualResetEvent(false);
 		static Server _objServer;
 		static void Main(string[] args) {
-			ConnectionFactory.UnityContainer.RegisterType<IServer, WebsocketServer>();
-			QueueFactory.UnityContainer.RegisterType<IQueue.IQueue, PassThrough>();
-			MessagingFactory.UnityContainer.RegisterType<IMessageCreator, Messaging.Json.MessageCreator>();
-			MessagingFactory.UnityContainer.RegisterType<IMessageProvider, Messaging.App.Server.ServerMessageProvider>();
+			IConnection.ConnectionFactory.UnityContainer.RegisterType<IConnection.IServer, Connection.Websocket.Server.WebsocketServer>();
+			IQueue.QueueFactory.UnityContainer.RegisterType<IQueue.IQueue, Queue.PassThrough.PassThrough>();
+			IMessaging.MessagingFactory.UnityContainer.RegisterType<IMessaging.IMessageCreator, Messaging.Json.MessageCreator>();
+			IMessaging.MessagingFactory.UnityContainer.RegisterType<IMessaging.IMessageProvider, Messaging.App.Server.ServerMessageProvider>();
 
 			ConfigureLogger();
 

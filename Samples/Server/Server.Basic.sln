@@ -3,29 +3,29 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2018
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IConnection", "..\..\Connection\IConnection\IConnection.csproj", "{9EB141CA-0964-433E-A146-3A75CA61D720}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IConnection", "..\..\src\Connection\IConnection\IConnection.csproj", "{9EB141CA-0964-433E-A146-3A75CA61D720}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Connection.Websocket", "..\..\Connection\Connection.Websocket\Connection.Websocket.csproj", "{131FAE85-4F46-42F7-9D85-C18A8116D567}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Connection.Websocket", "..\..\src\Connection\Connection.Websocket\Connection.Websocket.csproj", "{131FAE85-4F46-42F7-9D85-C18A8116D567}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IQueue", "..\..\Queuing\IQueue\IQueue.csproj", "{7A80E47B-C82F-4A16-83F0-E0C65F22885A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IQueue", "..\..\src\Queuing\IQueue\IQueue.csproj", "{7A80E47B-C82F-4A16-83F0-E0C65F22885A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queue.PassThrough", "..\..\Queuing\Queue.PassThrough\Queue.PassThrough.csproj", "{CE5F0847-F8B5-4B95-8E86-E007FCDC92A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queue.PassThrough", "..\..\src\Queuing\Queue.PassThrough\Queue.PassThrough.csproj", "{CE5F0847-F8B5-4B95-8E86-E007FCDC92A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IMessaging", "..\..\Messaging\IMessaging\IMessaging.csproj", "{A963E580-7777-4FF8-B08F-C9FD5FB15500}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IMessaging", "..\..\src\Messaging\IMessaging\IMessaging.csproj", "{A963E580-7777-4FF8-B08F-C9FD5FB15500}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerManager", "..\..\Server\ServerManager\ServerManager.csproj", "{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerManager", "..\..\src\Server\ServerManager\ServerManager.csproj", "{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerUI", "ServerUI\ServerUI.csproj", "{91D100F1-5C81-4338-A6B5-CE5EB1E0A65F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Json", "..\..\Messaging\Messaging.Json.Base\Messaging.Json.csproj", "{786F3627-BC95-4C92-9240-B0CD3D8BBB58}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Json", "..\..\src\Messaging\Messaging.Json.Base\Messaging.Json.csproj", "{786F3627-BC95-4C92-9240-B0CD3D8BBB58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Base", "..\..\Messaging\Messaging.Base\Messaging.Base.csproj", "{C29037E3-9C2F-4996-8434-36600735D465}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Base", "..\..\src\Messaging\Messaging.Base\Messaging.Base.csproj", "{C29037E3-9C2F-4996-8434-36600735D465}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.App", "..\Common\Messaging.App\Messaging.App.csproj", "{BAD50A63-CBF1-4C53-93AB-E2D5B4BECAC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.App.Server", "Messaging.App.Server\Messaging.App.Server.csproj", "{5418C828-568E-4E37-AF02-D8DF9A99703E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "websocket-sharp", "..\..\src\Lib\websocketsharp\websocket-sharp\websocket-sharp.csproj", "{B357BAC7-529E-4D81-A0D2-71041B19C8DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "websocket-sharp", "..\..\Lib\websocketsharp\websocket-sharp\websocket-sharp.csproj", "{B357BAC7-529E-4D81-A0D2-71041B19C8DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.App.Server", "Messaging.App.Server\Messaging.App.Server.csproj", "{5418C828-568E-4E37-AF02-D8DF9A99703E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -199,22 +199,6 @@ Global
 		{BAD50A63-CBF1-4C53-93AB-E2D5B4BECAC5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BAD50A63-CBF1-4C53-93AB-E2D5B4BECAC5}.Release|x64.ActiveCfg = Release|Any CPU
 		{BAD50A63-CBF1-4C53-93AB-E2D5B4BECAC5}.Release|x64.Build.0 = Release|Any CPU
-		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
-		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Debug_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
-		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Debug_Ubuntu|x64.ActiveCfg = Debug|Any CPU
-		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Debug_Ubuntu|x64.Build.0 = Debug|Any CPU
-		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Debug|x64.Build.0 = Debug|Any CPU
-		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Release_Ubuntu|Any CPU.ActiveCfg = Release|Any CPU
-		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
-		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Release_Ubuntu|x64.ActiveCfg = Release|Any CPU
-		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Release_Ubuntu|x64.Build.0 = Release|Any CPU
-		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Release|x64.ActiveCfg = Release|Any CPU
-		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Release|x64.Build.0 = Release|Any CPU
 		{B357BAC7-529E-4D81-A0D2-71041B19C8DE}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug_Ubuntu|Any CPU
 		{B357BAC7-529E-4D81-A0D2-71041B19C8DE}.Debug_Ubuntu|Any CPU.Build.0 = Debug_Ubuntu|Any CPU
 		{B357BAC7-529E-4D81-A0D2-71041B19C8DE}.Debug_Ubuntu|x64.ActiveCfg = Debug_Ubuntu|Any CPU
@@ -231,6 +215,22 @@ Global
 		{B357BAC7-529E-4D81-A0D2-71041B19C8DE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B357BAC7-529E-4D81-A0D2-71041B19C8DE}.Release|x64.ActiveCfg = Release|Any CPU
 		{B357BAC7-529E-4D81-A0D2-71041B19C8DE}.Release|x64.Build.0 = Release|Any CPU
+		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
+		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Debug_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
+		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Debug_Ubuntu|x64.ActiveCfg = Debug|Any CPU
+		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Debug_Ubuntu|x64.Build.0 = Debug|Any CPU
+		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Debug|x64.Build.0 = Debug|Any CPU
+		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Release_Ubuntu|Any CPU.ActiveCfg = Release|Any CPU
+		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
+		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Release_Ubuntu|x64.ActiveCfg = Release|Any CPU
+		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Release_Ubuntu|x64.Build.0 = Release|Any CPU
+		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Release|x64.ActiveCfg = Release|Any CPU
+		{5418C828-568E-4E37-AF02-D8DF9A99703E}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

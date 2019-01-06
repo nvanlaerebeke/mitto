@@ -3,21 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2018
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IConnection", "..\..\Connection\IConnection\IConnection.csproj", "{9EB141CA-0964-433E-A146-3A75CA61D720}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IConnection", "..\..\src\Connection\IConnection\IConnection.csproj", "{9EB141CA-0964-433E-A146-3A75CA61D720}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Connection.Websocket", "..\..\Connection\Connection.Websocket\Connection.Websocket.csproj", "{131FAE85-4F46-42F7-9D85-C18A8116D567}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Connection.Websocket", "..\..\src\Connection\Connection.Websocket\Connection.Websocket.csproj", "{131FAE85-4F46-42F7-9D85-C18A8116D567}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IQueue", "..\..\Queuing\IQueue\IQueue.csproj", "{7A80E47B-C82F-4A16-83F0-E0C65F22885A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IQueue", "..\..\src\Queuing\IQueue\IQueue.csproj", "{7A80E47B-C82F-4A16-83F0-E0C65F22885A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IMessaging", "..\..\Messaging\IMessaging\IMessaging.csproj", "{A963E580-7777-4FF8-B08F-C9FD5FB15500}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IMessaging", "..\..\src\Messaging\IMessaging\IMessaging.csproj", "{A963E580-7777-4FF8-B08F-C9FD5FB15500}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerManager", "..\..\Server\ServerManager\ServerManager.csproj", "{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerManager", "..\..\src\Server\ServerManager\ServerManager.csproj", "{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "websocket-sharp", "..\..\Lib\websocketsharp\websocket-sharp\websocket-sharp.csproj", "{B357BAC7-529E-4D81-A0D2-71041B19C8DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "websocket-sharp", "..\..\src\Lib\websocketsharp\websocket-sharp\websocket-sharp.csproj", "{B357BAC7-529E-4D81-A0D2-71041B19C8DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queue.RabbitMQ.Publisher", "..\..\Queuing\Queue.RabbitMQ.Publisher\Queue.RabbitMQ.Publisher.csproj", "{7B0C911D-76E3-494E-B019-DC4974A24810}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queue.RabbitMQ.Publisher", "..\..\src\Queuing\Queue.RabbitMQ.Publisher\Queue.RabbitMQ.Publisher.csproj", "{7B0C911D-76E3-494E-B019-DC4974A24810}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queue.RabbitMQ", "..\..\Queuing\Queue.RabbitMQ\Queue.RabbitMQ.csproj", "{3CB0E6C9-133E-49D7-A393-4FCC9DDEB72B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queue.RabbitMQ", "..\..\src\Queuing\Queue.RabbitMQ\Queue.RabbitMQ.csproj", "{3CB0E6C9-133E-49D7-A393-4FCC9DDEB72B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Publisher", "Server.Publisher\Server.Publisher.csproj", "{ADB30111-C266-47B8-9753-C1AEB668331A}"
 EndProject

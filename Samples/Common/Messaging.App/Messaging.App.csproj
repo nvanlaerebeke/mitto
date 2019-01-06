@@ -47,11 +47,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Messaging\IMessaging\IMessaging.csproj">
+    <ProjectReference Include="..\..\..\src\Messaging\IMessaging\IMessaging.csproj">
       <Project>{a963e580-7777-4ff8-b08f-c9fd5fb15500}</Project>
       <Name>IMessaging</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Messaging\Messaging.Base\Messaging.Base.csproj">
+    <ProjectReference Include="..\..\..\src\Messaging\Messaging.Base\Messaging.Base.csproj">
       <Project>{c29037e3-9c2f-4996-8434-36600735d465}</Project>
       <Name>Messaging.Base</Name>
     </ProjectReference>

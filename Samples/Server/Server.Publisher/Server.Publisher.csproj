@@ -77,31 +77,31 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Connection\Connection.Websocket\Connection.Websocket.csproj">
+    <ProjectReference Include="..\..\..\src\Connection\Connection.Websocket\Connection.Websocket.csproj">
       <Project>{131fae85-4f46-42f7-9d85-c18a8116d567}</Project>
       <Name>Connection.Websocket</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Connection\IConnection\IConnection.csproj">
+    <ProjectReference Include="..\..\..\src\Connection\IConnection\IConnection.csproj">
       <Project>{9eb141ca-0964-433e-a146-3a75ca61d720}</Project>
       <Name>IConnection</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Messaging\IMessaging\IMessaging.csproj">
+    <ProjectReference Include="..\..\..\src\Messaging\IMessaging\IMessaging.csproj">
       <Project>{a963e580-7777-4ff8-b08f-c9fd5fb15500}</Project>
       <Name>IMessaging</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Queuing\IQueue\IQueue.csproj">
+    <ProjectReference Include="..\..\..\src\Queuing\IQueue\IQueue.csproj">
       <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
       <Name>IQueue</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Queuing\Queue.RabbitMQ.Publisher\Queue.RabbitMQ.Publisher.csproj">
+    <ProjectReference Include="..\..\..\src\Queuing\Queue.RabbitMQ.Publisher\Queue.RabbitMQ.Publisher.csproj">
       <Project>{7b0c911d-76e3-494e-b019-dc4974a24810}</Project>
       <Name>Queue.RabbitMQ.Publisher</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Queuing\Queue.RabbitMQ\Queue.RabbitMQ.csproj">
+    <ProjectReference Include="..\..\..\src\Queuing\Queue.RabbitMQ\Queue.RabbitMQ.csproj">
       <Project>{3cb0e6c9-133e-49d7-a393-4fcc9ddeb72b}</Project>
       <Name>Queue.RabbitMQ</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Server\ServerManager\ServerManager.csproj">
+    <ProjectReference Include="..\..\..\src\Server\ServerManager\ServerManager.csproj">
       <Project>{a6f9dae3-8537-49e1-ae2e-13a2dc3ff9b8}</Project>
       <Name>ServerManager</Name>
     </ProjectReference>

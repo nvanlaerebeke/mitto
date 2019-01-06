@@ -5,29 +5,29 @@ VisualStudioVersion = 15.0.27703.2018
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientUI", "ClientUI\ClientUI.csproj", "{37E285E6-F04D-40F1-B021-9F15A4164092}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientManager", "..\..\Client\ClientManager\ClientManager.csproj", "{CA4B0313-343A-4837-A437-76060C3DB728}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientManager", "..\..\src\Client\ClientManager\ClientManager.csproj", "{CA4B0313-343A-4837-A437-76060C3DB728}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IConnection", "..\..\Connection\IConnection\IConnection.csproj", "{9EB141CA-0964-433E-A146-3A75CA61D720}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IConnection", "..\..\src\Connection\IConnection\IConnection.csproj", "{9EB141CA-0964-433E-A146-3A75CA61D720}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Connection.Websocket", "..\..\Connection\Connection.Websocket\Connection.Websocket.csproj", "{131FAE85-4F46-42F7-9D85-C18A8116D567}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Connection.Websocket", "..\..\src\Connection\Connection.Websocket\Connection.Websocket.csproj", "{131FAE85-4F46-42F7-9D85-C18A8116D567}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IQueue", "..\..\Queuing\IQueue\IQueue.csproj", "{7A80E47B-C82F-4A16-83F0-E0C65F22885A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IQueue", "..\..\src\Queuing\IQueue\IQueue.csproj", "{7A80E47B-C82F-4A16-83F0-E0C65F22885A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queue.PassThrough", "..\..\Queuing\Queue.PassThrough\Queue.PassThrough.csproj", "{CE5F0847-F8B5-4B95-8E86-E007FCDC92A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queue.PassThrough", "..\..\src\Queuing\Queue.PassThrough\Queue.PassThrough.csproj", "{CE5F0847-F8B5-4B95-8E86-E007FCDC92A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IMessaging", "..\..\Messaging\IMessaging\IMessaging.csproj", "{A963E580-7777-4FF8-B08F-C9FD5FB15500}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IMessaging", "..\..\src\Messaging\IMessaging\IMessaging.csproj", "{A963E580-7777-4FF8-B08F-C9FD5FB15500}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Json", "..\..\Messaging\Messaging.Json.Base\Messaging.Json.csproj", "{786F3627-BC95-4C92-9240-B0CD3D8BBB58}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Json", "..\..\src\Messaging\Messaging.Json.Base\Messaging.Json.csproj", "{786F3627-BC95-4C92-9240-B0CD3D8BBB58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Base", "..\..\Messaging\Messaging.Base\Messaging.Base.csproj", "{C29037E3-9C2F-4996-8434-36600735D465}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Base", "..\..\src\Messaging\Messaging.Base\Messaging.Base.csproj", "{C29037E3-9C2F-4996-8434-36600735D465}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.App", "..\Common\Messaging.App\Messaging.App.csproj", "{BAD50A63-CBF1-4C53-93AB-E2D5B4BECAC5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.App.Client", "Messaging.App.Client\Messaging.App.Client.csproj", "{E721F8FD-7A12-40E1-A87C-F9BE901D64FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "websocket-sharp", "..\..\Lib\websocketsharp\websocket-sharp\websocket-sharp.csproj", "{B357BAC7-529E-4D81-A0D2-71041B19C8DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "websocket-sharp", "..\..\src\Lib\websocketsharp\websocket-sharp\websocket-sharp.csproj", "{B357BAC7-529E-4D81-A0D2-71041B19C8DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleManager", "..\..\Lib\CommandLineMenu\src\ConsoleManager.csproj", "{5B35B6A9-0C6E-4134-8C62-62B9C5C4D60A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleManager", "..\..\src\Lib\CommandLineMenu\src\ConsoleManager.csproj", "{5B35B6A9-0C6E-4134-8C62-62B9C5C4D60A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientProcess", "ClientProcess\ClientProcess.csproj", "{E1B611DD-5A86-4517-8BBE-E9F4B374E1D6}"
 EndProject

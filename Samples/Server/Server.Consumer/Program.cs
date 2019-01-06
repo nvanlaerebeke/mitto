@@ -19,7 +19,8 @@ namespace Server.Consumer {
 			ConfigureLogger();
 
 			RabbitMQ.SetConfig(new Queue.RabbitMQ.Config() {
-				Host = "localhost",
+				//Host = "localhost",
+				Host = "test.crazyzone.be",
 				MainQueue = "MittoMain"
 			});
 
