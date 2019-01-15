@@ -1,11 +1,11 @@
-﻿using IConnection;
+﻿using Mitto.IConnection;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ClientProcess.MenuAction.ConnectionTests {
 	class MultiConnectionTest : ITest {
-		private List<IConnection.IConnection> _lstClient = new List<IConnection.IConnection>();
+		private List<IConnection> _lstClient = new List<IConnection>();
 
 		public void Test() {
 			Parallel.For(1, 5000, new ParallelOptions { MaxDegreeOfParallelism = 10 }, (i) => {
@@ -21,7 +21,7 @@ namespace ClientProcess.MenuAction.ConnectionTests {
 			});
 		}
 
-		private void ObjClient_Connected(IConnection.IConnection pClient) {
+		private void ObjClient_Connected(IConnection pClient) {
 			lock (_lstClient) {
 				_lstClient.Add(pClient);
 				Console.WriteLine("Client " + _lstClient.Count + "Connected");
@@ -29,7 +29,7 @@ namespace ClientProcess.MenuAction.ConnectionTests {
 
 		}
 
-		private void ObjClient_Disconnected(IConnection.IConnection pClient) {
+		private void ObjClient_Disconnected(IConnection pClient) {
 			lock (_lstClient) {
 				_lstClient.Remove(pClient);
 				Console.WriteLine("Client " + _lstClient.Count + "Connected");

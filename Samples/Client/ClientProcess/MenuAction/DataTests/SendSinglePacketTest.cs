@@ -1,10 +1,6 @@
 ﻿using ClientProcess;
-using IConnection;
+using Mitto.IConnection;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConnectionClient.MenuAction.DataTests {
 	public class SendSinglePacketTest : ITest {
@@ -22,13 +18,13 @@ namespace ConnectionClient.MenuAction.DataTests {
 			_objClient.ConnectAsync("localhost", 80, false);
 		}
 
-		private void ObjClient_Connected(IConnection.IConnection pClient) {
+		private void ObjClient_Connected(IConnection pClient) {
 			Console.WriteLine("Client Connected, sending some data");
 
 			_objClient.Transmit(new byte[] { 0, 2, 4, 8 });
 		}
 
-		private void ObjClient_Disconnected(IConnection.IConnection pClient) {
+		private void ObjClient_Disconnected(IConnection pClient) {
 			Console.WriteLine("Client Disconnected");
 		}
 

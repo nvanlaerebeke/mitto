@@ -1,9 +1,9 @@
 ﻿using ClientProcess;
-using ClientManager;
 using System;
-using Messaging.Base.Response;
 using System.Threading.Tasks;
-using IConnection;
+using Mitto.Messaging.Base.Response;
+using Mitto.Messaging.Base.Request;
+using Mitto.ClientManager;
 
 namespace ConnectionClient.MenuAction.MessageTests {
 	public class MultiPingMesasgeTest : ITest {
@@ -21,7 +21,7 @@ namespace ConnectionClient.MenuAction.MessageTests {
 			Console.WriteLine("Client Connected, sending some data");
 
 			Parallel.For(1, 5000, new ParallelOptions { MaxDegreeOfParallelism = 10 }, (i) => {
-				_objClient.Request<Pong>(new Messaging.Base.Request.Ping(), (Pong pResponse) => {
+				_objClient.Request<Pong>(new Ping(), (Pong pResponse) => {
 					Console.WriteLine("Pong Received: " + i);
 				});
 			});

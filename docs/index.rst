@@ -1,9 +1,11 @@
-![Example Overview](./docs/images/logo.jpg)
-
+.. image:: ./docs/images/logo.jpg
 
 Mitto is a scalable Client/Server framework with a Request/Response model written in C#.
 
 The aim is to provide a simple framework that is easy to start with and can be scaled up when needed and have each component as interchangable as possible so the user has the flexability to customerize each component for its project
+
+
+For a more mature option that's maintained a good alternative `RocketLib <http://rockframework.org>`_ is a good option.
 
 Introduction
 ============
@@ -19,10 +21,11 @@ Mitto is usable on any scale from small projects that require only a few connect
 
 Each component can also be switched out for other technologies and languages.
 
-Documentation
-=============
+Table of Contents
+-----------------
 
 .. toctree::
+
    quickstart
    gettingstarted
    connection

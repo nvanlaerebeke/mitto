@@ -1,5 +1,6 @@
-﻿using Messaging.Base;
-using Messaging.Base.Action;
+﻿using Mitto.IMessaging;
+using Mitto.Messaging.Base;
+using Mitto.Messaging.Base.Action;
 
 namespace Messaging.App.Action.Request {
     public class Echo : RequestAction<App.Request.Echo> {

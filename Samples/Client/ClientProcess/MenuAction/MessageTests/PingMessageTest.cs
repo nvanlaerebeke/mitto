@@ -1,8 +1,8 @@
 ﻿using ClientProcess;
-using ClientManager;
 using System;
-using Messaging.Base.Response;
-using IConnection;
+using Mitto.ClientManager;
+using Mitto.Messaging.Base.Response;
+using Mitto.Messaging.Base.Request;
 
 namespace ConnectionClient.MenuAction.MessageTests {
 	public class PingMesasgeTest : ITest {
@@ -22,7 +22,7 @@ namespace ConnectionClient.MenuAction.MessageTests {
 		private void ObjClient_Connected(Client pClient) {
 			Console.WriteLine("Client Connected, sending some data");
 
-			_objClient.Request<Pong>(new Messaging.Base.Request.Ping(), (Pong pResponse) => {
+			_objClient.Request<Pong>(new Ping(), (Pong pResponse) => {
 				Console.WriteLine("Pong Received");
 			});
 		}

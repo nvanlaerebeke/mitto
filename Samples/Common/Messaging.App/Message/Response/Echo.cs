@@ -1,5 +1,7 @@
-﻿using Messaging.Base;
+﻿using Mitto.IMessaging;
+using Mitto.Messaging.Base;
 using System;
+
 namespace Messaging.App.Response {
     public class Echo: ResponseMessage {
 		public string Response { get; set; }

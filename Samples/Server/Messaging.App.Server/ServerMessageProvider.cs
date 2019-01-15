@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Mitto.Messaging.Base;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Messaging.Base;
 
 namespace Messaging.App.Server {
 	public class ServerMessageProvider : Messaging.App.AppMessageProvider {

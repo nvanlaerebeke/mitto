@@ -1,9 +1,7 @@
 ﻿using ClientProcess;
-using ClientManager;
 using System;
-using Messaging.Base.Response;
 using Messaging.App.Response;
-using IConnection;
+using Mitto.ClientManager;
 
 namespace ConnectionClient.MenuAction.MessageTests {
 	public class EchoMesasgeTest : ITest {

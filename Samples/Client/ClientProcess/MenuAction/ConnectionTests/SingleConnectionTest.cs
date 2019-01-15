@@ -1,4 +1,4 @@
-﻿using IConnection;
+﻿using Mitto.IConnection;
 using System;
 
 namespace ClientProcess.MenuAction.ConnectionTests {
@@ -17,11 +17,11 @@ namespace ClientProcess.MenuAction.ConnectionTests {
 			_objClient.ConnectAsync("localhost", 80, false);
 		}
 
-		private void ObjClient_Connected(IConnection.IConnection pClient) {
+		private void ObjClient_Connected(IConnection pClient) {
 			Console.WriteLine("Client Connected");
 		}
 
-		private void ObjClient_Disconnected(IConnection.IConnection pClient) {
+		private void ObjClient_Disconnected(IConnection pClient) {
 			Console.WriteLine("Client Disconnected");
 		}
 

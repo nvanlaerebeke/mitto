@@ -1,4 +1,5 @@
-﻿using Messaging.Base;
+﻿
+using Mitto.Messaging.Base;
 
 namespace Messaging.App.Request {
     public class Echo : RequestMessage {

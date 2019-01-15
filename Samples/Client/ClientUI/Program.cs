@@ -23,10 +23,10 @@ namespace ClientUI {
 		static void Main(string[] args) {
 			ConfigureLogger();
 
-			IQueue.QueueFactory.UnityContainer.RegisterType<IQueue.IQueue, Queue.PassThrough.PassThrough>();
-			IConnection.ConnectionFactory.UnityContainer.RegisterType<IConnection.IClient, Connection.Websocket.Client.WebsocketClient>();
-			IMessaging.MessagingFactory.UnityContainer.RegisterType<IMessaging.IMessageCreator, Messaging.Json.MessageCreator>();
-			IMessaging.MessagingFactory.UnityContainer.RegisterType<IMessaging.IMessageProvider, Messaging.App.Client.ClientMessageProvider>();
+			Mitto.IQueue.QueueFactory.UnityContainer.RegisterType<Mitto.IQueue.IQueue, Mitto.Queue.PassThrough.PassThrough>();
+			Mitto.IConnection.ConnectionFactory.UnityContainer.RegisterType<Mitto.IConnection.IClient, Connection.Websocket.Client.WebsocketClient>();
+			Mitto.IMessaging.MessagingFactory.UnityContainer.RegisterType<Mitto.IMessaging.IMessageCreator, Mitto.Messaging.Json.MessageCreator>();
+			Mitto.IMessaging.MessagingFactory.UnityContainer.RegisterType<Mitto.IMessaging.IMessageProvider, Messaging.App.Client.ClientMessageProvider>();
 
 			Controller.Start("localhost", 80, false);
 		}

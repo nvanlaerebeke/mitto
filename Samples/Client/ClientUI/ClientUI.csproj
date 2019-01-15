@@ -76,41 +76,41 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Client\ClientManager\ClientManager.csproj">
-      <Project>{ca4b0313-343a-4837-a437-76060c3db728}</Project>
-      <Name>ClientManager</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Connection\Connection.Websocket\Connection.Websocket.csproj">
-      <Project>{131fae85-4f46-42f7-9d85-c18a8116d567}</Project>
-      <Name>Connection.Websocket</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Connection\IConnection\IConnection.csproj">
-      <Project>{9eb141ca-0964-433e-a146-3a75ca61d720}</Project>
-      <Name>IConnection</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\src\Lib\CommandLineMenu\src\ConsoleManager.csproj">
       <Project>{5b35b6a9-0c6e-4134-8c62-62b9c5c4d60a}</Project>
       <Name>ConsoleManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Messaging\IMessaging\IMessaging.csproj">
+    <ProjectReference Include="..\..\..\src\Mitto.ClientManager\Mitto.ClientManager.csproj">
+      <Project>{ca4b0313-343a-4837-a437-76060c3db728}</Project>
+      <Name>Mitto.ClientManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Mitto.Connection.Websocket\Mitto.Connection.Websocket.csproj">
+      <Project>{131fae85-4f46-42f7-9d85-c18a8116d567}</Project>
+      <Name>Mitto.Connection.Websocket</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Mitto.IConnection\Mitto.IConnection.csproj">
+      <Project>{9eb141ca-0964-433e-a146-3a75ca61d720}</Project>
+      <Name>Mitto.IConnection</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Mitto.IMessaging\Mitto.IMessaging.csproj">
       <Project>{a963e580-7777-4ff8-b08f-c9fd5fb15500}</Project>
-      <Name>IMessaging</Name>
+      <Name>Mitto.IMessaging</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Messaging\Messaging.Base\Messaging.Base.csproj">
-      <Project>{c29037e3-9c2f-4996-8434-36600735d465}</Project>
-      <Name>Messaging.Base</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Messaging\Messaging.Json.Base\Messaging.Json.csproj">
-      <Project>{786f3627-bc95-4c92-9240-b0cd3d8bbb58}</Project>
-      <Name>Messaging.Json</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Queuing\IQueue\IQueue.csproj">
+    <ProjectReference Include="..\..\..\src\Mitto.IQueue\Mitto.IQueue.csproj">
       <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
-      <Name>IQueue</Name>
+      <Name>Mitto.IQueue</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Queuing\Queue.PassThrough\Queue.PassThrough.csproj">
+    <ProjectReference Include="..\..\..\src\Mitto.Messaging.Base\Mitto.Messaging.Base.csproj">
+      <Project>{c29037e3-9c2f-4996-8434-36600735d465}</Project>
+      <Name>Mitto.Messaging.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Mitto.Messaging.Json.Base\Mitto.Messaging.Json.csproj">
+      <Project>{786f3627-bc95-4c92-9240-b0cd3d8bbb58}</Project>
+      <Name>Mitto.Messaging.Json</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Mitto.Queue.PassThrough\Mitto.Queue.PassThrough.csproj">
       <Project>{ce5f0847-f8b5-4b95-8e86-e007fcdc92a3}</Project>
-      <Name>Queue.PassThrough</Name>
+      <Name>Mitto.Queue.PassThrough</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Common\Messaging.App\Messaging.App.csproj">
       <Project>{bad50a63-cbf1-4c53-93ab-e2d5b4becac5}</Project>

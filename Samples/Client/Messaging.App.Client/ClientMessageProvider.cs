@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using IMessaging;
-using Messaging.Base;
+using Mitto.IMessaging;
+using Mitto.Messaging.Base;
 
 namespace Messaging.App.Client {
 	public class ClientMessageProvider : Messaging.App.AppMessageProvider{

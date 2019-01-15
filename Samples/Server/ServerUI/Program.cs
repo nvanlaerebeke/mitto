@@ -11,10 +11,10 @@ namespace ConnectionServer {
 		static ManualResetEvent _objClose = new ManualResetEvent(false);
 		static Server _objServer;
 		static void Main(string[] args) {
-			IConnection.ConnectionFactory.UnityContainer.RegisterType<IConnection.IServer, Connection.Websocket.Server.WebsocketServer>();
-			IQueue.QueueFactory.UnityContainer.RegisterType<IQueue.IQueue, Queue.PassThrough.PassThrough>();
-			IMessaging.MessagingFactory.UnityContainer.RegisterType<IMessaging.IMessageCreator, Messaging.Json.MessageCreator>();
-			IMessaging.MessagingFactory.UnityContainer.RegisterType<IMessaging.IMessageProvider, Messaging.App.Server.ServerMessageProvider>();
+			Mitto.IConnection.ConnectionFactory.UnityContainer.RegisterType<Mitto.IConnection.IServer, Mitto.Connection.Websocket.Server.WebsocketServer>();
+			Mitto.IQueue.QueueFactory.UnityContainer.RegisterType<Mitto.IQueue.IQueue, Mitto.Queue.PassThrough.PassThrough>();
+			Mitto.IMessaging.MessagingFactory.UnityContainer.RegisterType<Mitto.IMessaging.IMessageCreator, Mitto.Messaging.Json.MessageCreator>();
+			Mitto.IMessaging.MessagingFactory.UnityContainer.RegisterType<Mitto.IMessaging.IMessageProvider, Messaging.App.Server.ServerMessageProvider>();
 
 			ConfigureLogger();
 
