@@ -1,4 +1,4 @@
-﻿using IQueue;
+﻿using Mitto.IQueue;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
@@ -6,7 +6,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 
 namespace Queue.RabbitMQ {
-	public abstract class RabbitMQBase : IQueue.IQueue {
+	public abstract class RabbitMQBase : IQueue {
 		protected static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public abstract void Receive(Message pMessage);

@@ -1,17 +1,23 @@
-﻿using Messaging.Base;
+﻿using Mitto.IQueue;
+using Mitto.Messaging.Base;
 
 namespace Queue.RabbitMQ.Consumer {
 	public static class RabbitMQReader {
-		private static IQueue.IQueue Queue { get; set; }
+		private static IQueue Queue { get; set; }
 
 		public static void Start() {
 			Queue = new RabbitMQ();
 			Queue.Rx += Queue_Rx;
 		}
-
-		private static void Queue_Rx(IQueue.Message pMessage) {
+		/// <summary>
+		/// ToDo: MessageProcessor should be comming from IMessaging not the Mitto.Messaging.Base
+		/// We want to do this to not couple the base assembly in the Queueing, making it implement an 
+		/// interface will also make it easier to test
+		/// </summary>
+		/// <param name="pMessage"></param>
+		private static void Queue_Rx(Mitto.IQueue.Message pMessage) {
 			RabbitMQDataMessage objMsg = new RabbitMQDataMessage(pMessage.Data);
-			MessageProcessor.Process(Queue, new IQueue.Message(objMsg.QueueID, objMsg.Data));
+			MessageProcessor.Process(Queue, new Mitto.IQueue.Message(objMsg.QueueID, objMsg.Data));
 		}
 	}
 }

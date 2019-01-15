@@ -37,7 +37,7 @@
       <HintPath>..\..\..\samples\Server\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net46\Microsoft.Diagnostics.Tracing.EventSource.dll</HintPath>
     </Reference>
     <Reference Include="RabbitMQ.Client, Version=5.0.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
-      <HintPath>..\..\..\samples\Server\packages\RabbitMQ.Client.5.1.0\lib\net451\RabbitMQ.Client.dll</HintPath>
+      <HintPath>..\..\samples\Server\packages\RabbitMQ.Client.5.1.0\lib\net451\RabbitMQ.Client.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -57,13 +57,13 @@
     <Compile Include="RabbitMQMessageFormat.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IQueue\IQueue.csproj">
-      <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
-      <Name>IQueue</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\Mitto.IQueue\Mitto.IQueue.csproj">
+      <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
+      <Name>Mitto.IQueue</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

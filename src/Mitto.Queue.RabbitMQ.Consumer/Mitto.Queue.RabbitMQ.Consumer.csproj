@@ -42,7 +42,7 @@
       <HintPath>..\..\..\samples\Server\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net46\Microsoft.Diagnostics.Tracing.EventSource.dll</HintPath>
     </Reference>
     <Reference Include="RabbitMQ.Client, Version=5.0.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
-      <HintPath>..\..\..\samples\Server\packages\RabbitMQ.Client.5.1.0\lib\net451\RabbitMQ.Client.dll</HintPath>
+      <HintPath>..\..\samples\Server\packages\RabbitMQ.Client.5.1.0\lib\net451\RabbitMQ.Client.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -59,17 +59,17 @@
     <Compile Include="RabbitMQReader.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Messaging\Messaging.Base\Messaging.Base.csproj">
-      <Project>{c29037e3-9c2f-4996-8434-36600735d465}</Project>
-      <Name>Messaging.Base</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\IQueue\IQueue.csproj">
+    <ProjectReference Include="..\Mitto.IQueue\Mitto.IQueue.csproj">
       <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
-      <Name>IQueue</Name>
+      <Name>Mitto.IQueue</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Queue.RabbitMQ\Queue.RabbitMQ.csproj">
+    <ProjectReference Include="..\Mitto.Messaging.Base\Mitto.Messaging.Base.csproj">
+      <Project>{c29037e3-9c2f-4996-8434-36600735d465}</Project>
+      <Name>Mitto.Messaging.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Queue.RabbitMQ\Mitto.Queue.RabbitMQ.csproj">
       <Project>{3cb0e6c9-133e-49d7-a393-4fcc9ddeb72b}</Project>
-      <Name>Queue.RabbitMQ</Name>
+      <Name>Mitto.Queue.RabbitMQ</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

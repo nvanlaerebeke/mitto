@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Net;
 using System.Threading;
-using IMessaging;
-using IQueue;
 using log4net.Appender;
 using log4net.Config;
 using Unity;
@@ -12,9 +9,9 @@ namespace Server.Consumer {
 	class Program {
 		static ManualResetEvent _objClose = new ManualResetEvent(false);
 		static void Main(string[] args) {
-			QueueFactory.UnityContainer.RegisterType<IQueue.IQueue, RabbitMQ>();
-			MessagingFactory.UnityContainer.RegisterType<IMessageCreator, Messaging.Json.MessageCreator>();
-			MessagingFactory.UnityContainer.RegisterType<IMessageProvider, Messaging.App.Server.ServerMessageProvider>();
+			Mitto.IQueue.QueueFactory.UnityContainer.RegisterType<Mitto.IQueue.IQueue, RabbitMQ>();
+			Mitto.IMessaging.MessagingFactory.UnityContainer.RegisterType<Mitto.IMessaging.IMessageCreator, Mitto.Messaging.Json.MessageCreator>();
+			Mitto.IMessaging.MessagingFactory.UnityContainer.RegisterType<Mitto.IMessaging.IMessageProvider, Messaging.App.Server.ServerMessageProvider>();
 
 			ConfigureLogger();
 

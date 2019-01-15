@@ -1,4 +1,5 @@
-﻿using IQueue;
+﻿
+using Mitto.IQueue;
 
 namespace Queue.RabbitMQ.Consumer {
 	/// <summary>

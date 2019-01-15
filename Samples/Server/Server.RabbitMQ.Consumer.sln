@@ -3,21 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2018
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IQueue", "..\..\src\Queuing\IQueue\IQueue.csproj", "{7A80E47B-C82F-4A16-83F0-E0C65F22885A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.IQueue", "..\..\src\Mitto.IQueue\Mitto.IQueue.csproj", "{7A80E47B-C82F-4A16-83F0-E0C65F22885A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IMessaging", "..\..\src\Messaging\IMessaging\IMessaging.csproj", "{A963E580-7777-4FF8-B08F-C9FD5FB15500}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.IMessaging", "..\..\src\Mitto.IMessaging\Mitto.IMessaging.csproj", "{A963E580-7777-4FF8-B08F-C9FD5FB15500}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Json", "..\..\src\Messaging\Messaging.Json.Base\Messaging.Json.csproj", "{786F3627-BC95-4C92-9240-B0CD3D8BBB58}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Messaging.Json", "..\..\src\Mitto.Messaging.Json.Base\Mitto.Messaging.Json.csproj", "{786F3627-BC95-4C92-9240-B0CD3D8BBB58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Base", "..\..\src\Messaging\Messaging.Base\Messaging.Base.csproj", "{C29037E3-9C2F-4996-8434-36600735D465}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Messaging.Base", "..\..\src\Mitto.Messaging.Base\Mitto.Messaging.Base.csproj", "{C29037E3-9C2F-4996-8434-36600735D465}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.App", "..\Common\Messaging.App\Messaging.App.csproj", "{BAD50A63-CBF1-4C53-93AB-E2D5B4BECAC5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.App.Server", "Messaging.App.Server\Messaging.App.Server.csproj", "{5418C828-568E-4E37-AF02-D8DF9A99703E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queue.RabbitMQ", "..\..\src\Queuing\Queue.RabbitMQ\Queue.RabbitMQ.csproj", "{3CB0E6C9-133E-49D7-A393-4FCC9DDEB72B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Queue.RabbitMQ", "..\..\src\Mitto.Queue.RabbitMQ\Mitto.Queue.RabbitMQ.csproj", "{3CB0E6C9-133E-49D7-A393-4FCC9DDEB72B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queue.RabbitMQ.Consumer", "..\..\src\Queuing\Queue.RabbitMQ.Consumer\Queue.RabbitMQ.Consumer.csproj", "{7B0C911D-76E3-494E-B019-DC4974A24810}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Queue.RabbitMQ.Consumer", "..\..\src\Mitto.Queue.RabbitMQ.Consumer\Mitto.Queue.RabbitMQ.Consumer.csproj", "{7B0C911D-76E3-494E-B019-DC4974A24810}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Consumer", "Server.Consumer\Server.Consumer.csproj", "{1E6574D4-C0E0-4201-B591-9917905BBE5E}"
 EndProject
