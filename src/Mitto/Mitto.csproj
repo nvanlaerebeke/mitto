@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\ILMerge.3.0.21\build\ILMerge.props" Condition="Exists('..\packages\ILMerge.3.0.21\build\ILMerge.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2CE575FC-7F33-45F9-A977-9A40266158CA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Mitto</RootNamespace>
+    <AssemblyName>Mitto</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Lib\websocketsharp\websocket-sharp\websocket-sharp.csproj">
+      <Project>{b357bac7-529e-4d81-a0d2-71041b19c8de}</Project>
+      <Name>websocket-sharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.ClientManager\Mitto.ClientManager.csproj">
+      <Project>{ca4b0313-343a-4837-a437-76060c3db728}</Project>
+      <Name>Mitto.ClientManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Connection.Websocket\Mitto.Connection.Websocket.csproj">
+      <Project>{cf99d3f2-2c06-4a9f-ba22-e2e0ca457b58}</Project>
+      <Name>Mitto.Connection.Websocket</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.IConnection\Mitto.IConnection.csproj">
+      <Project>{aaf65eba-e48d-491a-ad2e-525bde11ec6f}</Project>
+      <Name>Mitto.IConnection</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.IMessaging\Mitto.IMessaging.csproj">
+      <Project>{3bb1c211-9006-4fee-9f40-7556717431b0}</Project>
+      <Name>Mitto.IMessaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.IQueue\Mitto.IQueue.csproj">
+      <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
+      <Name>Mitto.IQueue</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Messaging.Base\Mitto.Messaging.Base.csproj">
+      <Project>{c29037e3-9c2f-4996-8434-36600735d465}</Project>
+      <Name>Mitto.Messaging.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Messaging.Json.Base\Mitto.Messaging.Json.csproj">
+      <Project>{786f3627-bc95-4c92-9240-b0cd3d8bbb58}</Project>
+      <Name>Mitto.Messaging.Json</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Queue.PassThrough\Mitto.Queue.PassThrough.csproj">
+      <Project>{ce5f0847-f8b5-4b95-8e86-e007fcdc92a3}</Project>
+      <Name>Mitto.Queue.PassThrough</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Queue.RabbitMQ.Consumer\Mitto.Queue.RabbitMQ.Consumer.csproj">
+      <Project>{7b0c911d-76e3-494e-b019-dc4974a24810}</Project>
+      <Name>Mitto.Queue.RabbitMQ.Consumer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Queue.RabbitMQ.Publisher\Mitto.Queue.RabbitMQ.Publisher.csproj">
+      <Project>{d4558880-23ef-40e4-8e13-402d8a61a1e7}</Project>
+      <Name>Mitto.Queue.RabbitMQ.Publisher</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Queue.RabbitMQ\Mitto.Queue.RabbitMQ.csproj">
+      <Project>{3cb0e6c9-133e-49d7-a393-4fcc9ddeb72b}</Project>
+      <Name>Mitto.Queue.RabbitMQ</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.ServerManager\Mitto.ServerManager.csproj">
+      <Project>{a6f9dae3-8537-49e1-ae2e-13a2dc3ff9b8}</Project>
+      <Name>Mitto.ServerManager</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ILMergeConfig.json" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\ILMerge.3.0.21\build\ILMerge.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ILMerge.3.0.21\build\ILMerge.props'))" />
+    <Error Condition="!Exists('..\packages\ILMerge.MSBuild.Task.1.0.5\build\ILMerge.MSBuild.Task.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ILMerge.MSBuild.Task.1.0.5\build\ILMerge.MSBuild.Task.targets'))" />
+  </Target>
+  <Import Project="..\packages\ILMerge.MSBuild.Task.1.0.5\build\ILMerge.MSBuild.Task.targets" Condition="Exists('..\packages\ILMerge.MSBuild.Task.1.0.5\build\ILMerge.MSBuild.Task.targets')" />
+</Project>

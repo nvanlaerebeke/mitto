@@ -1,6 +1,6 @@
 ﻿using System;
-using Mitto.IConnection;
 using Mitto.Messaging.Base;
+using Mitto.IConnection;
 
 namespace Mitto.ClientManager {
 	public delegate void ClientConnectionHandler(Client pClient);

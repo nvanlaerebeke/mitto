@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7B0C911D-76E3-494E-B019-DC4974A24810}</ProjectGuid>
+    <ProjectGuid>{D4558880-23EF-40E4-8E13-402D8A61A1E7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Queue.RabbitMQ.Publisher</RootNamespace>
     <AssemblyName>Queue.RabbitMQ.Publisher</AssemblyName>
@@ -58,11 +58,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IQueue\IQueue.csproj">
+    <ProjectReference Include="..\Mitto.IQueue\Mitto.IQueue.csproj">
       <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
       <Name>IQueue</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Queue.RabbitMQ\Queue.RabbitMQ.csproj">
+    <ProjectReference Include="..\Mitto.Queue.RabbitMQ\Mitto.Queue.RabbitMQ.csproj">
       <Project>{3cb0e6c9-133e-49d7-a393-4fcc9ddeb72b}</Project>
       <Name>Queue.RabbitMQ</Name>
     </ProjectReference>

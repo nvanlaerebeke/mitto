@@ -5,6 +5,11 @@ Mitto is a scalable Client/Server framework with a Request/Response model writte
 
 The aim is to provide a simple framework that is easy to start with and can be scaled up when needed and have each component as interchangable as possible so the user has the flexability to customerize each component for its project
 
+Note that this was created as a proof of concept and learning exercise. 
+
+For a more mature option that's maintained a good alternative [RocketLib](http://rockframework.org/) is a good option.
+
+
 Documentation
 =============
 

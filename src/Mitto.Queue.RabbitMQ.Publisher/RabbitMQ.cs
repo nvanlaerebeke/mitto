@@ -1,4 +1,4 @@
-﻿using IQueue;
+﻿using Mitto.IQueue;
 using System;
 
 namespace Queue.RabbitMQ.Publisher {

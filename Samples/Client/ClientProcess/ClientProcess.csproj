@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Mitto">
+      <HintPath>..\..\..\bin\Mitto.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -61,26 +64,6 @@
     <ProjectReference Include="..\..\..\src\Lib\CommandLineMenu\src\ConsoleManager.csproj">
       <Project>{5b35b6a9-0c6e-4134-8c62-62b9c5c4d60a}</Project>
       <Name>ConsoleManager</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Mitto.ClientManager\Mitto.ClientManager.csproj">
-      <Project>{ca4b0313-343a-4837-a437-76060c3db728}</Project>
-      <Name>Mitto.ClientManager</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Mitto.IConnection\Mitto.IConnection.csproj">
-      <Project>{9eb141ca-0964-433e-a146-3a75ca61d720}</Project>
-      <Name>Mitto.IConnection</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Mitto.IMessaging\Mitto.IMessaging.csproj">
-      <Project>{a963e580-7777-4ff8-b08f-c9fd5fb15500}</Project>
-      <Name>Mitto.IMessaging</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Mitto.IQueue\Mitto.IQueue.csproj">
-      <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
-      <Name>Mitto.IQueue</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Mitto.Messaging.Base\Mitto.Messaging.Base.csproj">
-      <Project>{c29037e3-9c2f-4996-8434-36600735d465}</Project>
-      <Name>Mitto.Messaging.Base</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Common\Messaging.App\Messaging.App.csproj">
       <Project>{bad50a63-cbf1-4c53-93ab-e2d5b4becac5}</Project>
