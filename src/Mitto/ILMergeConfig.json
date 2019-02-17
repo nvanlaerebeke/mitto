@@ -1,15 +1,22 @@
 ﻿{
   "General": {
-    "OutputFile": "../../bin/Mitto.dll",
+    "OutputFile": "..\\..\\bin\\Mitto.dll",
     "TargetPlatform": null,
     "KeyFile": null,
     "AlternativeILMergePath": null,
-    "InputAssemblies": []
+    "InputAssemblies": [
+      "$(TargetDir)\\log4net.dll",
+      "$(TargetDir)\\Microsoft.Diagnostics.Tracing.EventSource.dll",
+      "$(TargetDir)\\Mitto.*.dll",
+      "$(TargetDir)\\RabbitMQ.Client.dll",
+      "$(TargetDir)\\ServerManager.dll",
+      "$(TargetDir)\\websocket-sharp.dll"
+    ]
   },
   "Advanced": {
-    "AllowDuplicateType": null,
-    "AllowMultipleAssemblyLevelAttributes": false,
-    "AllowWildCards": false,
+    "AllowDuplicateType": true,
+    "AllowMultipleAssemblyLevelAttributes": true,
+    "AllowWildCards": true,
     "AllowZeroPeKind": false,
     "AttributeFile": null,
     "Closed": false,

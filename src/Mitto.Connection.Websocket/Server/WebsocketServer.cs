@@ -2,37 +2,36 @@
 using System;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
-using WebSocketSharp.Server;
 
 namespace Mitto.Connection.Websocket.Server {
 	public class WebsocketServer : IServer {
-		private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private IWebSocketServer _objServer;
+		private Action<IClientConnection> _objClientConnected;
 
-		private WebSocketServer _objServer;
+		internal WebsocketServer(IWebSocketServer pServer) {
+			_objServer = pServer;
+			_objServer.ClientConnected += _objServer_ClientConnected;
+		}
+
+		private void _objServer_ClientConnected(object sender, IWebSocketBehavior e) {
+			_objClientConnected?.Invoke(new Client(e));
+		}
 
 		public void Start(IPAddress pIPAddress, int pPort, Action<IClientConnection> pCallback) {
-            Start(pIPAddress, pPort, "", "", pCallback);
-        }
+			_objClientConnected = pCallback;
+			_objServer.Start(pIPAddress, pPort);
+		}
 
-        public void Start(IPAddress pIPAddress, int pPort, string pCertPath, string pCertPassword, Action<IClientConnection> pCallback) {
-            Log.Info("Creating new server...");
-			Log.Info("Host: " + pIPAddress.ToString());
-			Log.Info("Port: " + pPort.ToString());
-
-			_objServer = new WebSocketServer(pIPAddress, pPort, !String.IsNullOrEmpty(pCertPath));
-
-            if (!String.IsNullOrEmpty(pCertPath)) {
-				Log.Info("Setting up secure connection using certificate " + pCertPath);
-                _objServer.SslConfiguration.ServerCertificate = new X509Certificate2(
-                    new X509Certificate2(Convert.FromBase64String(
-                        Convert.ToBase64String(System.IO.File.ReadAllBytes(pCertPath)))
-                    )
-                );
-            }
-
-			Client.ClientConnectCallback = pCallback;
-            _objServer.AddWebSocketService<Client>("/");
-			_objServer.Start();
+		public void Start(IPAddress pIPAddress, int pPort, string pCertPath, string pCertPassword, Action<IClientConnection> pCallback) {
+			if (!System.IO.File.Exists(pCertPath)) {
+				throw new System.IO.FileNotFoundException($"{pCertPath} not found");
+			}
+			_objClientConnected = pCallback;
+			_objServer.Start(
+				pIPAddress, 
+				pPort,
+				new X509Certificate2(new X509Certificate2(System.IO.File.ReadAllBytes(pCertPath), pCertPassword))
+			);
 		}
 	}
 }

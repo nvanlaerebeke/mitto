@@ -1,10 +1,12 @@
 ﻿using System;
-using Mitto.Messaging.Base;
+using Mitto.Messaging;
 using Mitto.IConnection;
 
 namespace Mitto.ClientManager {
 	public delegate void ClientConnectionHandler(Client pClient);
-
+	/// <summary>
+	/// ToDo: Request/Response messages etc should be interfaces from in IMessaging instead of Messaging.Base
+	/// </summary>
 	public class Client : IQueue.IQueue {
 		public event ClientConnectionHandler Connected;
 		public event ClientConnectionHandler Disconnected;
@@ -12,7 +14,7 @@ namespace Mitto.ClientManager {
 		#region IConnection stuff
 		private IClient _objClient;
 		public Client() {
-			_objClient = ConnectionFactory.GetClient();
+			_objClient = ConnectionFactory.CreateClient();
 			_objClient.Connected += ObjClient_Connected;
 			_objClient.Disconnected += ObjClient_Disconnected;
 			_objClient.Rx += _objClient_Rx;
@@ -58,7 +60,7 @@ namespace Mitto.ClientManager {
 		private IQueue.IQueue InternalQueue {
 			get {
 				if (_objQueue == null) {
-					_objQueue = IQueue.QueueFactory.Get();
+					_objQueue = IQueue.QueueFactory.Create();
 					_objQueue.Rx += _objQueue_Rx;
 				}
 				return _objQueue;

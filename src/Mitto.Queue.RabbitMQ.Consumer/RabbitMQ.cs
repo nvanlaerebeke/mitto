@@ -1,7 +1,7 @@
 ﻿
 using Mitto.IQueue;
 
-namespace Queue.RabbitMQ.Consumer {
+namespace Mitto.Queue.RabbitMQ.Consumer {
 	/// <summary>
 	/// RabbitMQ Consumer Message Handler
 	/// 

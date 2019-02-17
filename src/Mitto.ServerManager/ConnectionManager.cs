@@ -3,8 +3,6 @@ using Mitto.IConnection;
 
 namespace ServerManager {
 	internal static class ConnectionManager {
-		private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
 		static Dictionary<string, Client> _dicClients = new Dictionary<string, Client>();
 
 		public static void Add(IClientConnection pClient) {
@@ -13,7 +11,7 @@ namespace ServerManager {
 
 			lock (_dicClients) {
 				_dicClients.Add(pClient.ID, objClient);
-				Log.Debug("Client " + pClient.ID + " Added, " + _dicClients.Count + " clients connected");
+				//Log.Debug("Client " + pClient.ID + " Added, " + _dicClients.Count + " clients connected");
 			}
 		}
 
@@ -26,7 +24,7 @@ namespace ServerManager {
 					_dicClients.Remove(pClient.ID);
 				}
 			}
-			Log.Info("Client " + pClient.ID + " disconnected, " + _dicClients.Count + " clients connected");
+			//Log.Info("Client " + pClient.ID + " disconnected, " + _dicClients.Count + " clients connected");
 		}
 		#endregion
 

@@ -1,5 +1,7 @@
-﻿namespace Mitto.IQueue {
-	public class Message {
+﻿using System.Linq;
+
+namespace Mitto.IQueue {
+	public class Message : System.IEquatable<Message> {
 		/// <summary>
 		/// Represends where the data is being sent to
 		/// 
@@ -21,6 +23,16 @@
 		public Message(string pClientID, byte[] pData) {
 			ClientID = pClientID;
 			Data = pData;
+		}
+
+		public bool Equals(Message pObj) {
+			return (
+				this == pObj || //compare reference
+				(
+					ClientID.Equals(pObj.ClientID) && 
+					Data.SequenceEqual(pObj.Data)
+				)
+			);
 		}
 	}
 }

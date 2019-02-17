@@ -1,9 +1,6 @@
-﻿using Mitto.IQueue;
-using Mitto.Messaging.Base;
-
-namespace Queue.RabbitMQ.Consumer {
+﻿namespace Mitto.Queue.RabbitMQ.Consumer {
 	public static class RabbitMQReader {
-		private static IQueue Queue { get; set; }
+		private static IQueue.IQueue Queue { get; set; }
 
 		public static void Start() {
 			Queue = new RabbitMQ();
@@ -15,9 +12,9 @@ namespace Queue.RabbitMQ.Consumer {
 		/// interface will also make it easier to test
 		/// </summary>
 		/// <param name="pMessage"></param>
-		private static void Queue_Rx(Mitto.IQueue.Message pMessage) {
+		private static void Queue_Rx(IQueue.Message pMessage) {
 			RabbitMQDataMessage objMsg = new RabbitMQDataMessage(pMessage.Data);
-			MessageProcessor.Process(Queue, new Mitto.IQueue.Message(objMsg.QueueID, objMsg.Data));
+			IMessaging.MessagingFactory.Processor.Process(Queue, new IQueue.Message(objMsg.QueueID, objMsg.Data));
 		}
 	}
 }

@@ -5,7 +5,7 @@ namespace ServerManager {
 	public class Server {
 		private IServer _objWsServer;
 		public Server() {
-			_objWsServer = ConnectionFactory.GetServer();
+			_objWsServer = ConnectionFactory.CreateServer();
 		}
 		public void Start(IPAddress pIPAddress, int pPort) {
 			Start(pIPAddress, pPort, "", "");

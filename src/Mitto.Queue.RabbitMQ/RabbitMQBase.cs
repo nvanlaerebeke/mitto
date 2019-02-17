@@ -5,10 +5,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace Queue.RabbitMQ {
-	public abstract class RabbitMQBase : IQueue {
-		protected static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
+namespace Mitto.Queue.RabbitMQ {
+	public abstract class RabbitMQBase : IQueue.IQueue {
 		public abstract void Receive(Message pMessage);
 
 		private BlockingCollection<Message> _colRxQueue = new BlockingCollection<Message>();
@@ -45,7 +43,7 @@ namespace Queue.RabbitMQ {
 				var channel = connection.CreateModel();
 				channel.QueueDeclare(queue: ReadQueue, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
-				Log.Debug("Start listening on " + ReadQueue);
+				//Log.Debug("Start listening on " + ReadQueue);
 
 				var consumer = new EventingBasicConsumer(channel);
 				consumer.Received += (model, ea) => {
@@ -85,7 +83,7 @@ namespace Queue.RabbitMQ {
 									body: objMessage.Data
 								);
 							} catch (Exception ex) {
-								Log.Error("Failed sending data, closing connection: " + ex.Message);
+								//Log.Error("Failed sending data, closing connection: " + ex.Message);
 							}
 						}
 					}

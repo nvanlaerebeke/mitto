@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Queue.RabbitMQ {
+namespace Mitto.Queue.RabbitMQ {
 	public abstract class RabbitMQMessage {
 		internal RabbitMQMessageFormat Format { get; }
 

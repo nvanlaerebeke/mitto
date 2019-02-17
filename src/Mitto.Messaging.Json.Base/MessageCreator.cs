@@ -1,5 +1,4 @@
 ﻿using Mitto.IMessaging;
-using Mitto.Messaging.Base;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
 using System;
@@ -23,7 +22,7 @@ namespace Mitto.Messaging.Json {
 				Log.Debug("Detected message type " + enuType.ToString());
 				lstData.RemoveAt(0);
 
-				Type type = MessageProvider.GetType(enuType, lstData.First<byte>());
+				Type type = MessagingFactory.Provider.GetType(enuType, lstData.First<byte>());
 				lstData.RemoveAt(0);
 
 				if (type != null) {
@@ -49,9 +48,13 @@ namespace Mitto.Messaging.Json {
 			return null;
 		}
 
+		/// <summary>
+		/// ToDo: Dynamic switching between bson and json
+		/// Larger messages are more efficient as bson
+		/// </summary>
+		/// <param name="pMessage"></param>
+		/// <returns></returns>
 		public byte[] GetBytes(IMessage pMessage) {
-			//ToDo: Dynamic switching between bson and json
-			//      Larger messages are more efficient as bson
 			//if (MessageFormat.Json == MessageFormat.Bson) {
 				/*using (MemoryStream stream = new MemoryStream()) {
 					stream.Write(new byte[2] { (byte)pMessage.Type, (byte)pMessage.GetCode() }, 0, 2);
@@ -72,6 +75,15 @@ namespace Mitto.Messaging.Json {
 				lstRawMessage.AddRange(System.Text.Encoding.UTF8.GetBytes(strJson));
 				return lstRawMessage.ToArray();
 			//}
+		}
+
+		public IMessage GetResponseMessage(IMessage pMessage, ResponseCode pCode) {
+			var objResponseType = MessagingFactory.Provider.GetResponseType(pMessage.Name);
+			if (objResponseType != null) {
+				var objResponse = ((ResponseMessage)Activator.CreateInstance(objResponseType, pMessage, pCode));
+				return objResponse;
+			}
+			return null;
 		}
 	}
 }

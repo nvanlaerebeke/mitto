@@ -1,14 +1,16 @@
-﻿using Unity;
-
-namespace Mitto.IConnection {
+﻿namespace Mitto.IConnection {
 	public static class ConnectionFactory {
-		public static UnityContainer UnityContainer = new UnityContainer();
 
-		public static IServer GetServer() {
-			return UnityContainer.Resolve<IServer>();
+		private static IConnectionProvider Provider { get; set; }
+		public static IServer CreateServer() {
+			return Provider.CreateServer();
 		}
-		public static IClient GetClient() {
-			return UnityContainer.Resolve<IClient>();
+		public static IClient CreateClient() {
+			return Provider.CreateClient();
+		}
+
+		public static void Initialize(IConnectionProvider pProvider) {
+			Provider = pProvider;
 		}
 	}
 }

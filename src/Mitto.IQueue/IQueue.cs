@@ -1,24 +1,28 @@
 ﻿namespace Mitto.IQueue {
 	public delegate void DataHandler(Message pMessage);
 	/// <summary>
+	/// 
+	/// The IQueue interface represents the boundery between the receiving/sending messages
+	/// and what it means on what is done with the message(s)
+	/// 
+	/// An example would be an IConnection that receives/sends messages to an IQueue
+	/// implementation, that IQueue class then implements what it means to receive or send 
+	/// a message over the IConnection.
+	/// In Mitto we can have Websockets(IConnection) then sends/receives some binary data.
+	/// That data must then be processed by 'someone', this is what the IQueue is for.
+	/// 
+	/// A good implemented example is the Mitto.Queue.RabbitMQ implementation, in there
+	/// receiving a message from IConnection means putting it on a queue where the workers
+	/// are reading from, and sending a message is done by reading from that IQueue and 
+	/// sending it back over the IConnection (Websocket) in the correct format
+	/// 
+	/// 
 	/// ToDo: better name for IQueue
 	/// Is it really a queue? - for using rabbit we'll be using queues 
-	/// but that's an implementation detail and not a  description of how messages are passed
-	/// from byte arrays on the transport layer to the 'processor' that knows the binary data represents
+	/// but that's an implementation detail and not a  description of 
+	/// how messages are passed from byte arrays on the transport layer 
+	/// to the 'processor' that knows the binary data represents
 	/// 
-	/// Funtionarlly this is middleware that represents the boundery between the connection that represents communication
-	/// and the meaning of what is communicated
-	/// 
-	/// The reason for it's existence is more than creating the programatical boundary (else we could just call the interface directly)
-	/// It allows the workers (message handlers) to scale infinitely and so that the communication cluster can be run/scale differently from 
-	/// the communication(connections)
-	/// 
-	/// This middleware is build on the concept of event driver design and this allowed the connections and message handlers to run as microservices
-	/// 
-	/// 
-	/// 
-	/// ToDo:
-	/// We should be able to remove Rx event, respond method thould shows the Rx events
 	/// </summary>
 	public interface IQueue {
 		event DataHandler Rx;

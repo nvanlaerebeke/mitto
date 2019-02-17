@@ -1,7 +1,7 @@
 ﻿using Mitto.IQueue;
 using System;
 
-namespace Queue.RabbitMQ.Publisher {
+namespace Mitto.Queue.RabbitMQ.Publisher {
 	/// <summary>
 	/// RabbitMQ Message Handler
 	/// Used for handling the messages by a separate process by using RabbitMQ
