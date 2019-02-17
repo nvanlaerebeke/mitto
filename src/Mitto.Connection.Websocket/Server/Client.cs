@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Mitto.IConnection;
 
+[assembly: InternalsVisibleTo("Mitto.Connection.Websocket.Tests")]
 namespace Mitto.Connection.Websocket.Server {
 
 	internal class Client : IClientConnection {
