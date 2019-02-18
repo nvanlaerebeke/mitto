@@ -14,7 +14,7 @@
 		/// <param name="pMessage"></param>
 		private static void Queue_Rx(IQueue.Message pMessage) {
 			RabbitMQDataMessage objMsg = new RabbitMQDataMessage(pMessage.Data);
-			IMessaging.MessagingFactory.Processor.Process(Queue, new IQueue.Message(objMsg.QueueID, objMsg.Data));
+			IMessaging.MessagingFactory.Processor.Process(Queue, objMsg.Data);
 		}
 	}
 }

@@ -35,7 +35,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FrameTest.cs" />
-    <Compile Include="MessageCreatorTest.cs" />
+    <Compile Include="Libs\TestMessageResponse.cs" />
+    <Compile Include="Libs\TestMessage.cs" />
+    <Compile Include="MessageConverterTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -47,6 +49,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Mitto.Config\Mitto.Config.csproj">
+      <Project>{e3e0d40d-99ac-4ed4-9e64-19cdc10813b0}</Project>
+      <Name>Mitto.Config</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Mitto.IMessaging\Mitto.IMessaging.csproj">
       <Project>{3bb1c211-9006-4fee-9f40-7556717431b0}</Project>
       <Name>Mitto.IMessaging</Name>

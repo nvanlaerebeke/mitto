@@ -121,20 +121,6 @@ namespace Mitto.Messaging {
 			return null;
 		}
 
-		/// <summary>
-		/// ToDo: Replace finding response type from Message to <T>, else we can't do Request<MyResponseMessage2>(new MyRequestMessage1())
-		/// </summary>
-		/// <param name="pMessage"></param>
-		/// <param name="pCode"></param>
-		/// <returns></returns>
-		/*internal ResponseMessage GetResponseMessage(IMessage pMessage, ResponseCode pCode) {
-			var objResponseType = GetResponseType(pMessage.Name);
-			if (objResponseType != null) {
-				var objResponse = ((ResponseMessage)Activator.CreateInstance(objResponseType, pMessage, pCode));
-				return objResponse;
-			}
-			return null;
-		}*/
 
 		/*internal static SubscriptionHandler GetSubscriptionHandler(Message pMessage) {
 			Contract.Ensures(Contract.Result<SubscriptionHandler>() != null);

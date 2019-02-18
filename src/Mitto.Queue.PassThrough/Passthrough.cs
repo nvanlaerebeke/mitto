@@ -22,17 +22,17 @@ namespace Mitto.Queue.PassThrough {
 			Queue = new InternalQueue(this);
 		}
 
-		public void Receive(Message pMessage) {
-			Rx?.Invoke(pMessage);
+		public void Receive(byte[] pData) {
+			Rx?.Invoke(pData);
 		}
 
 		/// <summary>
 		/// Response/Transmit from Message Handler -> Client (Rx)
 		/// </summary>
 		/// <param name="pMessage"></param>
-		public void Transmit(Message pMessage) {
+		public void Transmit(byte[] pData) {
 			//Here we take in a msg from the IConnection and must pass an IQueue where we also read the Transmit
-			Queue.Receive(pMessage);
+			Queue.Receive(pData);
 		}
 	}
 }

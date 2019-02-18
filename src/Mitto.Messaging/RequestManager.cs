@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Mitto.IMessaging;
+using System;
 using System.Collections.Concurrent;
 
 namespace Mitto.Messaging {
-	public static class Requester {
-		private static ConcurrentDictionary<string, MessageRequest> _dicRequests = new ConcurrentDictionary<string, MessageRequest>();
+	public class RequestManager {
+		private ConcurrentDictionary<string, MessageRequest> _dicRequests = new ConcurrentDictionary<string, MessageRequest>();
 
-		public static void Request<R>(MessageClient pClient, RequestMessage pMessage, Action<R> pAction) where R : ResponseMessage {
+		public void Request<R>(MessageClient pClient, IMessage pMessage, Action<R> pAction) where R : IResponseMessage {
 			lock (_dicRequests) {
 				var obj = new MessageRequest();
 				obj.Request<R>(pClient, pMessage, pAction);
@@ -13,7 +14,7 @@ namespace Mitto.Messaging {
 			}
 		}
 
-		internal static void SetResponse(ResponseMessage pMessage) {
+		internal void SetResponse(IResponseMessage pMessage) {
 			lock (_dicRequests) {
 				if (_dicRequests.ContainsKey(pMessage.ID)) {
 					_dicRequests[pMessage.ID].SetResponse(pMessage);

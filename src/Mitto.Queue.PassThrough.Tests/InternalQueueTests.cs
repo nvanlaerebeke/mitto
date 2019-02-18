@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using NSubstitute;
 using Mitto.IQueue;
+using System.Linq;
 
 namespace Mitto.Queue.PassThrough.Tests {
 	[TestFixture()]
@@ -20,17 +21,15 @@ namespace Mitto.Queue.PassThrough.Tests {
 			});
 
 			var obj = new InternalQueue(new Passthrough());
-			obj.Receive(new Message("MyClientID", new byte[] { 0, 1, 2, 4 }));
+			obj.Receive(new byte[] { 0, 1, 2, 4 });
 
 			//Expecting:
 			// - InternalQueue 'obj' created above
 			// - the correct message (compare with .Equals)
 			objProcessor.Received().Process(
 				obj, 
-				Arg.Is<Message>(m => 
-					m.Equals(
-						new Message("MyClientID", new byte[] { 0, 1, 2, 4 })
-					)
+				Arg.Is<byte[]>(b => 
+					b.SequenceEqual(new byte[] { 0, 1, 2, 4 })
 				)
 			);
 		}
@@ -44,9 +43,9 @@ namespace Mitto.Queue.PassThrough.Tests {
 			var objQueue = Substitute.For<IQueue.IQueue>();
 
 			var obj = new InternalQueue(objQueue);
-			obj.Transmit(new Message("MyClientID", new byte[] { 0, 1, 2, 4 }));
+			obj.Transmit(new byte[] { 0, 1, 2, 4 });
 
-			objQueue.Received().Receive(Arg.Is<Message>(m => m.Equals(new Message("MyClientID", new byte[] { 0, 1, 2, 4 }))));
+			objQueue.Received().Receive(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 0, 1, 2, 4 })));
 		}
 	}
 }

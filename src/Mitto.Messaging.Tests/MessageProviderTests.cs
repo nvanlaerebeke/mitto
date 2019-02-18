@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Mitto.Messaging.Tests {
 	[TestFixture]
-	public class TestClass {
+	public class MessageProviderTests {
 		[Test]
 		public void TestMethod() {
 			// TODO: Add your test code here

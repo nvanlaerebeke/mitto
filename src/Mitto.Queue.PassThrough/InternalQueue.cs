@@ -14,8 +14,8 @@ namespace Mitto.Queue.PassThrough {
 		/// Get the configured messageprocessor and process the message
 		/// </summary>
 		/// <param name="pMessage"></param>
-		public void Receive(Message pMessage) {
-			IMessaging.MessagingFactory.Processor.Process(this, pMessage);
+		public void Receive(byte[] pData) {
+			IMessaging.MessagingFactory.Processor.Process(this, pData);
 		}
 
 		/// <summary>
@@ -24,9 +24,9 @@ namespace Mitto.Queue.PassThrough {
 		/// Transmitting here means sending it back to the external queue
 		/// and letting that queue do the transmitting
 		/// </summary>
-		/// <param name="pMessage"></param>
-		public void Transmit(Message pMessage) {
-			_objQueue.Receive(pMessage);
+		/// <param name="pData"></param>
+		public void Transmit(byte[] pData) {
+			_objQueue.Receive(pData);
 		}
 	}
 }

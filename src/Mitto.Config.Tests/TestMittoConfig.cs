@@ -41,13 +41,13 @@ namespace Mitto.Config.Tests {
 				MessageConverter = objProvider
 			});
 
-			var objMessage = MessagingFactory.Creator.GetMessage(new byte[] { 1, 2, 3, 4 });
+			var objMessage = MessagingFactory.Converter.GetMessage(new byte[] { 1, 2, 3, 4 });
 			Assert.IsInstanceOf<IMessage>(objMessage);
 
-			var arrBytes = MessagingFactory.Creator.GetByteArray(objMessage);
+			var arrBytes = MessagingFactory.Converter.GetByteArray(objMessage);
 			Assert.IsInstanceOf<byte[]>(arrBytes);
 
-			var objResponse = MessagingFactory.Creator.GetResponseMessage(objMessage, ResponseCode.Success);
+			var objResponse = MessagingFactory.Converter.GetResponseMessage(objMessage, ResponseCode.Success);
 			Assert.IsInstanceOf<IMessage>(objResponse);
 
 			objProvider.Received(1).GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
@@ -90,9 +90,8 @@ namespace Mitto.Config.Tests {
 				MessageProcessor = objProvider
 			});
 
-			MessagingFactory.Processor.Process(Substitute.For<IQueue.IQueue>(), new Message("MyClientID", new byte[] { 1,2,3,4 }));
-			
-			objProvider.Received(1).Process(Arg.Any<IQueue.IQueue>(), Arg.Any<IQueue.Message>());
+			MessagingFactory.Processor.Process(Substitute.For<IQueue.IQueue>(), new byte[] { 1, 2, 3, 4 });
+			objProvider.Received(1).Process(Arg.Any<IQueue.IQueue>(), Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
 		}
 
 		/// <summary>

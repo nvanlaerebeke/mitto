@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using NSubstitute;
 using Mitto.IQueue;
+using System.Linq;
 
 namespace Mitto.Queue.PassThrough.Tests {
 	[TestFixture()]
@@ -13,14 +14,11 @@ namespace Mitto.Queue.PassThrough.Tests {
 
 			//Do not pass an object to Receive and the .Equals to prevent comparing references
 			//and compare the actual content (.Equals)
-			obj.Receive(new Message("MyClientID", new byte[] { 0, 1, 2, 4 }));
+			obj.Receive(new byte[] { 0, 1, 2, 4 });
 			handler
 				.Received(1)
-				.Invoke(Arg.Is<Message>(m => 
-					m.Equals(
-						new Message("MyClientID", new byte[] { 0, 1, 2, 4 }))
-					)
-				);
+				.Invoke(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 0, 1, 2, 4 })))
+			;
 		}
 
 		[Test()]
@@ -29,10 +27,9 @@ namespace Mitto.Queue.PassThrough.Tests {
 
 			var obj = new Passthrough();
 			obj.Queue = objInternalQueue;
-			var objMessage = new IQueue.Message("MyClientID", new byte[] { 0, 1, 2, 4 });
-			obj.Transmit(objMessage);
+			obj.Transmit(new byte[] { 0, 1, 2, 4 });
 
-			objInternalQueue.Received(1).Receive(objMessage);
+			objInternalQueue.Received(1).Receive(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
 		}
 	}
 }

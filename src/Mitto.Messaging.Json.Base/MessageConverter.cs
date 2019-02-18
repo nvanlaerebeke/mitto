@@ -14,29 +14,21 @@ namespace Mitto.Messaging.Json {
 		/// </summary>
 		/// <param name="pData"></param>
 		public IMessage GetMessage(byte[] pData) {
-			return GetMessage(new Frame(pData));
-		}
-
-		/// <summary>
-		/// Returns the IMessage that the Frame object carries
-		/// </summary>
-		/// <param name="Frame"></param>
-		/// <returns>IMessage</returns>
-		internal IMessage GetMessage(Frame pFrame) {
-			if (pFrame.Format == MessageFormat.Bson) {
-				using (MemoryStream ms = new MemoryStream(pFrame.Data)) {
+			var objFrame = new Frame(pData);
+			if (objFrame.Format == MessageFormat.Bson) {
+				using (MemoryStream ms = new MemoryStream(objFrame.Data)) {
 					using (BsonReader reader = new BsonReader(ms)) {
 						return new JsonSerializer()
 							.Deserialize(
 								reader,
-								MessagingFactory.Provider.GetType(pFrame.Type, pFrame.Code)
+								MessagingFactory.Provider.GetType(objFrame.Type, objFrame.Code)
 							) as IMessage;
 					}
 				}
 			} else {
 				return JsonConvert.DeserializeObject(
-					Encoding.UTF32.GetString(pFrame.Data),
-					MessagingFactory.Provider.GetType(pFrame.Type, pFrame.Code)
+					Encoding.UTF32.GetString(objFrame.Data),
+					MessagingFactory.Provider.GetType(objFrame.Type, objFrame.Code)
 				) as IMessage;
 			}
 		}
@@ -49,7 +41,7 @@ namespace Mitto.Messaging.Json {
 		/// being serialized/deserialized 
 		/// </summary>
 		/// <param name="pMessage"></param>
-		/// <returns>Frame</returns>
+		/// <returns>byte[]</returns>
 		public byte[] GetByteArray(IMessage pMessage) {
 			return new Frame(
 				MessageFormat.Json,
@@ -66,12 +58,11 @@ namespace Mitto.Messaging.Json {
 		/// </summary>
 		/// <param name="pMessage"></param>
 		/// <param name="pCode"></param>
-		/// <returns>IMessage</returns>
+		/// <returns>IResponseMessage</returns>
 		public IResponseMessage GetResponseMessage(IMessage pMessage, ResponseCode pCode) {
 			var objResponseType = MessagingFactory.Provider.GetResponseType(pMessage.Name);
 			if (objResponseType != null) {
-				var objResponse = ((IResponseMessage)Activator.CreateInstance(objResponseType, pMessage, pCode));
-				return objResponse;
+				return ((IResponseMessage)Activator.CreateInstance(objResponseType, pMessage, pCode));
 			}
 			return null;
 		}

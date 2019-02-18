@@ -14,7 +14,7 @@ namespace ServerManager {
 		}
 
 		private void Connection_Rx(IConnection pConnection, byte[] pData) {
-			InternalQueue.Transmit(new Message(pConnection.ID, pData));
+			InternalQueue.Transmit(pData);
 		}
 
 		private void Connection_Disconnected(IConnection pConnection) {
@@ -32,9 +32,8 @@ namespace ServerManager {
 				return _objInternalQueue;
 			}
 		}
-		private void _objInternalQueue_Rx(Message pMessage) {
-			//Log.Debug("Received  " + pMessage.Data.Length + " bytes on Queue for " + pMessage.ClientID);
-			Connection.Transmit(pMessage.Data);
+		private void _objInternalQueue_Rx(byte[] pData) {
+			Connection.Transmit(pData);
 		}
 		#endregion
 	}

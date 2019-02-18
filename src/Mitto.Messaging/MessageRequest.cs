@@ -55,7 +55,7 @@ namespace Mitto.Messaging {
 		/// <param name="pClient"></param>
 		/// <param name="pMessage"></param>
 		/// <param name="action"></param>
-		internal void Request<R>(MessageClient pClient, RequestMessage pMessage, Action<R> action) where R : ResponseMessage {
+		internal void Request<R>(MessageClient pClient, IMessage pMessage, Action<R> action) where R : IResponseMessage {
 			//only wait when the message actually expects a response, which is only RequestMessage and (Un)SubscribeMessage
 			if (
 				pMessage.Type == MessageType.Request ||
@@ -64,14 +64,14 @@ namespace Mitto.Messaging {
 				pMessage.Type == MessageType.Event
 			) {
 				_objAction = action;
-				pClient.Queue.Transmit(new IQueue.Message(pClient.ClientID, MessagingFactory.Creator.GetByteArray(pMessage)));
+				pClient.Queue.Transmit(MessagingFactory.Converter.GetByteArray(pMessage));
 			} else if (pMessage.Type == MessageType.Notification) { // -- return the response right away for having successfully adding the msg to the queue
-				pClient.Queue.Transmit(new IQueue.Message(pClient.ClientID, MessagingFactory.Creator.GetByteArray(pMessage)));
-				SetResponse((R)MessagingFactory.Creator.GetResponseMessage(pMessage, ResponseCode.Success));
+				pClient.Queue.Transmit(MessagingFactory.Converter.GetByteArray(pMessage));
+				SetResponse((R)MessagingFactory.Converter.GetResponseMessage(pMessage, ResponseCode.Success));
 			}
 		}
 
-		internal void SetResponse(ResponseMessage pResponse) {
+		internal void SetResponse(IResponseMessage pResponse) {
 			//((Action<ResponseMessage>)_objAction).Invoke(pResponse); // -- no idea how to get it like this as it's typesafe
 			_objAction.DynamicInvoke(pResponse);
 		}
