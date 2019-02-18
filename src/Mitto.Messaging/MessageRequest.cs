@@ -64,9 +64,9 @@ namespace Mitto.Messaging {
 				pMessage.Type == MessageType.Event
 			) {
 				_objAction = action;
-				pClient.Queue.Transmit(new IQueue.Message(pClient.ClientID, MessagingFactory.Creator.GetBytes(pMessage)));
+				pClient.Queue.Transmit(new IQueue.Message(pClient.ClientID, MessagingFactory.Creator.GetByteArray(pMessage)));
 			} else if (pMessage.Type == MessageType.Notification) { // -- return the response right away for having successfully adding the msg to the queue
-				pClient.Queue.Transmit(new IQueue.Message(pClient.ClientID, MessagingFactory.Creator.GetBytes(pMessage)));
+				pClient.Queue.Transmit(new IQueue.Message(pClient.ClientID, MessagingFactory.Creator.GetByteArray(pMessage)));
 				SetResponse((R)MessagingFactory.Creator.GetResponseMessage(pMessage, ResponseCode.Success));
 			}
 		}

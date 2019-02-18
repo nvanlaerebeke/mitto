@@ -34,7 +34,9 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MessageCreator.cs" />
+    <Compile Include="Frame.cs" />
+    <Compile Include="IFrame.cs" />
+    <Compile Include="MessageConverter.cs" />
     <Compile Include="MessageFormat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -43,19 +45,8 @@
       <Project>{a963e580-7777-4ff8-b08f-c9fd5fb15500}</Project>
       <Name>Mitto.IMessaging</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mitto.IQueue\Mitto.IQueue.csproj">
-      <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
-      <Name>Mitto.IQueue</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Mitto.Messaging\Mitto.Messaging.csproj">
-      <Project>{c29037e3-9c2f-4996-8434-36600735d465}</Project>
-      <Name>Mitto.Messaging</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="log4net">
-      <Version>2.0.8</Version>
-    </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.1</Version>
     </PackageReference>

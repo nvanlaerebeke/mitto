@@ -5,7 +5,6 @@
     "KeyFile": null,
     "AlternativeILMergePath": null,
     "InputAssemblies": [
-      "$(TargetDir)\\log4net.dll",
       "$(TargetDir)\\Microsoft.Diagnostics.Tracing.EventSource.dll",
       "$(TargetDir)\\Mitto.*.dll",
       "$(TargetDir)\\RabbitMQ.Client.dll",

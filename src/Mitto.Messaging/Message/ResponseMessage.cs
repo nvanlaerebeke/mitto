@@ -9,9 +9,9 @@ namespace Mitto.Messaging {
     public abstract class ResponseMessage : Message {
         public ResponseCode Status { get; set; } 
 		public ResponseMessage() : base(MessageType.Response, Guid.NewGuid().ToString()) { }
-		protected RequestMessage Request { get; private set; }
+		protected IMessage Request { get; private set; }
 
-        public ResponseMessage(RequestMessage pMessage, ResponseCode pStatus): base(MessageType.Response, pMessage.ID) {
+        public ResponseMessage(IMessage pMessage, ResponseCode pStatus): base(MessageType.Response, pMessage.ID) {
 			Request = pMessage;
             Status = pStatus;
         }

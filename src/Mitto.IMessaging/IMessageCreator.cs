@@ -1,7 +1,7 @@
 ﻿namespace Mitto.IMessaging {
-	public interface IMessageCreator {
-		IMessage Create(byte[] pData);
-		byte[] GetBytes(IMessage pMessage);
-		IMessage GetResponseMessage(IMessage pMessage, ResponseCode pCode);
+	public interface IMessageConverter {
+		IMessage GetMessage(byte[] pData);
+		IResponseMessage GetResponseMessage(IMessage pMessage, ResponseCode pCode);
+		byte[] GetByteArray(IMessage pMessage);
 	}
 }

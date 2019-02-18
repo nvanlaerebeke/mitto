@@ -38,6 +38,7 @@
     <Compile Include="IMessageProcessor.cs" />
     <Compile Include="IMessageCreator.cs" />
     <Compile Include="IMessageProvider.cs" />
+    <Compile Include="IResponseMessage.cs" />
     <Compile Include="MessagingFactory.cs" />
     <Compile Include="MessageType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

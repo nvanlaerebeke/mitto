@@ -5,7 +5,7 @@
 		public static void Initialize(Config pConfig) {
 			IQueue.QueueFactory.Initialize(pConfig.QueueProvider);
 			IConnection.ConnectionFactory.Initialize(pConfig.ConnectionProvider);
-			IMessaging.MessagingFactory.Initialize(pConfig.MessageProvider, pConfig.MessageCreator, pConfig.MessageProcessor);
+			IMessaging.MessagingFactory.Initialize(pConfig.MessageProvider, pConfig.MessageConverter, pConfig.MessageProcessor);
 		}
 
 		/// <summary>
@@ -20,7 +20,7 @@
 		public class Config {
 			public IQueue.IQueueProvider QueueProvider { get; set; } = new Queue.PassThrough.QueueProvider();
 			public IConnection.IConnectionProvider ConnectionProvider { get; set; } = new Connection.Websocket.ConnectionProvider();
-			public IMessaging.IMessageCreator MessageCreator { get; set; } = new Messaging.Json.MessageCreator();
+			public IMessaging.IMessageConverter MessageConverter { get; set; } = new Messaging.Json.MessageConverter();
 			public IMessaging.IMessageProvider MessageProvider { get; set; } = new Messaging.MessageProvider();
 			public IMessaging.IMessageProcessor MessageProcessor { get; set; } = new Messaging.MessageProcessor();
 		}

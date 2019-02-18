@@ -27,7 +27,7 @@ namespace Mitto.Messaging {
 				try {
 					Job objJob = new Job(new MessageClient(pMessage.ClientID, pQueue), pMessage.Data);
 
-					IMessage objMessage = MessagingFactory.Creator.Create(objJob.Data);
+					IMessage objMessage = MessagingFactory.Creator.GetMessage(objJob.Data);
 					if (objMessage == null) {  // --- don't know what we're receiving, so skip it
 						//Log.Error("Unknown Message");
 						return;
@@ -64,7 +64,7 @@ namespace Mitto.Messaging {
                     case MessageType.UnSubscribe:
                     case MessageType.Event:
 						var objResponse = (ResponseMessage)objActionType.GetMethod("Start").Invoke(Activator.CreateInstance(objActionType, pJob, pMessage), new object[] { });
-						var arrData = MessagingFactory.Creator.GetBytes(objResponse);
+						var arrData = MessagingFactory.Creator.GetByteArray(objResponse);
 						var objMessage = new IQueue.Message(pJob.Client.ClientID, arrData);
 						pJob.Client.Queue.Transmit(objMessage);
 						break;
@@ -99,7 +99,7 @@ namespace Mitto.Messaging {
 						pJob.Client.Queue.Transmit(
 							new IQueue.Message(
 								pJob.Client.ClientID, 
-								MessagingFactory.Creator.GetBytes(objResponse)
+								MessagingFactory.Creator.GetByteArray(objResponse)
 							)
 						);
 					}

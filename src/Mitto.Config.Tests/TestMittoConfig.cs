@@ -36,22 +36,22 @@ namespace Mitto.Config.Tests {
 		/// </summary>
 		[Test]
 		public void ConfigMessageCreatorTest() {
-			var objProvider = Substitute.For<IMessageCreator>();
+			var objProvider = Substitute.For<IMessageConverter>();
 			Mitto.Initialize(new Mitto.Config() {
-				MessageCreator = objProvider
+				MessageConverter = objProvider
 			});
 
-			var objMessage = MessagingFactory.Creator.Create(new byte[] { 1, 2, 3, 4 });
+			var objMessage = MessagingFactory.Creator.GetMessage(new byte[] { 1, 2, 3, 4 });
 			Assert.IsInstanceOf<IMessage>(objMessage);
 
-			var arrBytes = MessagingFactory.Creator.GetBytes(objMessage);
+			var arrBytes = MessagingFactory.Creator.GetByteArray(objMessage);
 			Assert.IsInstanceOf<byte[]>(arrBytes);
 
 			var objResponse = MessagingFactory.Creator.GetResponseMessage(objMessage, ResponseCode.Success);
 			Assert.IsInstanceOf<IMessage>(objResponse);
 
-			objProvider.Received(1).Create(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
-			objProvider.Received(1).GetBytes(Arg.Any<IMessage>());
+			objProvider.Received(1).GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
+			objProvider.Received(1).GetByteArray(Arg.Any<IMessage>());
 			objProvider.Received(1).GetResponseMessage(Arg.Any<IMessage>(), ResponseCode.Success);
 		}
 
