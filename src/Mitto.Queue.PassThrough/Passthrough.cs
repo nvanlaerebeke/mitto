@@ -7,11 +7,11 @@ namespace Mitto.Queue.PassThrough {
 	/// PassThrought Message Handler
 	/// Used for handling the messages by the process itself
 	/// 
-	/// Ideal for applications with low message thoughput and for testing
+	/// Ideal for small applications where scaling is less of an issue
+	/// or applications where the messages actions are light weight
 	/// 
-	/// As the name describes, this takes in a message (client id + byte payload) and passes it into the processor
-	/// 
-	/// ToDo: Do we need a reference to IMessaging, arn't we just interested in IQueue.Message and the binary data in it?
+	/// As the name describes, this takes in byte[] data and passes it to the 
+	/// IMessageProcessor that will process the message for us
 	/// </summary>
 	public class Passthrough : IQueue.IQueue {
 		public event DataHandler Rx;
@@ -31,7 +31,8 @@ namespace Mitto.Queue.PassThrough {
 		/// </summary>
 		/// <param name="pMessage"></param>
 		public void Transmit(byte[] pData) {
-			//Here we take in a msg from the IConnection and must pass an IQueue where we also read the Transmit
+			//Here we take in a byte[] from the IConnection and must pass an IQueue that 
+			//handles the internal Tx/Rx, while this Queue handles the external Tx/Rx
 			Queue.Receive(pData);
 		}
 	}

@@ -43,6 +43,7 @@
     <Compile Include="Actions\Request\Logout.cs" />
     <Compile Include="Actions\Request\Echo.cs" />
     <Compile Include="Actions\Request\Ping.cs" />
+    <Compile Include="IRequestManager.cs" />
     <Compile Include="MessageClient.cs" />
     <Compile Include="MessageProcessor.cs" />
     <Compile Include="MessageProvider.cs" />
