@@ -27,10 +27,9 @@ namespace Mitto.Messaging.Tests {
 			});
 
 			//Act
-			var obj = new MessageProcessor();
-			obj.RequestManager = objRequestManager;
-			obj.Process(objQueue, new byte[] { 1, 2, 3, 4 });
-
+			new MessageProcessor {
+				RequestManager = objRequestManager
+			}.Process(objQueue, new byte[] { 1, 2, 3, 4 });
 
 			//Assert
 			objConverter.Received(1).GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));

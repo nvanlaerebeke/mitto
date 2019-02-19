@@ -1,10 +1,7 @@
 ﻿using NUnit.Framework;
 using NSubstitute;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Mitto.IMessaging;
 
 namespace Mitto.Messaging.Tests {
@@ -64,10 +61,9 @@ namespace Mitto.Messaging.Tests {
 			});
 
 			//Act
-			var obj = new MessageProcessor();
-			obj.RequestManager = objRequestManager;
-			obj.Process(objClient, new byte[] { 1, 2, 3, 4 });
-
+			new MessageProcessor {
+				RequestManager = objRequestManager
+			}.Process(objClient, new byte[] { 1, 2, 3, 4 });
 
 			//Assert
 			objConverter.Received(1).GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
@@ -122,9 +118,9 @@ namespace Mitto.Messaging.Tests {
 			});
 
 			//Act
-			var obj = new MessageProcessor();
-			obj.RequestManager = objRequestManager;
-			obj.Process(objClient, new byte[] { 1, 2, 3, 4 });
+			new MessageProcessor {
+				RequestManager = objRequestManager
+			}.Process(objClient, new byte[] { 1, 2, 3, 4 });
 
 			//Assert
 			objConverter.Received(1).GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
