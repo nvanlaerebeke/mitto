@@ -10,7 +10,6 @@ namespace Mitto.Messaging {
 		private static Mutex _objTypeLock = new Mutex();
 		private static List<Type> _lstTypes = new List<Type>();
 		private static Dictionary<byte, List<KeyValuePair<MessageType, Type>>> _dicTypes = new Dictionary<byte, List<KeyValuePair<MessageType, Type>>>();
-		private static Dictionary<string, SubscriptionHandler> _dicSubscriptionHandlers = new Dictionary<string, SubscriptionHandler>();
 
 		public MessageProvider() { }
 
@@ -18,18 +17,11 @@ namespace Mitto.Messaging {
 			lock (_objTypeLock) {
 				if (!_lstTypes.Any()) {
 					_lstTypes = GetAppTypes();
-					_lstTypes.AddRange(GetByNamespace(typeof(MessageProvider).Namespace + ".Event"));
 					_lstTypes.AddRange(GetByNamespace(typeof(MessageProvider).Namespace + ".Notification"));
 					_lstTypes.AddRange(GetByNamespace(typeof(MessageProvider).Namespace + ".Request"));
 					_lstTypes.AddRange(GetByNamespace(typeof(MessageProvider).Namespace + ".Response"));
-					_lstTypes.AddRange(GetByNamespace(typeof(MessageProvider).Namespace + ".Subscribe"));
-					_lstTypes.AddRange(GetByNamespace(typeof(MessageProvider).Namespace + ".UnSubscribe"));
-					_lstTypes.AddRange(GetByNamespace(typeof(MessageProvider).Namespace + ".Action.Event"));
 					_lstTypes.AddRange(GetByNamespace(typeof(MessageProvider).Namespace + ".Action.Notification"));
 					_lstTypes.AddRange(GetByNamespace(typeof(MessageProvider).Namespace + ".Action.Request"));
-					_lstTypes.AddRange(GetByNamespace(typeof(MessageProvider).Namespace + ".Action.Subscribe"));
-					_lstTypes.AddRange(GetByNamespace(typeof(MessageProvider).Namespace + ".Action.UnSubscribe"));
-
 					lock (_dicTypes) {
 						foreach (Type objType in _lstTypes) {
 							if (objType.IsSubclassOf(typeof(Message)) && !objType.IsAbstract) {
@@ -48,11 +40,6 @@ namespace Mitto.Messaging {
 									}
 								} else {
 									//error
-								}
-							} else if (objType.IsSubclassOf(typeof(SubscriptionHandler))) {
-								if (!_dicSubscriptionHandlers.ContainsKey(objType.Name)) {
-									SubscriptionHandler objHandler = (SubscriptionHandler)Activator.CreateInstance(objType);
-									_dicSubscriptionHandlers.Add(objType.Name, objHandler);
 								}
 							}
 						}
@@ -77,10 +64,6 @@ namespace Mitto.Messaging {
 					objType.IsSubclassOf(typeof(RequestMessage)) ||
 					objType.IsSubclassOf(typeof(ResponseMessage)) ||
 					objType.IsSubclassOf(typeof(NotificationMessage)) ||
-					objType.IsSubclassOf(typeof(EventMessage)) ||
-					objType.IsSubclassOf(typeof(SubscribeMessage)) ||
-					objType.IsSubclassOf(typeof(SubscriptionHandler)) ||
-					objType.IsSubclassOf(typeof(UnSubscribeMessage)) ||
 					objType.Namespace.Contains(".Action") //is a generic type, easy solution is to just check the namespace string instead of  IsSubclassOf(typeof(Action.BaseAction<T>))
 				) {
 					lstTypes.Add(objType);
@@ -99,10 +82,10 @@ namespace Mitto.Messaging {
 			return objResponseType;
 		}
 
-		public Type GetActionType(IMessage pMessage) {
+		public IAction GetAction(IQueue.IQueue pClient, IMessage pMessage) {
 			foreach (Type objType in GetTypes()) {
 				if (objType.Namespace.Contains(".Action." + pMessage.Type) && objType.Name == pMessage.Name) {
-					return objType;
+					return (IAction)Activator.CreateInstance(objType, pClient, pMessage);
 				}
 			}
 			return null;
@@ -120,15 +103,5 @@ namespace Mitto.Messaging {
 			}
 			return null;
 		}
-
-
-		/*internal static SubscriptionHandler GetSubscriptionHandler(Message pMessage) {
-			Contract.Ensures(Contract.Result<SubscriptionHandler>() != null);
-			if (_dicSubscriptionHandlers.Count == 0) { GetTypes(); }
-			if (_dicSubscriptionHandlers.ContainsKey(pMessage.Name + "Handler")) {
-				return _dicSubscriptionHandlers[pMessage.Name + "Handler"];
-			}
-			return null;
-		}*/
 	}
 }

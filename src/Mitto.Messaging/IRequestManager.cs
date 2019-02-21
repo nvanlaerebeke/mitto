@@ -3,10 +3,11 @@ using System;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
+[assembly: InternalsVisibleTo("Mitto.Messaging.Json.Tests")]
 namespace Mitto.Messaging {
 	internal interface IRequestManager {
-		void Request<R>(MessageClient pClient, IMessage pMessage, Action<R> pAction) where R : IResponseMessage;
+		//void Request<T>(IClient pClient, IMessage pMessage, Action<T> pAction);
+		void Request<T>(IClient pClient, IMessage pMessage, Action<T> pCallback) where T : IResponseMessage;
 		void SetResponse(IResponseMessage pMessage);
-		void Process(IQueue.IQueue pClient, IMessage pMessage);
 	}
 }

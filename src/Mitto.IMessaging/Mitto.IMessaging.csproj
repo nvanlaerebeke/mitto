@@ -34,6 +34,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IAction.cs" />
     <Compile Include="IMessage.cs" />
     <Compile Include="IMessageProcessor.cs" />
     <Compile Include="IMessageCreator.cs" />

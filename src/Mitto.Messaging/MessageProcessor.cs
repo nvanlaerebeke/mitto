@@ -17,7 +17,39 @@ namespace Mitto.Messaging {
 			IMessage objMessage = MessagingFactory.Converter.GetMessage(pData);
 			// --- don't know what we're receiving, so skip it
 			if (objMessage == null) { return; }
-			RequestManager.Process(pClient, objMessage);
+
+			//Message is a response on an action, so no action needs to run
+			//set the response and return
+			if (objMessage.Type == MessageType.Response) {
+				RequestManager.SetResponse(objMessage as IResponseMessage);
+				return;
+			}
+
+			var objAction = MessagingFactory.Provider.GetAction(pClient, objMessage);
+			if (objAction == null) { return; } // -- nothing to do
+
+			switch (objMessage.Type) {
+				case MessageType.Notification:
+					try {
+						objAction.Start();
+					} catch (Exception) { /* ignore */ }
+					break;
+				case MessageType.Request:
+					try {
+						pClient.Transmit(
+							MessagingFactory.Converter.GetByteArray(
+								objAction.Start()
+							)
+						);
+					} catch (Exception ex) {
+						ResponseCode enmCode = (ex is MessagingException) ? ((MessagingException)ex).Code : ResponseCode.Error;
+						var objResponse = MessagingFactory.Converter.GetResponseMessage(objMessage, enmCode);
+						if (objResponse != null) {
+							pClient.Transmit(MessagingFactory.Converter.GetByteArray(objResponse));
+						}
+					}
+					break;
+			}
 		}
 	}
 }
