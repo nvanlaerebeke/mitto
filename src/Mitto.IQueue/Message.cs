@@ -12,6 +12,8 @@ namespace Mitto.IQueue {
 		///       It gets a little confusing when using the message6 between the connection, queuing and then message processing system
 		/// 
 		///       Best to check all the references and list out how it's used to find a good description
+		///       
+		/// ToDo: Make Message an IMessage interface and move the message class to the location where the implementation belongs
 		/// </summary>
 		public string ClientID { get; private set; }
 		

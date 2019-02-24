@@ -4,18 +4,25 @@ using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Mitto.Messaging.Json.Tests")]
 namespace Mitto.Messaging.Json {
+	/// <summary>
+	/// Encapsulates and provides information about the data being transmitted
+	/// 
+	/// The frame looks like this:
+	/// ------------------------------------
+	/// | byte MessageFormat | byte[] data |
+	/// ------------------------------------
+	/// 
+	/// </summary>
 	internal class Frame : IFrame {
 		private byte[] _arrByteArray;
 		public Frame(byte[] pData) {
 			_arrByteArray = pData;
 		}
 
-		public Frame(MessageFormat pFormat, MessageType pType, byte pCode, byte[] pData) {
-			_arrByteArray = new byte[3 + pData.Length];
+		public Frame(MessageFormat pFormat, byte[] pData) {
+			_arrByteArray = new byte[1 + pData.Length];
 			_arrByteArray[0] = (byte)pFormat;
-			_arrByteArray[1] = (byte)pType;
-			_arrByteArray[2] = pCode;
-			pData.CopyTo(_arrByteArray, 3);
+			pData.CopyTo(_arrByteArray, 1);
 		}
 
 		public MessageFormat Format {
@@ -23,22 +30,10 @@ namespace Mitto.Messaging.Json {
 				return (MessageFormat)_arrByteArray.ElementAt(0);
 			}
 		}
-			
-		public MessageType Type {
-			get {
-				return (MessageType)_arrByteArray.ElementAt(1);
-			}
-		}
 
-		public byte Code {
-			get {
-				return _arrByteArray.ElementAt(2);
-			}
-		}
-			
 		public byte[] Data {
 			get {
-				return _arrByteArray.Skip(3).Take(_arrByteArray.Length - 3).ToArray();
+				return _arrByteArray.Skip(1).Take(_arrByteArray.Length - 1).ToArray();
 			}
 		}
 

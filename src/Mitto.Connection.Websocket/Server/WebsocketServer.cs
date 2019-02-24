@@ -23,15 +23,24 @@ namespace Mitto.Connection.Websocket.Server {
 		}
 
 		public void Start(IPAddress pIPAddress, int pPort, string pCertPath, string pCertPassword, Action<IClientConnection> pCallback) {
-			if (!System.IO.File.Exists(pCertPath)) {
-				throw new System.IO.FileNotFoundException($"{pCertPath} not found");
-			}
 			_objClientConnected = pCallback;
-			_objServer.Start(
-				pIPAddress, 
-				pPort,
-				new X509Certificate2(new X509Certificate2(System.IO.File.ReadAllBytes(pCertPath), pCertPassword))
-			);
+			if (!String.IsNullOrEmpty(pCertPassword)) {
+				if (!System.IO.File.Exists(pCertPath)) {
+					throw new System.IO.FileNotFoundException($"{pCertPath} not found");
+				}
+				_objServer.Start(
+					pIPAddress,
+					pPort,
+					new X509Certificate2(new X509Certificate2(System.IO.File.ReadAllBytes(pCertPath), pCertPassword))
+				);
+			} else {
+				_objServer.Start(pIPAddress, pPort);
+			}
+		}
+
+		public void Stop() {
+			_objServer.ClientConnected -= _objServer_ClientConnected;
+			_objServer.Stop();
 		}
 	}
 }

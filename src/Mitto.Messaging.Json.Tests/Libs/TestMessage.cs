@@ -7,7 +7,5 @@ namespace Mitto.Messaging.Json.Tests.Libs {
 		public string Name => "TestMessage";
 
 		public MessageType Type => MessageType.Request;
-
-		public byte GetCode() { return 0x66;  }
 	}
 }

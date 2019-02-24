@@ -9,5 +9,6 @@ namespace Mitto.Connection.Websocket.Server {
 		string ID { get; }
 
 		void Send(byte[] pData);
+		void Close();
 	}
 }

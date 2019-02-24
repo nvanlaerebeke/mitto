@@ -1,11 +1,16 @@
 ﻿using Mitto.IConnection;
 using Mitto.IQueue;
 
-namespace ServerManager {
-	internal class Client {
+namespace Mitto.Server {
+	public class Client {
 		public event ConnectionHandler Disconnected;
 		public IClientConnection Connection { get; private set; }
 
+		public string ID {
+			get {
+				return Connection.ID;
+			}
+		}
 
 		public Client(IClientConnection pConnection) {
 			Connection = pConnection;
@@ -13,17 +18,17 @@ namespace ServerManager {
 			Connection.Rx += Connection_Rx;
 		}
 
-		private void Connection_Rx(IConnection pConnection, byte[] pData) {
+		private void Connection_Rx(IConnection.IConnection pConnection, byte[] pData) {
 			InternalQueue.Transmit(pData);
 		}
 
-		private void Connection_Disconnected(IConnection pConnection) {
+		private void Connection_Disconnected(IConnection.IConnection pConnection) {
 			Disconnected?.Invoke(pConnection);
 		}
 
 		#region Tx & Rx for Messaging
-		private IQueue _objInternalQueue = null;
-		private IQueue InternalQueue {
+		private IQueue.IQueue _objInternalQueue = null;
+		private IQueue.IQueue InternalQueue {
 			get {
 				if (_objInternalQueue == null) {
 					_objInternalQueue = QueueFactory.Create();

@@ -5,10 +5,7 @@
     "KeyFile": null,
     "AlternativeILMergePath": null,
     "InputAssemblies": [
-      "$(TargetDir)\\Microsoft.Diagnostics.Tracing.EventSource.dll",
       "$(TargetDir)\\Mitto.*.dll",
-      "$(TargetDir)\\RabbitMQ.Client.dll",
-      "$(TargetDir)\\ServerManager.dll",
       "$(TargetDir)\\websocket-sharp.dll"
     ]
   },

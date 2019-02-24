@@ -30,5 +30,9 @@ namespace Mitto.Connection.Websocket.Server {
 		public new void Send(byte[] pData) {
 			base.Send(pData);
 		}
+
+		public new void Close() {
+			base.CloseAsync();
+		}
 	}
 }

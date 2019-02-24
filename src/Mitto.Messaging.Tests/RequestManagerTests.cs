@@ -17,9 +17,11 @@ namespace Mitto.Messaging.Tests {
 		public void RequestTest() {
 			//Arrange
 			var obj = new RequestManager();
-			var objClient = Substitute.For<IClient>();
+			var objConverter = Substitute.For<IMessageConverter>();
+			var objClient = Substitute.For<IQueue.IQueue>();
 			var objMessage = Substitute.For<IMessage>();
 			objMessage.ID.Returns("MyID");
+			objConverter.GetByteArray(Arg.Is(objMessage)).Returns(new byte[] { 1, 2, 3, 4 });
 
 			//Act
 			obj.Request<IResponseMessage>(
@@ -29,7 +31,7 @@ namespace Mitto.Messaging.Tests {
 			);
 
 			//Assert
-			objClient.Received(1).Transmit(Arg.Is<IMessage>(m => m.Equals(objMessage)));
+			objClient.Received(1).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
 		}
 
 
@@ -44,19 +46,19 @@ namespace Mitto.Messaging.Tests {
 			//Arrange
 			var obj = new RequestManager();
 
-			var objClient = Substitute.For<IClient>();
+			var objClient = Substitute.For<IQueue.IQueue>();
 			var objMessage = Substitute.For<IMessage>();
 			var objResponse = Substitute.For<IResponseMessage>();
 			objMessage.ID.Returns("MyID");
 			objResponse.ID.Returns("MyID");
 
 			int intActionCalled = 0;
-			Action<IResponseMessage> objAction = delegate(IResponseMessage pMessage) {
+			Action<IResponseMessage> objAction = delegate (IResponseMessage pMessage) {
 				intActionCalled++;
 			};
-		
+
 			//Act
-			obj.Request<IResponseMessage>(objClient, objMessage, objAction);
+			obj.Request(objClient, objMessage, objAction);
 			obj.SetResponse(objResponse);
 
 			//Assert

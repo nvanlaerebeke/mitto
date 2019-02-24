@@ -1,7 +1,6 @@
 ﻿using Mitto.IConnection;
 using System;
 using System.Threading;
-using Mitto.ClientManager;
 
 namespace Quickstart.Client {
 	class Program {
@@ -10,11 +9,11 @@ namespace Quickstart.Client {
 			Mitto.Mitto.Initialize();
 
 			ThreadPool.QueueUserWorkItem((s) => {
-				Mitto.ClientManager.Client objClient = new Mitto.ClientManager.Client();
-				objClient.Connected += delegate (Mitto.ClientManager.Client pClient) {
+				var objClient = new Mitto.Client();
+				objClient.Connected += delegate (Mitto.Client pClient) {
 					Console.WriteLine("Client Connected");
 					while (true) {
-						pClient.Request<Mitto.Messaging.Base.Response.Echo>(new Mitto.Messaging.Base.Request.Echo("TEST"), delegate (Mitto.Messaging.Base.Response.Echo pResponse) {
+						pClient.Request(new Mitto.Messaging.Request.Echo("TEST"), delegate (Mitto.Messaging.Response.Echo pResponse) {
 							Console.WriteLine(pResponse.Message);
 							Thread.Sleep(5000);
 						});
@@ -28,7 +27,6 @@ namespace Quickstart.Client {
 				_quit.Set();
 			};
 			_quit.WaitOne();
-
 		}
 	}
 }

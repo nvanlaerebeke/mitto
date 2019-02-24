@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Mitto.IMessaging {
+﻿namespace Mitto.IMessaging {
 	/// <summary>
-	/// ToDo: should return less types and more actual class instances
-	/// Examples: 
-	/// - IResponseMessage GetResponse(pName, ....)
-	/// - IMessage Get(pMessageType, pCode, pData)
+	/// Providers the messages and actions for the specific provider
+	/// 
+	/// Implement this interface to use a custom MessageProvider
+	/// this is done when implementing your own custom way of how
+	/// messages are represented(IMessage/IResponseMessage) and how they are handled (IAction)
 	/// </summary>
 	public interface IMessageProvider {
-		List<Type> GetTypes();
-		Type GetResponseType(string pName);
-		Type GetType(MessageType pMessageType, byte pCode);
+		IMessage GetMessage(byte[] pData);
+		IResponseMessage GetResponseMessage(IMessage pMessage, ResponseCode pCode);
 		IAction GetAction(IQueue.IQueue pClient, IMessage pMessage);
 	}
 }

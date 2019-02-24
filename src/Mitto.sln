@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2018
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.ServerManager", "Mitto.ServerManager\Mitto.ServerManager.csproj", "{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Server", "Mitto.ServerManager\Mitto.Server.csproj", "{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.ClientManager", "Mitto.ClientManager\Mitto.ClientManager.csproj", "{CA4B0313-343A-4837-A437-76060C3DB728}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Client", "Mitto.ClientManager\Mitto.Client.csproj", "{CA4B0313-343A-4837-A437-76060C3DB728}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Connection.Websocket", "Mitto.Connection.Websocket\Mitto.Connection.Websocket.csproj", "{CF99D3F2-2C06-4A9F-BA22-E2E0CA457B58}"
 EndProject

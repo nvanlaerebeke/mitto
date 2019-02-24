@@ -5,6 +5,5 @@ namespace Mitto.IMessaging {
 		String ID { get; }
 		String Name { get; }
 		MessageType Type { get; }
-		byte GetCode();
 	}
 }

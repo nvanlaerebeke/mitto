@@ -36,8 +36,21 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Action\Notification\LogStatusTests.cs" />
+    <Compile Include="Action\Notification\InfoTests.cs" />
+    <Compile Include="Action\Request\PingTests.cs" />
+    <Compile Include="Action\Request\EchoTests.cs" />
+    <Compile Include="Lib\ClientTests.cs" />
+    <Compile Include="Lib\FrameTests.cs" />
     <Compile Include="MessageProcessorTests.cs" />
     <Compile Include="MessageProviderTests.cs" />
+    <Compile Include="Message\Notification\LogStatusTests.cs" />
+    <Compile Include="Message\Notification\InfoTests.cs" />
+    <Compile Include="Message\Request\PingTests.cs" />
+    <Compile Include="Message\Request\EchoTests.cs" />
+    <Compile Include="Message\Response\PongTests.cs" />
+    <Compile Include="Message\Response\EchoTests.cs" />
+    <Compile Include="Message\Response\ACKTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestManagerTests.cs" />
   </ItemGroup>
@@ -67,6 +80,7 @@
       <Name>Mitto.Messaging</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -38,20 +38,22 @@ namespace Mitto.Connection.Websocket.Server {
 		}
 
 		private void _objClient_OnErrorReceived(object sender, IErrorEventArgs e) {
-			Close();
+			Disconnect();
 		}
 
 		private void _objClient_OnCloseReceived(object sender, ICloseEventArgs e) {
-			Close();
+			Disconnect();
 		}
 
-        public void Close() {
+        public void Disconnect() {
 			_objClient.OnCloseReceived -= _objClient_OnCloseReceived;
 			_objClient.OnErrorReceived -= _objClient_OnErrorReceived;
 			_objClient.OnMessageReceived -= _objClient_OnMessageReceived;
 
 			_objCancelationSource.Cancel();
 			Disconnected?.Invoke(this);
+
+			_objClient.Close();
 		}
 
 		public void Transmit(byte[] pData) {

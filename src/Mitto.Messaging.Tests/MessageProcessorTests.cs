@@ -35,11 +35,18 @@ namespace Mitto.Messaging.Tests {
 			var objResponse = Substitute.For<IResponseMessage>();
 
 			objMessage.Type.Returns(pType);
-			objConverter.GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 }))).Returns(objMessage);
-			objProvider.GetAction(objClient, objMessage).Returns(objAction);
-			objAction.When(a => a.Start()).Do(a => throw new Exception("Some Exception"));
+			objProvider.GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 }))).Returns(objMessage);
 
-			objConverter.GetResponseMessage(Arg.Is(objMessage), Arg.Is(ResponseCode.Error)).Returns(objResponse);
+			if (pTransmitExpected) {
+				objAction = Substitute.For<IRequestAction>();
+				objAction.When(a => ((IRequestAction)a).Start()).Do(a => throw new Exception("Some Exception"));
+			} else {
+				objAction = Substitute.For<INotificationAction>();
+				objAction.When(a => ((INotificationAction)a).Start()).Do(a => throw new Exception("Some Exception"));
+			}
+
+			objProvider.GetAction(objClient, objMessage).Returns(objAction);
+			objProvider.GetResponseMessage(Arg.Is(objMessage), Arg.Is(ResponseCode.Error)).Returns(objResponse);
 			objConverter.GetByteArray(Arg.Is(objResponse)).Returns(new byte[] { 1, 2, 3, 4, 5 });
 
 			Mitto.Initialize(new Mitto.Config() {
@@ -51,7 +58,7 @@ namespace Mitto.Messaging.Tests {
 			new MessageProcessor().Process(objClient, new byte[] { 1, 2, 3, 4 });
 
 			//Assert
-			objConverter.Received(1).GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
+			objProvider.Received(1).GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
 			objProvider.Received(1).GetAction(Arg.Is(objClient), Arg.Is(objMessage));
 
 			if (pTransmitExpected) {
@@ -75,16 +82,16 @@ namespace Mitto.Messaging.Tests {
 			var objClient = Substitute.For<IQueue.IQueue>();
 			var objMessage = Substitute.For<IMessage>();
 			var objResponse = Substitute.For<IResponseMessage>();
-			var objAction = Substitute.For<IAction>();
+			var objAction = Substitute.For<IRequestAction>();
 
 			objMessage.Type.Returns(MessageType.Request);
-			objConverter.GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 }))).Returns(objMessage);
+			objProvider.GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 }))).Returns(objMessage);
 			objProvider.GetAction(objClient, objMessage).Returns(objAction);
 			objAction.When(a => a.Start()).Do(a => throw new MessagingException(ResponseCode.Cancelled));
 
 
 			objResponse.Status.Returns(ResponseCode.Cancelled);
-			objConverter.GetResponseMessage(Arg.Is(objMessage), ResponseCode.Cancelled).Returns(objResponse);
+			objProvider.GetResponseMessage(Arg.Is(objMessage), ResponseCode.Cancelled).Returns(objResponse);
 			objConverter.GetByteArray(Arg.Is(objResponse)).Returns(new byte[] { 1, 2, 3, 4, 5 });
 
 			Mitto.Initialize(new Mitto.Config() {
@@ -97,8 +104,8 @@ namespace Mitto.Messaging.Tests {
 			obj.Process(objClient, new byte[] { 1, 2, 3, 4 });
 
 			//Assert
-			objConverter.Received(1).GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
-			objConverter.Received(1).GetResponseMessage(Arg.Is<IMessage>(m => m.Equals(objMessage)), ResponseCode.Cancelled);
+			objProvider.Received(1).GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
+			objProvider.Received(1).GetResponseMessage(Arg.Is<IMessage>(m => m.Equals(objMessage)), ResponseCode.Cancelled);
 			objClient.Received(1).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
 		}
 
@@ -107,23 +114,21 @@ namespace Mitto.Messaging.Tests {
 		/// This means that a call is expected on the IConverter.GetMessage and
 		/// that the IMessage of that method is passed to the IRequestManager.Process
 		/// </summary>
-		[Test, Sequential]
-		public void ProcessMessageTest(
-			[Values(MessageType.Notification, MessageType.Request)] MessageType pType,
-			[Values(false, true)] bool pTransmitExpected
-		) {
+		[Test]
+		public void ProcessRequestMessageTest() {
 			//Arrange
 			var objConverter = Substitute.For<IMessageConverter>();
 			var objClient = Substitute.For<IQueue.IQueue>();
 			var objMessage = Substitute.For<IMessage>();
 			var objProvider = Substitute.For<IMessageProvider>();
-			var objAction = Substitute.For<IAction>();
+			var objAction = Substitute.For<IRequestAction>();
 			var objResponse = Substitute.For<IResponseMessage>();
 
-			objMessage.Type.Returns(pType);
-			objConverter.GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 }))).Returns(objMessage);
+			objMessage.Type.Returns(MessageType.Request);
+			objProvider.GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 }))).Returns(objMessage);
 			objProvider.GetAction(objClient, objMessage).Returns(objAction);
 			objAction.Start().Returns(objResponse);
+
 			objConverter.GetByteArray(objResponse).Returns(new byte[] { 1, 2, 3, 4, 5 });
 
 			Mitto.Initialize(new Mitto.Config() {
@@ -135,14 +140,40 @@ namespace Mitto.Messaging.Tests {
 			new MessageProcessor().Process(objClient, new byte[] { 1, 2, 3, 4 });
 
 			//Assert
-			objConverter.Received(1).GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
+			objProvider.Received(1).GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
 			objProvider.Received(1).GetAction(objClient, objMessage);
 			objAction.Received(1).Start();
-			if (pTransmitExpected) {
-				objClient.Received(1).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1,2,3,4,5})));
-			} else {
-				objClient.Received(0).Transmit(Arg.Any<byte[]>());
-			}
+			objClient.Received(1).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
+		}
+
+		[Test]
+		public void ProcessNotificationMessageTest() {
+			//Arrange
+			var objConverter = Substitute.For<IMessageConverter>();
+			var objClient = Substitute.For<IQueue.IQueue>();
+			var objMessage = Substitute.For<IMessage>();
+			var objProvider = Substitute.For<IMessageProvider>();
+			var objAction = Substitute.For<INotificationAction>();
+			var objResponse = Substitute.For<IResponseMessage>();
+
+			objMessage.Type.Returns(MessageType.Notification);
+			objProvider.GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 }))).Returns(objMessage);
+			objProvider.GetAction(objClient, objMessage).Returns(objAction);
+			objConverter.GetByteArray(objResponse).Returns(new byte[] { 1, 2, 3, 4, 5 });
+
+			Mitto.Initialize(new Mitto.Config() {
+				MessageConverter = objConverter,
+				MessageProvider = objProvider
+			});
+
+			//Act
+			new MessageProcessor().Process(objClient, new byte[] { 1, 2, 3, 4 });
+
+			//Assert
+			objProvider.Received(1).GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
+			objProvider.Received(1).GetAction(objClient, objMessage);
+			objAction.Received(1).Start();
+			objClient.Received(0).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
 		}
 
 		/// <summary>
@@ -154,14 +185,16 @@ namespace Mitto.Messaging.Tests {
 		public void ProcessUnknownMessageTest() {
 			//Arrange
 			var objConverter = Substitute.For<IMessageConverter>();
+			var objProvider = Substitute.For<IMessageProvider>();
 			var objRequestManager = Substitute.For<IRequestManager>();
 			var objQueue = Substitute.For<IQueue.IQueue>();
 			var objMessage = Substitute.For<IMessage>();
 
-			objConverter.GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 }))).Returns(m => null);
+			objProvider.GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 }))).Returns(m => null);
 
 			Mitto.Initialize(new Mitto.Config() {
-				MessageConverter = objConverter
+				MessageConverter = objConverter,
+				MessageProvider = objProvider
 			});
 
 			//Act
@@ -170,7 +203,9 @@ namespace Mitto.Messaging.Tests {
 			}.Process(objQueue, new byte[] { 1, 2, 3, 4 });
 
 			//Assert
-			objConverter.Received(1).GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
+			objProvider.Received(1).GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
+			objRequestManager.Received(0).SetResponse(Arg.Any<IResponseMessage>());
+			objProvider.Received(0).GetAction(Arg.Any<IQueue.IQueue>(), Arg.Any<IMessage>());
 		}
 
 
@@ -181,15 +216,15 @@ namespace Mitto.Messaging.Tests {
 		public void ProcessResponseMessageTest() {
 			//Arrange
 			var objClient = Substitute.For<IQueue.IQueue>();
-			var objConverter = Substitute.For<IMessageConverter>();
+			var objProvider = Substitute.For<IMessageProvider>();
 			var objRequestManager = Substitute.For<IRequestManager>();
 			var objResponse = Substitute.For<IResponseMessage>();
 
 			objResponse.Type.Returns(MessageType.Response);
-			objConverter.GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 }))).Returns(objResponse);
+			objProvider.GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 }))).Returns(objResponse);
 
 			Mitto.Initialize(new Mitto.Config() {
-				MessageConverter = objConverter
+				MessageProvider = objProvider
 			});
 
 			//Act

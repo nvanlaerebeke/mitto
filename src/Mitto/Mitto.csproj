@@ -43,6 +43,10 @@
       <Project>{b357bac7-529e-4d81-a0d2-71041b19c8de}</Project>
       <Name>websocket-sharp</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Mitto.ClientManager\Mitto.Client.csproj">
+      <Project>{ca4b0313-343a-4837-a437-76060c3db728}</Project>
+      <Name>Mitto.Client</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Mitto.Config\Mitto.Config.csproj">
       <Project>{e3e0d40d-99ac-4ed4-9e64-19cdc10813b0}</Project>
       <Name>Mitto.Config</Name>
@@ -75,21 +79,9 @@
       <Project>{ce5f0847-f8b5-4b95-8e86-e007fcdc92a3}</Project>
       <Name>Mitto.Queue.PassThrough</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mitto.Queue.RabbitMQ.Consumer\Mitto.Queue.RabbitMQ.Consumer.csproj">
-      <Project>{7b0c911d-76e3-494e-b019-dc4974a24810}</Project>
-      <Name>Mitto.Queue.RabbitMQ.Consumer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Mitto.Queue.RabbitMQ.Publisher\Mitto.Queue.RabbitMQ.Publisher.csproj">
-      <Project>{d4558880-23ef-40e4-8e13-402d8a61a1e7}</Project>
-      <Name>Mitto.Queue.RabbitMQ.Publisher</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Mitto.Queue.RabbitMQ\Mitto.Queue.RabbitMQ.csproj">
-      <Project>{3cb0e6c9-133e-49d7-a393-4fcc9ddeb72b}</Project>
-      <Name>Mitto.Queue.RabbitMQ</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Mitto.ServerManager\Mitto.ServerManager.csproj">
+    <ProjectReference Include="..\Mitto.ServerManager\Mitto.Server.csproj">
       <Project>{a6f9dae3-8537-49e1-ae2e-13a2dc3ff9b8}</Project>
-      <Name>Mitto.ServerManager</Name>
+      <Name>Mitto.Server</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

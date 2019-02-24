@@ -65,47 +65,74 @@ namespace Mitto.Messaging {
 	/// 
 	/// </summary>
 	internal class RequestManager : IRequestManager {
-		private ConcurrentDictionary<string, KeyValuePair<Type, object>> Requests = new ConcurrentDictionary<string, KeyValuePair<Type, object>>();
+		private ConcurrentDictionary<string, Delegate> Requests = new ConcurrentDictionary<string, Delegate>();
 
-		public void Request<T>(IClient pClient, IMessage pMessage, Action<T> pCallback) where T: IResponseMessage {
+		public void Request<T>(IQueue.IQueue pClient, IMessage pMessage, Action<T> pCallback) where T : IResponseMessage {
 			lock (Requests) {
-				var objWrapper = new RequestWrapper<T>(pClient, pMessage, pCallback);
-				if (Requests.TryAdd(pMessage.ID, new KeyValuePair<Type, object>(objWrapper.GetType(), objWrapper))) {
-					objWrapper.Send();
+				if (Requests.TryAdd(pMessage.ID, pCallback)) {
+					pClient.Transmit(MessagingFactory.Converter.GetByteArray(pMessage));
 				}
 			}
 		}
 
 		public void SetResponse(IResponseMessage pMessage) {
-			KeyValuePair<Type, object> objKvp;
+			Delegate objAction;
 			lock (Requests) {
-				if (Requests.ContainsKey(pMessage.ID)) {
-					if (Requests.TryRemove(pMessage.ID, out objKvp)) {
-						objKvp.Key.GetMethod("SetResponse").Invoke(objKvp.Value, new object[] { pMessage });
-					}
+				if (
+					Requests.ContainsKey(pMessage.ID) &&
+					Requests.TryRemove(pMessage.ID, out objAction)
+				) {
+					objAction.DynamicInvoke(pMessage);
 				}
-			}
-		}
-
-		private class RequestWrapper<R> where R : IResponseMessage {
-			IClient Client { get; set; }
-			IMessage Message { get; set; }
-			Action<R> Action { get; set; }
-
-			public RequestWrapper(IClient pClient, IMessage pMessage, Action<R> pCallback) {
-				Client = pClient;
-				Message = pMessage;
-				Action = pCallback;
-			}
-
-			public void Send() {
-				Client.Transmit(Message);
-			}
-
-			public void SetResponse(IResponseMessage pResponse) {
-				//((Action<ResponseMessage>)_objAction).Invoke(pResponse); // -- no idea how to get it like this as it's typesafe
-				Action.DynamicInvoke(pResponse);
 			}
 		}
 	}
 }
+
+/*internal class RequestManager : IRequestManager {
+	private ConcurrentDictionary<string, KeyValuePair<Type, object>> Requests = new ConcurrentDictionary<string, KeyValuePair<Type, object>>();
+
+	public void Request<T>(IQueue.IQueue pClient, IMessage pMessage, Action<T> pCallback) where T : IResponseMessage {
+		lock (Requests) {
+			var objWrapper = new RequestWrapper<T>(new Client(pClient, this), pMessage, pCallback);
+			if (Requests.TryAdd(pMessage.ID, new KeyValuePair<Type, object>(objWrapper.GetType(), objWrapper))) {
+				objWrapper.Send();
+			}
+		}
+	}
+
+	public void SetResponse(IResponseMessage pMessage) {
+		KeyValuePair<Type, object> objKvp;
+		lock (Requests) {
+			if (
+				Requests.ContainsKey(pMessage.ID) &&
+				Requests.TryRemove(pMessage.ID, out objKvp)
+			) {
+				objKvp.Key.GetMethod("SetResponse").Invoke(objKvp.Value, new object[] { pMessage });
+			}
+		}
+	}
+
+
+	private class RequestWrapper<R> where R : IResponseMessage {
+		IClient Client { get; set; }
+		IMessage Message { get; set; }
+		Action<R> Action { get; set; }
+
+		public RequestWrapper(IClient pClient, IMessage pMessage, Action<R> pCallback) {
+			Client = pClient;
+			Message = pMessage;
+			Action = pCallback;
+		}
+
+		public void Send() {
+			Client.Transmit(Message);
+		}
+
+		public void SetResponse(IResponseMessage pResponse) {
+			//((Action<ResponseMessage>)_objAction).Invoke(pResponse); // -- no idea how to get it like this as, it's typesafe
+			Action.DynamicInvoke(pResponse);
+		}
+	}
+}
+}*/

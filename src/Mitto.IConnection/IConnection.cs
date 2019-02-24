@@ -7,6 +7,6 @@
 		event DataHandler Rx;
 		string ID { get; }
 
-		void Close();
+		void Disconnect();
 	}
 }

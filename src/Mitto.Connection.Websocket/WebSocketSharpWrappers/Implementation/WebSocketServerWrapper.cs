@@ -26,7 +26,12 @@ namespace Mitto.Connection.Websocket {
 			_objWebSocket.AddWebSocketService("/", delegate (WebsocketClientWrapper pClient) {
 				ClientConnected?.Invoke(this, pClient);
 			});
+			_objWebSocket.KeepClean = true;
 			_objWebSocket.Start();
+		}
+
+		public void Stop() {
+			_objWebSocket.Stop();
 		}
 	}
 }

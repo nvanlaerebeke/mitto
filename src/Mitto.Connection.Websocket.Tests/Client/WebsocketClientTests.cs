@@ -14,19 +14,29 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 		/// <summary>
 		/// Tests the close function
 		/// This means verifying that all event subscriptions are gone
+		/// and the disconnect  event was called
 		/// </summary>
 		[Test]
-		public void CloseTest() {
+		public void DisconnectTest() {
+			//Arrange
 			var objWebSocketClient = Substitute.For<IWebSocketClient>();
-
 			var objClient = new WebsocketClient(objWebSocketClient);
-			objClient.ConnectAsync("hostname", 80, false);
-			objClient.Close();
+			var objHandler = Substitute.For<ConnectionHandler>();
+			objClient.Disconnected += objHandler;
 
+			//Act
+			objClient.ConnectAsync("hostname", 80, false);
+			objClient.Disconnect();
+			
+			//Assert
 			objWebSocketClient.Received().OnOpen -= Arg.Any<EventHandler>();
 			objWebSocketClient.Received().OnClose -= Arg.Any<EventHandler<ICloseEventArgs>>();
 			objWebSocketClient.Received().OnError -= Arg.Any<EventHandler<IErrorEventArgs>>();
 			objWebSocketClient.Received().OnMessage -= Arg.Any<EventHandler<IMessageEventArgs>>();
+			objHandler
+				.Received(1)
+				.Invoke(Arg.Is<IConnection.IConnection>(c => c.Equals(objClient)))
+			;
 		}
 
 		/// <summary>

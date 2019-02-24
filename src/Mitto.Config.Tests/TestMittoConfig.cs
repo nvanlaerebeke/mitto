@@ -18,41 +18,40 @@ namespace Mitto.Config.Tests {
 		/// </summary>
 		[Test]
 		public void ConfigQueueTest() {
+			//Arrange
 			var objProvider = Substitute.For<IQueueProvider>();
 			Mitto.Initialize(new Mitto.Config() {
 				QueueProvider = objProvider
 			});
-
+			
+			//Act
 			var objQueue = QueueFactory.Create();
 
+			//Assert
 			Assert.IsInstanceOf<IQueue.IQueue>(objQueue);
 			objProvider.Received(1).Create();
 		}
 
 		/// <summary>
-		/// Tests setting the MessageCreator
-		/// This means that when the IMessageCreator methods are called using the ConnectionFactory.Creator 
-		/// the same methods will be called on the mocked IMessageCreator that was configured
+		/// Tests setting the MessageConverter
+		/// This means that when the IMessageConverter methods are called using the ConnectionFactory.Creator 
+		/// the same methods will be called on the mocked IMessageConverter that was configured
 		/// </summary>
 		[Test]
 		public void ConfigMessageCreatorTest() {
+			//Arrange
 			var objProvider = Substitute.For<IMessageConverter>();
 			Mitto.Initialize(new Mitto.Config() {
 				MessageConverter = objProvider
 			});
 
-			var objMessage = MessagingFactory.Converter.GetMessage(new byte[] { 1, 2, 3, 4 });
-			Assert.IsInstanceOf<IMessage>(objMessage);
-
+			//Act
+			var objMessage = MessagingFactory.Converter.GetMessage(typeof(Message), new byte[] { 1, 2, 3, 4 });
 			var arrBytes = MessagingFactory.Converter.GetByteArray(objMessage);
+
+			//Assert
+			Assert.IsInstanceOf<IMessage>(objMessage);
 			Assert.IsInstanceOf<byte[]>(arrBytes);
-
-			var objResponse = MessagingFactory.Converter.GetResponseMessage(objMessage, ResponseCode.Success);
-			Assert.IsInstanceOf<IMessage>(objResponse);
-
-			objProvider.Received(1).GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
-			objProvider.Received(1).GetByteArray(Arg.Any<IMessage>());
-			objProvider.Received(1).GetResponseMessage(Arg.Any<IMessage>(), ResponseCode.Success);
 		}
 
 		/// <summary>
@@ -62,22 +61,25 @@ namespace Mitto.Config.Tests {
 		/// </summary>
 		[Test]
 		public void ConfigMessageProviderTest() {
+			//Arrange
 			var objProvider = Substitute.For<IMessageProvider>();
+			var objMessage = Substitute.For<IMessage>();
+			var objClient = Substitute.For<IQueue.IQueue>();
+
 			Mitto.Initialize(new Mitto.Config() {
 				MessageProvider = objProvider
 			});
+			
 
-			MessagingFactory.Provider.GetTypes();
-			MessagingFactory.Provider.GetResponseType("MyMessageType");
-			MessagingFactory.Provider.GetType(MessageType.Request, 1);
-			//MessagingFactory.Provider.GetActionType(Substitute.For<IMessage>());
+			//Act
+			MessagingFactory.Provider.GetMessage(new byte[] { 1, 2, 3, 4 });
+			MessagingFactory.Provider.GetResponseMessage(objMessage, ResponseCode.Success);
+			MessagingFactory.Provider.GetAction(objClient, objMessage);
 
-			objProvider.Received(1).GetTypes();
-			objProvider.Received(1).GetResponseType(Arg.Any<string>());
-			objProvider.Received(1).GetType(MessageType.Request, 1);
-			//objProvider.Received(1).GetActionType(Arg.Any<IMessage>());
-
-			Assert.Ignore("Test action stuff");
+			//Assert
+			objProvider.Received(1).GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1,2,3,4})));
+			objProvider.Received(1).GetResponseMessage(Arg.Is<IMessage>(m => m.Equals(objMessage)), Arg.Is(ResponseCode.Success));
+			objProvider.Received(1).GetAction(Arg.Is<IQueue.IQueue>(c => c.Equals(objClient)), Arg.Is<IMessage>(m => m.Equals(objMessage)));
 		}
 
 		/// <summary>
@@ -87,12 +89,15 @@ namespace Mitto.Config.Tests {
 		/// </summary>
 		[Test]
 		public void ConfigMessageProcessorTest() {
+			//Arrange
 			var objProvider = Substitute.For<IMessageProcessor>();
 			Mitto.Initialize(new Mitto.Config() {
 				MessageProcessor = objProvider
 			});
-
+			//Act
 			MessagingFactory.Processor.Process(Substitute.For<IQueue.IQueue>(), new byte[] { 1, 2, 3, 4 });
+
+			//Assert
 			objProvider.Received(1).Process(Arg.Any<IQueue.IQueue>(), Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
 		}
 
@@ -105,17 +110,19 @@ namespace Mitto.Config.Tests {
 		/// </summary>
 		[Test]
 		public void ConfigConnectionTest() {
+			//Arrange
 			var objProvider = Substitute.For<IConnectionProvider>();
 			Mitto.Initialize(new Mitto.Config() {
 				ConnectionProvider = objProvider
 			});
-
+			
+			//Act
 			var objClient = ConnectionFactory.CreateClient();
 			var objServer = ConnectionFactory.CreateServer();
 
-			Assert.IsInstanceOf<IClient>(objClient);
-			Assert.IsInstanceOf<IServer>(objServer);
-
+			//Assert
+			Assert.IsInstanceOf<IConnection.IClient>(objClient);
+			Assert.IsInstanceOf<IConnection.IServer>(objServer);
 			objProvider.Received(1).CreateClient();
 			objProvider.Received(1).CreateServer();
 		}

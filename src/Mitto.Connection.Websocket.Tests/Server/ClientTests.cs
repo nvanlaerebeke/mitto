@@ -16,7 +16,7 @@ namespace Mitto.Connection.Websocket.Tests.Server {
 		/// ToDo: Find a way to test the CancelationToken and SenderQueue thread
 		/// </summary>
 		[Test]
-		public void ClostTest() {
+		public void DisconnectTest() {
 			//Setup
 			var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
 			var objClient = new Websocket.Server.Client(objWebSocketBehavior);
@@ -25,7 +25,7 @@ namespace Mitto.Connection.Websocket.Tests.Server {
 			objClient.Disconnected += objHandler;
 
 			//Act
-			objClient.Close();
+			objClient.Disconnect();
 
 			//Assert
 			objWebSocketBehavior.Received().OnCloseReceived -= Arg.Any<EventHandler<ICloseEventArgs>>();

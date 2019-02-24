@@ -1,18 +1,27 @@
 ﻿using System;
-using Mitto.Messaging;
 using Mitto.IConnection;
+using Mitto.IMessaging;
 
-namespace Mitto.ClientManager {
+namespace Mitto {
 	public delegate void ClientConnectionHandler(Client pClient);
 	/// <summary>
-	/// ToDo: Request/Response messages etc should be interfaces from in IMessaging instead of Messaging.Base
+	/// Public interface for the Mitto.Client
+	/// 
+	/// Class responsible for bridging the internal IQueue, IConnection and the IMessaging
+	/// 
+	/// Provides:
+	///   - events for when the client connects/disconnects
+	///   - ability to make requests and receive a response
+	///   - ability to send a message (fire and forget)
+	///   - easy way to create a new client
+	/// 
 	/// </summary>
 	public class Client : IQueue.IQueue {
 		public event ClientConnectionHandler Connected;
 		public event ClientConnectionHandler Disconnected;
 
 		#region IConnection stuff
-		private IClient _objClient;
+		private IConnection.IClient _objClient;
 		public Client() {
 			_objClient = ConnectionFactory.CreateClient();
 			_objClient.Connected += ObjClient_Connected;
@@ -37,8 +46,8 @@ namespace Mitto.ClientManager {
 		/// <summary>
 		/// Closes the connection (IConnection) so that everything gets cleaned up
 		/// </summary>
-		public void Close() {
-			_objClient.Close();
+		public void Disconnect() {
+			_objClient.Disconnect();
 		}
 
 		/// <summary>
@@ -51,7 +60,7 @@ namespace Mitto.ClientManager {
 		/// <param name="pClient"></param>
 		/// <param name="pData"></param>
 		private void _objClient_Rx(IConnection.IConnection pClient, byte[] pData) {
-			InternalQueue.Transmit(new IQueue.Message(_objClient.ID, pData));
+			InternalQueue.Transmit(pData);
 		}
 		#endregion
 
@@ -70,7 +79,7 @@ namespace Mitto.ClientManager {
 		/// Send what we get on the internal messaging queue to the server
 		/// </summary>
 		/// <param name="pMessage"></param>
-		private void _objQueue_Rx(IQueue.Message pMessage) {
+		private void _objQueue_Rx(byte[] pMessage) {
 			this.Transmit(pMessage);
 		}
 		#endregion
@@ -88,8 +97,8 @@ namespace Mitto.ClientManager {
 			return Requester.Send<R>(new MessageClient(_objClient.ID, this), pRequest);
 		}*/
 
-		public void Request<R>(RequestMessage pRequest, Action<R> pResponseAction) where R: ResponseMessage {
-			Requester.Request<R>(new MessageClient(_objClient.ID, this), pRequest, pResponseAction);
+		public void Request<R>(IMessage pRequest, Action<R> pResponseAction) where R: IResponseMessage {
+			MessagingFactory.Processor.Request(this, pRequest, pResponseAction);
 		}
 
 		#region Connection Queue implemenation (IConnection traffic)
@@ -101,20 +110,20 @@ namespace Mitto.ClientManager {
 		///       Also making sure it cannot be abused
 		/// </summary>
 		/// <param name="pMessage"></param>
-		public void Transmit(IQueue.Message pMessage) {
+		public void Transmit(byte[] pMessage) {
 			Rx?.Invoke(pMessage);
-			_objClient.Transmit(pMessage.Data);
+			_objClient.Transmit(pMessage);
 		}
 
 		/// <summary>
 		/// Data from the connection (Receiving) passing it off the the internal communication queue
 		/// </summary>
 		/// <param name="pMessage"></param>
-		public void Respond(IQueue.Message pMessage) {
+		public void Respond(byte[] pMessage) {
 			InternalQueue.Transmit(pMessage);
 		}
 
-		public void Receive(IQueue.Message pMessage) {
+		public void Receive(byte[] pMessage) {
 			Rx?.Invoke(pMessage);
 		}
 		#endregion

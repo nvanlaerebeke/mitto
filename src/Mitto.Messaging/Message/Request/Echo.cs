@@ -6,9 +6,5 @@
 		}
 
 		public string Message { get; set; }
-
-        public override byte GetCode() {
-            return 0x53;
-        }
     }
 }

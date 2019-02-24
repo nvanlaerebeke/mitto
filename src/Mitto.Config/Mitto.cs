@@ -1,7 +1,14 @@
 ﻿namespace Mitto {
 	public static class Mitto {
+		/// <summary>
+		/// Initialize Mitto with the default configuration
+		/// </summary>
 		public static void Initialize() => Initialize(new Config());
-
+		
+		/// <summary>
+		/// Initialize Mitto with the given configuration
+		/// </summary>
+		/// <param name="pConfig"></param>
 		public static void Initialize(Config pConfig) {
 			IQueue.QueueFactory.Initialize(pConfig.QueueProvider);
 			IConnection.ConnectionFactory.Initialize(pConfig.ConnectionProvider);

@@ -1,4 +1,6 @@
-﻿namespace Mitto.Messaging.Action.Notification
+﻿using Mitto.IMessaging;
+
+namespace Mitto.Messaging.Action.Notification
 {
     public class LogStatus: NotificationAction<Messaging.Notification.LogStatus> {
         public LogStatus(IQueue.IQueue pClient, Messaging.Notification.LogStatus pMessage) : base(pClient, pMessage) { }
@@ -31,5 +33,5 @@
                 }
             }*/
         }
-    }
+	}
 }

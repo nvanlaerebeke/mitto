@@ -6,6 +6,14 @@ using System.Threading;
 using WebSocketSharp;
 
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
+/// <summary>
+/// ToDo: Close function should raise disconnect event because the event is needed when
+/// the user has subscribed at multple locations on the disconnect event and close is called
+/// 
+/// Need to seperate Disconnect() and Close()
+/// Close needs to be private and not raise the event, Disconnect needs to be public 
+/// and raise the event
+/// </summary>
 namespace Mitto.Connection.Websocket.Client {
 	public class WebsocketClient : IClient {
 		private IWebSocketClient _objWebSocketClient;
@@ -30,7 +38,7 @@ namespace Mitto.Connection.Websocket.Client {
 			_objWebSocketClient.ConnectAsync(String.Format(((pSecure) ? "wss" : "ws") + "://{0}:{1}/", pHostname, pPort));
 		}
 
-		public void Close() {
+		private void Close() {
 			_objWebSocketClient.OnOpen -= Connection_OnOpen;
 			_objWebSocketClient.OnClose -= Connection_OnClose;
 			_objWebSocketClient.OnError -= Connection_OnError;
@@ -67,7 +75,12 @@ namespace Mitto.Connection.Websocket.Client {
 		private BlockingCollection<byte[]> _colQueue;
 		private CancellationTokenSource _objCancelationSource = new CancellationTokenSource();
 		private CancellationToken _objCancelationToken;
-		
+
+		public void Disconnect() {
+			this.Close();
+			Disconnected?.Invoke(this);
+		}
+
 		/// <summary>
 		/// Transmit adds the data to be transfered to the queue
 		/// </summary>

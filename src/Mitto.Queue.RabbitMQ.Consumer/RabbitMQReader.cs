@@ -12,7 +12,7 @@
 		/// interface will also make it easier to test
 		/// </summary>
 		/// <param name="pMessage"></param>
-		private static void Queue_Rx(IQueue.Message pMessage) {
+		private static void Queue_Rx(byte[] pMessage) {
 			RabbitMQDataMessage objMsg = new RabbitMQDataMessage(pMessage.Data);
 			IMessaging.MessagingFactory.Processor.Process(Queue, objMsg.Data);
 		}

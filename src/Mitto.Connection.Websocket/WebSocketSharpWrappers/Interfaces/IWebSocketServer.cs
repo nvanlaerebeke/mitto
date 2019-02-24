@@ -9,5 +9,7 @@ namespace Mitto.Connection.Websocket {
 
 		void Start(IPAddress pIPAddress, int pPort);
 		void Start(IPAddress pIPAddress, int pPort, X509Certificate2 pCert);
+
+		void Stop();
 	}
 }

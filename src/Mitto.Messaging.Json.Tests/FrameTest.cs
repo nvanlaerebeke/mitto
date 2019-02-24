@@ -1,5 +1,6 @@
 ﻿using Mitto.IMessaging;
 using NUnit.Framework;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Mitto.Messaging.Json.Tests {
@@ -8,17 +9,24 @@ namespace Mitto.Messaging.Json.Tests {
 
 		/// <summary>
 		/// Tests the creation of an IFrame by passing a byte array
-		/// This means that the Format/MessageType/MessageCode and data is returned successfully
+		/// This means that the Format and data is returned successfully
 		/// </summary>
 		[Test]
 		public void CreateWithByteArrayTest() {
-			var objFrame = new Frame(new byte[] { 1, 2, 53, 1, 2, 3, 4 });
+			//Arrange
+			byte bytMessageType = (byte)MessageFormat.Json;
+			byte[] arrData = new byte[] { 1, 2, 3, 4, 5 };
+
+			var lstFrame = new List<byte>();
+			lstFrame.Add(bytMessageType);
+			lstFrame.AddRange(arrData);
+
+			//Act
+			var objFrame = new Frame(lstFrame.ToArray());
 
 			//Assert
-			Assert.AreEqual(MessageFormat.Json, objFrame.Format);
-			Assert.AreEqual(MessageType.Request, objFrame.Type);
-			Assert.AreEqual(53, objFrame.Code);
-			Assert.IsTrue((new byte[] { 1, 2, 3, 4 }).SequenceEqual(objFrame.Data));
+			Assert.AreEqual(objFrame.Format, MessageFormat.Json);
+			Assert.IsTrue(objFrame.Data.SequenceEqual(arrData));
 		}
 
 
@@ -27,13 +35,20 @@ namespace Mitto.Messaging.Json.Tests {
 		/// </summary>
 		[Test]
 		public void CreateWithParametersTest() {
-			var objFrame = new Frame(MessageFormat.Json, MessageType.Request, 53, new byte[] { 1, 2, 3, 4 });
+			//Arrange
+			byte bytMessageType = (byte)MessageFormat.Json;
+			byte[] arrData = new byte[] { 1, 2, 3, 4, 5 };
+
+			var lstFrame = new List<byte>();
+			lstFrame.Add(bytMessageType);
+			lstFrame.AddRange(arrData);
+
+			//Act
+			var objFrame = new Frame(MessageFormat.Json, arrData);
 
 			//Assert
 			Assert.AreEqual(MessageFormat.Json, objFrame.Format);
-			Assert.AreEqual(MessageType.Request, objFrame.Type);
-			Assert.AreEqual(53, objFrame.Code);
-			Assert.IsTrue((new byte[] { 1, 2, 3, 4 }).SequenceEqual(objFrame.Data));
+			Assert.IsTrue(arrData.SequenceEqual(objFrame.Data));
 		}
 	}
 }

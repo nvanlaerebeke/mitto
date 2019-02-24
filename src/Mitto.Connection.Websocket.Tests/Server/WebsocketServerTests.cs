@@ -68,5 +68,28 @@ namespace Mitto.Connection.Websocket.Tests.Server {
 			//Assert
 			objAction.Received(1).Invoke(Arg.Any<IClientConnection>());
 		}
+
+		/// <summary>
+		/// Test the server stop 
+		/// This means the Stop is called on the IWebSocketServer
+		/// </summary>
+		[Test]
+		public void StopTest() {
+			//Setup
+			var objWebSocketServer = Substitute.For<IWebSocketServer>();
+			var objAction = Substitute.For<Action<IClientConnection>>();
+			var objEventArgs = Substitute.For<IWebSocketBehavior>();
+			var objServer = new WebsocketServer(objWebSocketServer);
+
+			//Act
+			objServer.Start(IPAddress.Parse("127.0.0.1"), 80, objAction);
+			objWebSocketServer.ClientConnected += Raise.Event<EventHandler<IWebSocketBehavior>>(objWebSocketServer, objEventArgs);
+			objServer.Stop();
+			objWebSocketServer.ClientConnected += Raise.Event<EventHandler<IWebSocketBehavior>>(objWebSocketServer, objEventArgs);
+
+			//Assert
+			objAction.Received(1).Invoke(Arg.Any<IClientConnection>());
+			objWebSocketServer.Received(1).Stop();
+		}
 	}
 }
