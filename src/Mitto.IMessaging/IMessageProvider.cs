@@ -10,5 +10,6 @@
 		IMessage GetMessage(byte[] pData);
 		IResponseMessage GetResponseMessage(IMessage pMessage, ResponseCode pCode);
 		IAction GetAction(IQueue.IQueue pClient, IMessage pMessage);
+		byte[] GetByteArray(IMessage pMessage);
 	}
 }

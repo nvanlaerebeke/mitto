@@ -74,7 +74,7 @@ namespace Mitto.Messaging.Tests {
 			var objMessage = Substitute.For<IMessage>();
 			objConverter.GetMessage(Arg.Is(typeof(Request.Echo)), Arg.Is<byte[]>(b => b.SequenceEqual(arrData))).Returns(objMessage);
 
-			Mitto.Initialize(new Mitto.Config {
+			Config.Initialize(new Config.ConfigParams() {
 				MessageConverter = objConverter
 			});
 

@@ -49,7 +49,7 @@ namespace Mitto.Messaging {
 				case MessageType.Request:
 					try {
 						pClient.Transmit(
-							MessagingFactory.Converter.GetByteArray(
+							MessagingFactory.Provider.GetByteArray(
 								((IRequestAction)objAction).Start()
 							)
 						);

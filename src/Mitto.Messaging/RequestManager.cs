@@ -68,22 +68,18 @@ namespace Mitto.Messaging {
 		private ConcurrentDictionary<string, Delegate> Requests = new ConcurrentDictionary<string, Delegate>();
 
 		public void Request<T>(IQueue.IQueue pClient, IMessage pMessage, Action<T> pCallback) where T : IResponseMessage {
-			lock (Requests) {
-				if (Requests.TryAdd(pMessage.ID, pCallback)) {
-					pClient.Transmit(MessagingFactory.Converter.GetByteArray(pMessage));
-				}
+			if (Requests.TryAdd(pMessage.ID, pCallback)) {
+				pClient.Transmit(MessagingFactory.Provider.GetByteArray(pMessage));
 			}
 		}
 
 		public void SetResponse(IResponseMessage pMessage) {
 			Delegate objAction;
-			lock (Requests) {
-				if (
-					Requests.ContainsKey(pMessage.ID) &&
-					Requests.TryRemove(pMessage.ID, out objAction)
-				) {
-					objAction.DynamicInvoke(pMessage);
-				}
+			if (
+				Requests.ContainsKey(pMessage.ID) &&
+				Requests.TryRemove(pMessage.ID, out objAction)
+			) {
+				objAction.DynamicInvoke(pMessage);
 			}
 		}
 	}

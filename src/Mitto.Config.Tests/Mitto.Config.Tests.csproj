@@ -7,8 +7,8 @@
     <ProjectGuid>{68E1570F-98F3-4045-99C1-13F55E7A0F15}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Mitto.Config.Tests</RootNamespace>
-    <AssemblyName>Mitto.Config.Tests</AssemblyName>
+    <RootNamespace>Mitto.Tests</RootNamespace>
+    <AssemblyName>Mitto.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>

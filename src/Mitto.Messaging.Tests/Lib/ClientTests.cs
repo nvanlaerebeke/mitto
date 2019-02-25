@@ -42,7 +42,7 @@ namespace Mitto.Messaging.Tests {
 
 			objConverter.GetByteArray(Arg.Is(objMessage)).Returns(new byte[] { 1, 2, 3, 4, 5 });
 
-			Mitto.Initialize(new Mitto.Config { MessageConverter = objConverter });
+			Config.Initialize(new Config.ConfigParams { MessageConverter = objConverter });
 
 			//Act
 			var objClient = new Client(objQueue, objRequestManager);

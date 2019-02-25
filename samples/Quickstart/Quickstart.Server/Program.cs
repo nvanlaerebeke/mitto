@@ -9,14 +9,16 @@ namespace Quickstart.Server {
 		static ManualResetEvent _quit = new ManualResetEvent(false);
 		static List<Mitto.Server.Client> _lstClients = new List<Mitto.Server.Client>();
 		static void Main(string[] args) {
-			Mitto.Mitto.Initialize();
+			Mitto.Config.Initialize();
 
 			ThreadPool.QueueUserWorkItem((s) => {
 
 				Mitto.Server.Server objServer = new Mitto.Server.Server();
+				
 				objServer.Start(IPAddress.Any, 8080, delegate (Mitto.Server.Client pClient) {
-					Console.WriteLine("Client " + pClient.ID + " Connected");
+					pClient.Disconnected += PClient_Disconnected;
 					_lstClients.Add(pClient);
+					Console.WriteLine("Client " + pClient.ID + " Connected");
 				});
 			});
 
@@ -24,6 +26,11 @@ namespace Quickstart.Server {
 				_quit.Set();
 			};
 			_quit.WaitOne();
+		}
+
+		private static void PClient_Disconnected(object sender, Mitto.Server.Client pClient) {
+			pClient.Disconnected -= PClient_Disconnected;
+			_lstClients.Remove(pClient);
 		}
 	}
 }

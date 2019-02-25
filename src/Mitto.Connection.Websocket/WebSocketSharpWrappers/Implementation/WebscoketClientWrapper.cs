@@ -34,5 +34,9 @@ namespace Mitto.Connection.Websocket.Server {
 		public new void Close() {
 			base.CloseAsync();
 		}
+
+		public bool Ping() {
+			return base.Context.WebSocket.Ping();
+		}
 	}
 }

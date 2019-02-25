@@ -15,5 +15,7 @@ namespace Mitto.Connection.Websocket {
 		void ConnectAsync(string pUrl);
 		void Close();
 		void Send(byte[] pData);
+
+		bool Ping();
 	}
 }

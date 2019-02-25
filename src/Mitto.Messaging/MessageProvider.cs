@@ -137,7 +137,7 @@ namespace Mitto.Messaging {
 		private List<Type> GetByNamespace(string pNamespace) {
 			var lstTypes = new List<Type>();
 						
-			var lstAll = (from t in this.GetType().Assembly.GetTypes()
+			var lstAll = (from t in Assembly.GetExecutingAssembly().GetTypes()
 						  where t.IsClass && t.Namespace == pNamespace
 						  select t).ToList();
 
@@ -211,6 +211,11 @@ namespace Mitto.Messaging {
 				return (IAction)obj;
 			}
 			return null;
+		}
+
+		public byte[] GetByteArray(IMessage pMessage) {
+			var objFrame = new Frame(pMessage.Type, pMessage.Name, MessagingFactory.Converter.GetByteArray(pMessage));
+			return objFrame.GetByteArray();
 		}
 	}
 }

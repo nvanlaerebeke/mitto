@@ -7,16 +7,13 @@ using WebSocketSharp;
 
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 /// <summary>
-/// ToDo: Close function should raise disconnect event because the event is needed when
-/// the user has subscribed at multple locations on the disconnect event and close is called
-/// 
-/// Need to seperate Disconnect() and Close()
-/// Close needs to be private and not raise the event, Disconnect needs to be public 
-/// and raise the event
+/// Class that represents the Websocket Client in Mitto
+/// Provides functionallity to communicate with a websocket server
 /// </summary>
 namespace Mitto.Connection.Websocket.Client {
 	public class WebsocketClient : IClient {
 		private IWebSocketClient _objWebSocketClient;
+		private IKeepAliveMonitor _objKeepAliveMonitor;
 
 		public string ID { get; private set; } = Guid.NewGuid().ToString();
 
@@ -24,8 +21,11 @@ namespace Mitto.Connection.Websocket.Client {
 		public event ConnectionHandler Disconnected;
 		public event DataHandler Rx;
 
-		internal WebsocketClient(IWebSocketClient pWebSocket) {
+		internal WebsocketClient(IWebSocketClient pWebSocket, IKeepAliveMonitor pKeepAliveMonitor) {
 			_objWebSocketClient = pWebSocket;
+			_objKeepAliveMonitor = pKeepAliveMonitor;
+			_objKeepAliveMonitor.TimeOut += _objKeepAliveMonitor_TimeOut;
+			_objKeepAliveMonitor.UnResponsive += _objKeepAliveMonitor_UnResponsive;
 		}
 
 		#region Constructor & Connecting
@@ -39,14 +39,30 @@ namespace Mitto.Connection.Websocket.Client {
 		}
 
 		private void Close() {
+			_objKeepAliveMonitor.TimeOut -= _objKeepAliveMonitor_TimeOut;
+			_objKeepAliveMonitor.UnResponsive -= _objKeepAliveMonitor_UnResponsive;
+
 			_objWebSocketClient.OnOpen -= Connection_OnOpen;
 			_objWebSocketClient.OnClose -= Connection_OnClose;
 			_objWebSocketClient.OnError -= Connection_OnError;
 			_objWebSocketClient.OnMessage -= Connection_OnMessage;
 
+			_objCancelationSource.Cancel();
 			if (_objWebSocketClient.ReadyState != WebSocketState.Closing && _objWebSocketClient.ReadyState != WebSocketState.Closed) {
 				_objWebSocketClient.Close();
 			}
+			_objKeepAliveMonitor.Stop();
+		}
+
+		private void _objKeepAliveMonitor_TimeOut(object sender, EventArgs e) {
+			_objKeepAliveMonitor.StartCountDown();
+			if(_objWebSocketClient.Ping()) {
+				_objKeepAliveMonitor.Reset();
+			}
+		}
+
+		private void _objKeepAliveMonitor_UnResponsive(object sender, EventArgs e) {
+			this.Disconnect();
 		}
 		#endregion
 
@@ -54,32 +70,53 @@ namespace Mitto.Connection.Websocket.Client {
 		private void Connection_OnOpen(object sender, EventArgs e) {
 			//Start the sending queue before we raise the event
 			//The thread must be running before we say the client is 'connected(ready)'
-			StartTransmitQueue(); 
-			Connected?.Invoke(this);
+			StartTransmitQueue();
+			_objKeepAliveMonitor.Start();
+			ThreadPool.QueueUserWorkItem(s => {
+				Connected?.Invoke(this);
+			});
 		}
 
 		private void Connection_OnError(object sender, IErrorEventArgs e) {
 			this.Close();
-			Disconnected?.Invoke(this);
+			ThreadPool.QueueUserWorkItem(s => {
+				Disconnected?.Invoke(this);
+			});
 		}
 
 		private void Connection_OnClose(object sender, ICloseEventArgs e) {
 			this.Close();
-			Disconnected?.Invoke(this);	
+			ThreadPool.QueueUserWorkItem(s => {
+				Disconnected?.Invoke(this);
+			});
 		}
 
 		private void Connection_OnMessage(object sender, IMessageEventArgs e) {
-			Rx?.Invoke(this, e.RawData);
+			_objKeepAliveMonitor.Reset();
+			ThreadPool.QueueUserWorkItem(s => {
+				if (e.IsText) {
+					var data = System.Text.Encoding.UTF32.GetBytes(e.Data);
+					Rx?.Invoke(this, data);
+				} else if (e.IsPing) { // -- do nothing, keepalive is handled in this class
+				} else if (e.IsBinary) {
+					Rx?.Invoke(this, e.RawData);
+				}
+				Rx?.Invoke(this, e.RawData);
+			});
+		}
+		#endregion
+
+		#region Client Methods
+		public void Disconnect() {
+			this.Close();
+			ThreadPool.QueueUserWorkItem(s => {
+				Disconnected?.Invoke(this);
+			});
 		}
 
 		private BlockingCollection<byte[]> _colQueue;
 		private CancellationTokenSource _objCancelationSource = new CancellationTokenSource();
 		private CancellationToken _objCancelationToken;
-
-		public void Disconnect() {
-			this.Close();
-			Disconnected?.Invoke(this);
-		}
 
 		/// <summary>
 		/// Transmit adds the data to be transfered to the queue
@@ -88,6 +125,7 @@ namespace Mitto.Connection.Websocket.Client {
 		public void Transmit(byte[] pData) {
 			_colQueue.Add(pData);
 		}
+
 		private void StartTransmitQueue() {
 			_colQueue = new BlockingCollection<byte[]>();
 			_objCancelationToken = _objCancelationSource.Token;
@@ -99,7 +137,7 @@ namespace Mitto.Connection.Websocket.Client {
 					try {
 						var arrData = _colQueue.Take(_objCancelationToken);
 						_objWebSocketClient.Send(arrData);
-					} catch (Exception ex) {
+					} catch (Exception) {
 						//Log.Error("Failed sending data, closing connection: " + ex.Message);
 					}
 				}

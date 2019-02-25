@@ -1,9 +1,10 @@
 ﻿using Mitto.IConnection;
 using Mitto.IQueue;
+using System;
 
 namespace Mitto.Server {
 	public class Client {
-		public event ConnectionHandler Disconnected;
+		public event EventHandler<Client> Disconnected;
 		public IClientConnection Connection { get; private set; }
 
 		public string ID {
@@ -23,7 +24,7 @@ namespace Mitto.Server {
 		}
 
 		private void Connection_Disconnected(IConnection.IConnection pConnection) {
-			Disconnected?.Invoke(pConnection);
+			Disconnected?.Invoke(pConnection, this);
 		}
 
 		#region Tx & Rx for Messaging

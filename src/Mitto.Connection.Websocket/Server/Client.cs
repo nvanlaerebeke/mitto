@@ -9,6 +9,7 @@ namespace Mitto.Connection.Websocket.Server {
 
 	internal class Client : IClientConnection {
 		private IWebSocketBehavior _objClient;
+		private IKeepAliveMonitor _objKeepAliveMonitor; 
 
 		public event ConnectionHandler Disconnected;
         public event DataHandler Rx;
@@ -29,7 +30,7 @@ namespace Mitto.Connection.Websocket.Server {
 
 		private void _objClient_OnMessageReceived(object sender, IMessageEventArgs e) {
 			if (e.IsText) {
-				var data = System.Text.Encoding.UTF8.GetBytes(e.Data);
+				var data = System.Text.Encoding.UTF32.GetBytes(e.Data);
 				Rx?.Invoke(this, data);
 			} else if (e.IsPing) {
 			} else if (e.IsBinary) {

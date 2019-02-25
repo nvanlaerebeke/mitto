@@ -49,7 +49,7 @@ namespace Mitto.Messaging.Tests {
 			objProvider.GetResponseMessage(Arg.Is(objMessage), Arg.Is(ResponseCode.Error)).Returns(objResponse);
 			objConverter.GetByteArray(Arg.Is(objResponse)).Returns(new byte[] { 1, 2, 3, 4, 5 });
 
-			Mitto.Initialize(new Mitto.Config() {
+			Config.Initialize(new Config.ConfigParams() {
 				MessageConverter = objConverter,
 				MessageProvider = objProvider
 			});
@@ -94,7 +94,7 @@ namespace Mitto.Messaging.Tests {
 			objProvider.GetResponseMessage(Arg.Is(objMessage), ResponseCode.Cancelled).Returns(objResponse);
 			objConverter.GetByteArray(Arg.Is(objResponse)).Returns(new byte[] { 1, 2, 3, 4, 5 });
 
-			Mitto.Initialize(new Mitto.Config() {
+			Config.Initialize(new Config.ConfigParams() {
 				MessageConverter = objConverter,
 				MessageProvider = objProvider
 			});
@@ -131,7 +131,7 @@ namespace Mitto.Messaging.Tests {
 
 			objConverter.GetByteArray(objResponse).Returns(new byte[] { 1, 2, 3, 4, 5 });
 
-			Mitto.Initialize(new Mitto.Config() {
+			Config.Initialize(new Config.ConfigParams() {
 				MessageConverter = objConverter,
 				MessageProvider = objProvider
 			});
@@ -161,7 +161,7 @@ namespace Mitto.Messaging.Tests {
 			objProvider.GetAction(objClient, objMessage).Returns(objAction);
 			objConverter.GetByteArray(objResponse).Returns(new byte[] { 1, 2, 3, 4, 5 });
 
-			Mitto.Initialize(new Mitto.Config() {
+			Config.Initialize(new Config.ConfigParams() {
 				MessageConverter = objConverter,
 				MessageProvider = objProvider
 			});
@@ -192,7 +192,7 @@ namespace Mitto.Messaging.Tests {
 
 			objProvider.GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 }))).Returns(m => null);
 
-			Mitto.Initialize(new Mitto.Config() {
+			Config.Initialize(new Config.ConfigParams() {
 				MessageConverter = objConverter,
 				MessageProvider = objProvider
 			});
@@ -223,7 +223,7 @@ namespace Mitto.Messaging.Tests {
 			objResponse.Type.Returns(MessageType.Response);
 			objProvider.GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 }))).Returns(objResponse);
 
-			Mitto.Initialize(new Mitto.Config() {
+			Config.Initialize(new Config.ConfigParams() {
 				MessageProvider = objProvider
 			});
 

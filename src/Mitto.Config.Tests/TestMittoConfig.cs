@@ -5,7 +5,7 @@ using Mitto.IQueue;
 using Mitto.IConnection;
 using Mitto.IMessaging;
 
-namespace Mitto.Config.Tests {
+namespace Mitto.Tests {
 	[TestFixture]
 	public class ConfigTests {
 		/// <summary>
@@ -20,7 +20,7 @@ namespace Mitto.Config.Tests {
 		public void ConfigQueueTest() {
 			//Arrange
 			var objProvider = Substitute.For<IQueueProvider>();
-			Mitto.Initialize(new Mitto.Config() {
+			Config.Initialize(new Config.ConfigParams() {
 				QueueProvider = objProvider
 			});
 			
@@ -41,7 +41,7 @@ namespace Mitto.Config.Tests {
 		public void ConfigMessageCreatorTest() {
 			//Arrange
 			var objProvider = Substitute.For<IMessageConverter>();
-			Mitto.Initialize(new Mitto.Config() {
+			Config.Initialize(new Config.ConfigParams() {
 				MessageConverter = objProvider
 			});
 
@@ -66,7 +66,7 @@ namespace Mitto.Config.Tests {
 			var objMessage = Substitute.For<IMessage>();
 			var objClient = Substitute.For<IQueue.IQueue>();
 
-			Mitto.Initialize(new Mitto.Config() {
+			Config.Initialize(new Config.ConfigParams() {
 				MessageProvider = objProvider
 			});
 			
@@ -91,7 +91,7 @@ namespace Mitto.Config.Tests {
 		public void ConfigMessageProcessorTest() {
 			//Arrange
 			var objProvider = Substitute.For<IMessageProcessor>();
-			Mitto.Initialize(new Mitto.Config() {
+			Mitto.Config.Initialize(new Config.ConfigParams() {
 				MessageProcessor = objProvider
 			});
 			//Act
@@ -112,7 +112,7 @@ namespace Mitto.Config.Tests {
 		public void ConfigConnectionTest() {
 			//Arrange
 			var objProvider = Substitute.For<IConnectionProvider>();
-			Mitto.Initialize(new Mitto.Config() {
+			Config.Initialize(new Config.ConfigParams() {
 				ConnectionProvider = objProvider
 			});
 			

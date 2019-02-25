@@ -16,7 +16,7 @@ namespace Mitto.Queue.PassThrough.Tests {
 		public void ReceiveTest() {
 			//mock the messageprocessor
 			var objProcessor = Substitute.For<IMessaging.IMessageProcessor>();
-			Mitto.Initialize(new Mitto.Config() {
+			Config.Initialize(new Config.ConfigParams() {
 				MessageProcessor = objProcessor
 			});
 

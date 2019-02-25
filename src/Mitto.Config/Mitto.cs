@@ -1,15 +1,15 @@
 ﻿namespace Mitto {
-	public static class Mitto {
+	public static class Config {
 		/// <summary>
 		/// Initialize Mitto with the default configuration
 		/// </summary>
-		public static void Initialize() => Initialize(new Config());
+		public static void Initialize() => Initialize(new ConfigParams());
 		
 		/// <summary>
 		/// Initialize Mitto with the given configuration
 		/// </summary>
 		/// <param name="pConfig"></param>
-		public static void Initialize(Config pConfig) {
+		public static void Initialize(ConfigParams pConfig) {
 			IQueue.QueueFactory.Initialize(pConfig.QueueProvider);
 			IConnection.ConnectionFactory.Initialize(pConfig.ConnectionProvider);
 			IMessaging.MessagingFactory.Initialize(pConfig.MessageProvider, pConfig.MessageConverter, pConfig.MessageProcessor);
@@ -24,7 +24,7 @@
 		/// - Json serialization
 		/// - Standard way of processing messages
 		/// </summary>
-		public class Config {
+		public class ConfigParams {
 			public IQueue.IQueueProvider QueueProvider { get; set; } = new Queue.PassThrough.QueueProvider();
 			public IConnection.IConnectionProvider ConnectionProvider { get; set; } = new Connection.Websocket.ConnectionProvider();
 			public IMessaging.IMessageConverter MessageConverter { get; set; } = new Messaging.Json.MessageConverter();
