@@ -20,6 +20,8 @@ namespace Mitto.Connection.Websocket {
 
 		private void StartServer(IPAddress pIPAddress, int pPort, X509Certificate2 pCert = null) {
 			_objWebSocket = new WebSocketServer(pIPAddress, pPort, (pCert != null));
+			_objWebSocket.WaitTime = new TimeSpan(0, 0, 30);
+
 			if (pCert != null) {
 				_objWebSocket.SslConfiguration.ServerCertificate = pCert;
 			}

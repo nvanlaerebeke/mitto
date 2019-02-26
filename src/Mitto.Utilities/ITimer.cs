@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace Mitto.Connection.Websocket {
-	interface ITimer {
+namespace Mitto.Utilities {
+	public interface ITimer {
 		event EventHandler Elapsed;
 		void Start();
 		void Stop();

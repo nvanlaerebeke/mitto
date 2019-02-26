@@ -1,13 +1,8 @@
 ﻿using NSubstitute;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
 
-namespace Mitto.Connection.Websocket.Tests {
+namespace Mitto.Utilities.Tests {
 	[TestFixture]
 	public class KeepAliveMonitorTests {
 		/// <summary>

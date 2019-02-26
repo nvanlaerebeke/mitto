@@ -9,11 +9,19 @@ namespace Mitto.Messaging {
 	/// </summary>
 	public class MessageProcessor : IMessageProcessor {
 
+		internal MessageProcessor(IRequestManager pRequestManager) {
+			RequestManager = pRequestManager;
+		}
+
+		public MessageProcessor() {
+			RequestManager = new RequestManager(); 
+		}
+
 		/// <summary>
 		/// Internal class that does request management
 		/// Example making a request and running its response
 		/// </summary>
-		internal IRequestManager RequestManager { get; set; } = new RequestManager();
+		private IRequestManager RequestManager { get; set; }
 
 		/// <summary>
 		/// Takes in byte[] data, fetches the message it represents and passes

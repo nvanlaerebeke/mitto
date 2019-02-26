@@ -1,4 +1,5 @@
 ﻿using Mitto.IConnection;
+using Mitto.Utilities;
 
 namespace Mitto.Connection.Websocket {
 	public class ConnectionProvider: IConnectionProvider {

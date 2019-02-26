@@ -136,19 +136,23 @@ namespace Mitto.Messaging {
 		/// <returns>List<Type></returns>
 		private List<Type> GetByNamespace(string pNamespace) {
 			var lstTypes = new List<Type>();
-						
-			var lstAll = (from t in Assembly.GetExecutingAssembly().GetTypes()
-						  where t.IsClass && t.Namespace == pNamespace
-						  select t).ToList();
 
-			foreach (Type objType in lstAll) {
-				if (
-					objType.IsSubclassOf(typeof(RequestMessage)) ||
-					objType.IsSubclassOf(typeof(ResponseMessage)) ||
-					objType.IsSubclassOf(typeof(NotificationMessage)) ||
-					objType.Namespace.Contains(".Action") //is a generic type, easy solution is to just check the namespace string instead of  IsSubclassOf(typeof(Action.BaseAction<T>))
+			//Loop over all loaded assemblies so no classes are missed
+			foreach (
+				var ass in AppDomain.CurrentDomain.GetAssemblies()
+			) {
+				foreach (
+					//foreach loaded assembly, get all it's types that match the given namespace
+					var objType in (from t in ass.GetTypes() where t.IsClass && t.Namespace == pNamespace select t)
 				) {
-					lstTypes.Add(objType);
+					if (
+						objType.IsSubclassOf(typeof(RequestMessage)) ||
+						objType.IsSubclassOf(typeof(ResponseMessage)) ||
+						objType.IsSubclassOf(typeof(NotificationMessage)) ||
+						objType.Namespace.Contains(".Action") //is a generic type, easy solution is to just check the namespace string instead of  IsSubclassOf(typeof(Action.BaseAction<T>))
+					) {
+						lstTypes.Add(objType);
+					}
 				}
 			}
 			return lstTypes;
@@ -157,7 +161,6 @@ namespace Mitto.Messaging {
 		/// <summary>
 		/// Gets an IMessage based on it's data (byte array)
 		/// See the Frame object for more information on what the bytes are represent
-		/// 
 		/// </summary>
 		/// <param name="pData"></param>
 		/// <returns>IMessage</returns>
@@ -196,7 +199,7 @@ namespace Mitto.Messaging {
 		}
 
 		/// <summary>
-		/// Returns the IAction for a specific IMessage (Request/Notification)
+		/// Gets the IAction for a specific IMessage (Request/Notification)
 		/// </summary>
 		/// <param name="pClient"></param>
 		/// <param name="pMessage"></param>
@@ -213,9 +216,20 @@ namespace Mitto.Messaging {
 			return null;
 		}
 
+		/// <summary>
+		/// Gets the byte[] representation for the given IMessage
+		/// 
+		/// Note: uses the configured IMessageConverter
+		/// See frame documentation on how a frame should look
+		/// </summary>
+		/// <param name="pMessage"></param>
+		/// <returns></returns>
 		public byte[] GetByteArray(IMessage pMessage) {
-			var objFrame = new Frame(pMessage.Type, pMessage.Name, MessagingFactory.Converter.GetByteArray(pMessage));
-			return objFrame.GetByteArray();
+			return new Frame(
+				pMessage.Type, 
+				pMessage.Name, 
+				MessagingFactory.Converter.GetByteArray(pMessage)
+			).GetByteArray();
 		}
 	}
 }

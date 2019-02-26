@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Timers;
 
-namespace Mitto.Connection.Websocket {
+namespace Mitto.Utilities {
 	class Timer : ITimer {
 		private System.Timers.Timer _objTimer;
 

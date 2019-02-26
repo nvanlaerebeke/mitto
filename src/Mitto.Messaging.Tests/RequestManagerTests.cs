@@ -3,28 +3,29 @@ using NSubstitute;
 using System;
 using System.Linq;
 using Mitto.IMessaging;
-using System.Collections.Generic;
 
 namespace Mitto.Messaging.Tests {
 	[TestFixture]
 	public class RequestManagerTests {
 		/// <summary>
 		/// Tests what happens when a request is made 
-		/// This means that request is added to the dictionary and the Send method is called on RequestMessage
-		/// as the one in the Requests dictionary
+		/// This means that request is added to the dictionary and the Transmit method is 
+		/// called on the IQueue.IQueue with the byte[] data provided by the IMessageProvider
 		/// </summary>
 		[Test]
 		public void RequestTest() {
 			//Arrange
 			var obj = new RequestManager();
-			var objConverter = Substitute.For<IMessageConverter>();
+			var objProvider = Substitute.For<IMessageProvider>();
 			var objClient = Substitute.For<IQueue.IQueue>();
 			var objMessage = Substitute.For<IMessage>();
 			objMessage.ID.Returns("MyID");
-			objConverter.GetByteArray(Arg.Is(objMessage)).Returns(new byte[] { 1, 2, 3, 4 });
+			objProvider.GetByteArray(Arg.Is(objMessage)).Returns(new byte[] { 1, 2, 3, 4 });
+
+			Config.Initialize(new Config.ConfigParams() { MessageProvider = objProvider });
 
 			//Act
-			obj.Request<IResponseMessage>(
+			obj.Request(
 				objClient,
 				objMessage,
 				Substitute.For<Action<IResponseMessage>>()

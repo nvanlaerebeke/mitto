@@ -35,7 +35,10 @@ namespace Mitto.Connection.Websocket {
 		/// </summary>
 		/// <param name="pUrl"></param>
 		public void ConnectAsync(string pUrl) {
-			_objWebSocket = new WebSocket(pUrl);
+			_objWebSocket = new WebSocket(pUrl) {
+				WaitTime = new TimeSpan(0, 0, 30),
+				EmitOnPing = true
+			};
 			_objWebSocket.OnOpen += _objWebSocket_OnOpen;
 			_objWebSocket.OnClose += _objWebSocket_OnClose;
 			_objWebSocket.OnError += _objWebSocket_OnError;

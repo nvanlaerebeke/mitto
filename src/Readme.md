@@ -19,6 +19,7 @@ ToDo's before v1:
   and don't have to thing about cleanups/memory leaks
 
 - Keepalive for message processing between Client -> Server -> Queue -> Worker
+    Make it so that ping has more then 1 seconds time to respond when using "bool WebSocket.Ping()""
 
 - Threading - only need ThreadPool.QueueWorkerItem when processing starts (example the Action<T> and callback methods)
 
@@ -58,7 +59,7 @@ Benchmarking:
     For each benchmark this means memory, cpu and time so it can be easily graphed
 	
 	Tests:
-      - encoding/decoding utf32 vs utf16 vs utf8
+      - encoding/decoding utf32 vs utf16 vs utf8 - UTF32 takes up much more bytes
 	  - test overhead for converting between json/objects (both directions)
 	  - Websockets vs TcpSocket
 	  - Websocket TransmitQueue/Thread vs SendAsync
@@ -83,5 +84,7 @@ Testing:
   - Unicode/UTF-32 tests for parts where were interact with text
       - Json messages
 	  - Message names
+	  - Verify input byte[], so that no crashes happen when bogus/invalid data is tranfered
+	    There is no error handling on the Frame objects for example
 	  
   - Message names where the text in byte[] > 255, should cause an exception

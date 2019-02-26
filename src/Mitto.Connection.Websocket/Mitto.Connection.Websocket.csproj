@@ -36,10 +36,6 @@
   <ItemGroup>
     <Compile Include="Client\WebsocketClient.cs" />
     <Compile Include="ConnectionProvider.cs" />
-    <Compile Include="IKeepAliveMonitor.cs" />
-    <Compile Include="ITimer.cs" />
-    <Compile Include="KeepAliveMonitor.cs" />
-    <Compile Include="TImer.cs" />
     <Compile Include="WebSocketSharpWrappers\Interfaces\IMessageEventArgs.cs" />
     <Compile Include="WebSocketSharpWrappers\Implementation\MessageEventArgWrapper.cs" />
     <Compile Include="WebSocketSharpWrappers\Implementation\ErrorEventArgWrapper.cs" />
@@ -64,6 +60,10 @@
     <ProjectReference Include="..\Mitto.IConnection\Mitto.IConnection.csproj">
       <Project>{aaf65eba-e48d-491a-ad2e-525bde11ec6f}</Project>
       <Name>Mitto.IConnection</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Utilities\Mitto.Utilities.csproj">
+      <Project>{d184bf09-fd6d-4f36-bc6e-bf05e763e3ac}</Project>
+      <Name>Mitto.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

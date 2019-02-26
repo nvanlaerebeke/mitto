@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Timers;
 
-namespace Mitto.Connection.Websocket{
+namespace Mitto.Utilities {
 	
-	internal class KeepAliveMonitor : IDisposable, IKeepAliveMonitor {
+	public class KeepAliveMonitor : IDisposable, IKeepAliveMonitor {
 		private ITimer _objKeepAliveTimer;
 		private ITimer _objPingTimer;
 

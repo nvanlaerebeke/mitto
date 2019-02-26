@@ -113,7 +113,7 @@ namespace Mitto.Messaging.Tests {
 		/// Types and Actions properties present in the MessageProvider class
 		/// </summary>
 		[Test]
-		public void TestLoadTypes() {
+		public void TestLoadTypesDefault() {
 			//Arrange & Act
 			var objProvider = new MessageProvider();
 
@@ -133,32 +133,31 @@ namespace Mitto.Messaging.Tests {
 			Assert.IsTrue(objProvider.Actions[MessageType.Request].Count.Equals(2));
 		}
 
-		/// <summary>
-		/// Tests if a correct response message is returned
-		/// This means that when an IMessage is passed, an IResponseMessage for that
-		/// type with the given response code is expected
-		/// </summary>
-		//[Test]
-		/*public void GetResponseMessageTest() {
-			//Arrange
-			var objRequest = Substitute.For<IMessage>();
-			var objProvider = Substitute.For<IMessageProvider>();
-			objRequest.Name.Returns("TestMessageResponse");
-			objProvider.GetResponseType("TestMessageResponse").Returns(typeof(Libs.TestMessageResponse));
-			Mitto.Initialize(new Mitto.Config() {
-				MessageProvider = objProvider
-			});
 
-			//Act
-			var objResponse = new MessageConverter().GetResponseMessage(objRequest, ResponseCode.Cancelled);
+		/// <summary>
+		/// Tests the initialization of the MessgeProvider with a custom namespace
+		/// This means the types in Mitto.Messaging are expected together with the types in 
+		/// in the custom namespace given to the constructor
+		/// </summary>
+		[Test]
+		public void TestLoadTypesCustom() {
+			//Arrange & Act
+			var objProvider = new MessageProvider("Mitto.Messaging.Tests.TestData");
 
 			//Assert
-			Assert.AreEqual(objResponse.Name, "TestMessageResponse");
-			Assert.IsTrue(objResponse.Request.Equals(objRequest));
-			Assert.AreEqual(objResponse.Type, MessageType.Response);
-			Assert.AreEqual(objResponse.Status, ResponseCode.Cancelled);
-			Assert.AreEqual(objResponse.GetCode(), 0x66);
-		}*/
+			Assert.IsTrue(objProvider.Types.ContainsKey(MessageType.Notification));
+			Assert.IsTrue(objProvider.Types.ContainsKey(MessageType.Request));
+			Assert.IsTrue(objProvider.Types.ContainsKey(MessageType.Response));
 
+			Assert.IsTrue(objProvider.Types[MessageType.Notification].Count.Equals(3));
+			Assert.IsTrue(objProvider.Types[MessageType.Request].Count.Equals(3));
+			Assert.IsTrue(objProvider.Types[MessageType.Response].Count.Equals(4));
+
+			Assert.IsTrue(objProvider.Actions.ContainsKey(MessageType.Notification));
+			Assert.IsTrue(objProvider.Actions.ContainsKey(MessageType.Request));
+
+			Assert.IsTrue(objProvider.Actions[MessageType.Notification].Count.Equals(3));
+			Assert.IsTrue(objProvider.Actions[MessageType.Request].Count.Equals(3));
+		}
 	}
 }

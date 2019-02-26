@@ -53,6 +53,11 @@
     <Compile Include="Message\Response\ACKTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestManagerTests.cs" />
+    <Compile Include="TestData\Action\Notification\NotificationTestAction.cs" />
+    <Compile Include="TestData\Action\Request\RequestTestAction.cs" />
+    <Compile Include="TestData\Messasge\Notification\NotificationTestMessage.cs" />
+    <Compile Include="TestData\Messasge\Request\RequestTestMessage.cs" />
+    <Compile Include="TestData\Messasge\Response\ResponseTestMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NSubstitute">

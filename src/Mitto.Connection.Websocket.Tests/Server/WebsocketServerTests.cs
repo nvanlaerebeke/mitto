@@ -16,10 +16,12 @@ namespace Mitto.Connection.Websocket.Tests.Server {
 		/// </summary>
 		[Test]
 		public void StartInSecureTest() {
+			//Arrange
 			var objWebSocketServer = Substitute.For<IWebSocketServer>();
 			var objServer = new WebsocketServer(objWebSocketServer);
-
+			//Act
 			objServer.Start(IPAddress.Parse("127.0.0.1"), 80, delegate (IClientConnection pClient) { });
+			//Assert
 			objWebSocketServer.Received(1).Start(
 				Arg.Is<IPAddress>(ip => ip.Equals(IPAddress.Parse("127.0.0.1"))), 
 				Arg.Is<int>(p => p.Equals(80))
@@ -34,7 +36,7 @@ namespace Mitto.Connection.Websocket.Tests.Server {
 		/// </summary>
 		[Test]
 		public void StartSecureTest() {
-			//Setup
+			//Arrange
 			var objWebSocketServer = Substitute.For<IWebSocketServer>();
 			var objServer = new WebsocketServer(objWebSocketServer);
 
@@ -55,7 +57,7 @@ namespace Mitto.Connection.Websocket.Tests.Server {
 
 		[Test]
 		public void ClientConnectedTest() {
-			//Setup
+			//Arrange
 			var objWebSocketServer = Substitute.For<IWebSocketServer>();
 			var objAction = Substitute.For<Action<IClientConnection>>();
 			var objEventArgs = Substitute.For<IWebSocketBehavior>();

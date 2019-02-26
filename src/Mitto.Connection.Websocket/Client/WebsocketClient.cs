@@ -1,4 +1,5 @@
 ﻿using Mitto.IConnection;
+using Mitto.Utilities;
 using System;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
@@ -101,7 +102,6 @@ namespace Mitto.Connection.Websocket.Client {
 				} else if (e.IsBinary) {
 					Rx?.Invoke(this, e.RawData);
 				}
-				Rx?.Invoke(this, e.RawData);
 			});
 		}
 		#endregion

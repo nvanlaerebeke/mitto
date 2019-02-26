@@ -9,6 +9,7 @@ namespace Mitto.Connection.Websocket.Server {
 		public event EventHandler<IErrorEventArgs> OnErrorReceived;
 
 		protected override void OnOpen() {
+			base.EmitOnPing = true;
 			base.OnOpen();
 		}
 

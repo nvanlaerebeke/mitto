@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Mitto.Connection.Websocket {
+namespace Mitto.Utilities {
 	public interface IKeepAliveMonitor {
 		event EventHandler TimeOut;
 		event EventHandler UnResponsive;

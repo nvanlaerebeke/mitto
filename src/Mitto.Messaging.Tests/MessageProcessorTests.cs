@@ -111,8 +111,9 @@ namespace Mitto.Messaging.Tests {
 
 		/// <summary>
 		/// Tests if a message is processed
-		/// This means that a call is expected on the IConverter.GetMessage and
-		/// that the IMessage of that method is passed to the IRequestManager.Process
+		/// This means that a call is expected on the IConverter.GetMessage,
+		/// that the Action is requested from the IConverter.GetAction and the IQueue.IQueue
+		/// transmit method is called with the IResponseMessage byte[] from the action result
 		/// </summary>
 		[Test]
 		public void ProcessRequestMessageTest() {
@@ -127,9 +128,8 @@ namespace Mitto.Messaging.Tests {
 			objMessage.Type.Returns(MessageType.Request);
 			objProvider.GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 }))).Returns(objMessage);
 			objProvider.GetAction(objClient, objMessage).Returns(objAction);
+			objProvider.GetByteArray(Arg.Is(objResponse)).Returns(new byte[] { 1, 2, 3, 4, 5 });
 			objAction.Start().Returns(objResponse);
-
-			objConverter.GetByteArray(objResponse).Returns(new byte[] { 1, 2, 3, 4, 5 });
 
 			Config.Initialize(new Config.ConfigParams() {
 				MessageConverter = objConverter,
@@ -198,9 +198,7 @@ namespace Mitto.Messaging.Tests {
 			});
 
 			//Act
-			new MessageProcessor {
-				RequestManager = objRequestManager
-			}.Process(objQueue, new byte[] { 1, 2, 3, 4 });
+			new MessageProcessor(objRequestManager).Process(objQueue, new byte[] { 1, 2, 3, 4 });
 
 			//Assert
 			objProvider.Received(1).GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
@@ -228,12 +226,29 @@ namespace Mitto.Messaging.Tests {
 			});
 
 			//Act
-			new MessageProcessor {
-				RequestManager = objRequestManager
-			}.Process(objClient, new byte[] { 1, 2, 3, 4 });
+			new MessageProcessor(objRequestManager).Process(objClient, new byte[] { 1, 2, 3, 4 });
 
 			//Assert
 			objRequestManager.Received(1).SetResponse(Arg.Is<IResponseMessage>(m => m.Equals(objResponse)));
+		}
+
+		/// <summary>
+		/// Tests the Request method
+		/// This means that the Request message is passed to the RequestManager
+		/// </summary>
+		[Test]
+		public void RequestTest() {
+			//Arrange
+			var objClient = Substitute.For<IQueue.IQueue>();
+			var objMessage = Substitute.For<IMessage>();
+			var objAction = Substitute.For<Action<IResponseMessage>>();
+			var objRequestManager = Substitute.For<IRequestManager>();
+
+			//Act
+			new MessageProcessor(objRequestManager).Request(objClient, objMessage, objAction);
+
+			//Assert
+			objRequestManager.Received(1).Request(Arg.Is(objClient), Arg.Is(objMessage), Arg.Is(objAction));
 		}
 	}
 }
