@@ -52,6 +52,7 @@
     <Compile Include="Message\Response\EchoTests.cs" />
     <Compile Include="Message\Response\ACKTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ActionManagerTests.cs" />
     <Compile Include="RequestManagerTests.cs" />
     <Compile Include="TestData\Action\Notification\NotificationTestAction.cs" />
     <Compile Include="TestData\Action\Request\RequestTestAction.cs" />

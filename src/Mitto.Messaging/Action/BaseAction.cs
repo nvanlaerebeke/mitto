@@ -8,8 +8,9 @@ namespace Mitto.Messaging.Action {
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	 public abstract class BaseAction<T> : IAction where T : IMessage {
-		protected T Request { get; private set; }
-
+		public string RequestID => Request.ID;
+		public T Request { get; private set; }
+		
 		protected IQueue.IQueue Client { private set; get; }
 
 		public BaseAction(IQueue.IQueue pClient, IMessage pRequest) {

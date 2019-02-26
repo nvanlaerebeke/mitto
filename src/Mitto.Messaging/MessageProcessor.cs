@@ -5,16 +5,27 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Mitto.Messaging.Tests")]
 namespace Mitto.Messaging {
 	/// <summary>
-	/// Provides handling of an incomming message
+	/// Provides handling of an incomming message and making requests
 	/// </summary>
 	public class MessageProcessor : IMessageProcessor {
 
-		internal MessageProcessor(IRequestManager pRequestManager) {
+		/// <summary>
+		/// Create a MessageProcessor with a custom IRequestManager and IActionManager
+		/// </summary>
+		/// <param name="pRequestManager"></param>
+		/// <param name="pActionManager"></param>
+		internal MessageProcessor(IRequestManager pRequestManager, IActionManager pActionManager) {
 			RequestManager = pRequestManager;
+			ActionManager = pActionManager;
 		}
 
+
+		/// <summary>
+		/// Creates the MessageProcessor
+		/// </summary>
 		public MessageProcessor() {
-			RequestManager = new RequestManager(); 
+			RequestManager = new RequestManager();
+			ActionManager = new ActionManager();
 		}
 
 		/// <summary>
@@ -24,17 +35,22 @@ namespace Mitto.Messaging {
 		private IRequestManager RequestManager { get; set; }
 
 		/// <summary>
-		/// Takes in byte[] data, fetches the message it represents and passes
-		/// that message to the RequestManager to processes said message
-		/// 
-		/// ToDo: instead of passing IQueue.IQueue something more elegant might be proper
-		/// like the IClient already used in the RequestManager, that one can easily do 
-		/// a IClient.Send(IMessage) or IClient.Request(objRequest)
+		/// Internal class that does the action management
+		/// Example starting the action and its error handling
+		/// </summary>
+		private IActionManager ActionManager { get; set; }
+
+		/// <summary>
+		/// Takes in byte[] data, fetches the message it represents 
+		/// and passes it to the RequestManager in case it's an IResponseMessage, 
+		/// otherwise an IAction is created and is passed to the IActionManager
+		/// to handle the IAction lifetime
 		/// </summary>
 		/// <param name="pClient"></param>
 		/// <param name="pData"></param>
 		public void Process(IQueue.IQueue pClient, byte[] pData) {
 			IMessage objMessage = MessagingFactory.Provider.GetMessage(pData);
+
 			// --- don't know what we're receiving, so skip it
 			if (objMessage == null) { return; }
 
@@ -45,33 +61,20 @@ namespace Mitto.Messaging {
 				return;
 			}
 
-			var objAction = MessagingFactory.Provider.GetAction(pClient, objMessage);
-			if (objAction == null) { return; } // -- nothing to do
-
-			switch (objMessage.Type) {
-				case MessageType.Notification:
-					try {
-						((INotificationAction)objAction).Start();
-					} catch (Exception) { /* ignore */ }
-					break;
-				case MessageType.Request:
-					try {
-						pClient.Transmit(
-							MessagingFactory.Provider.GetByteArray(
-								((IRequestAction)objAction).Start()
-							)
-						);
-					} catch (Exception ex) {
-						ResponseCode enmCode = (ex is MessagingException) ? ((MessagingException)ex).Code : ResponseCode.Error;
-						var objResponse = MessagingFactory.Provider.GetResponseMessage(objMessage, enmCode);
-						if (objResponse != null) {
-							pClient.Transmit(MessagingFactory.Converter.GetByteArray(objResponse));
-						}
-					}
-					break;
-			}
+			ActionManager.RunAction(
+				pClient, 
+				objMessage, 
+				MessagingFactory.Provider.GetAction(pClient, objMessage)
+			);
 		}
 
+		/// <summary>
+		/// Starts a Request by passing it to the RequestManager
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="pClient"></param>
+		/// <param name="pMessage"></param>
+		/// <param name="pCallback"></param>
 		public void Request<T>(IQueue.IQueue pClient, IMessage pMessage, Action<T> pCallback) where T : IResponseMessage {
 			RequestManager.Request(pClient, pMessage, pCallback);
 		}

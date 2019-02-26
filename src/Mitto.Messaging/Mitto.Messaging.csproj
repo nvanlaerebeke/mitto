@@ -34,14 +34,15 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionManager.cs" />
     <Compile Include="Action\BaseAction.cs" />
-    <Compile Include="Action\IAction.cs" />
     <Compile Include="Action\Notification\Info.cs" />
     <Compile Include="Action\Notification\LogStatus.cs" />
     <Compile Include="Action\NotificationAction.cs" />
     <Compile Include="Action\RequestAction.cs" />
     <Compile Include="Action\Request\Echo.cs" />
     <Compile Include="Action\Request\Ping.cs" />
+    <Compile Include="Interfaces\IActionManager.cs" />
     <Compile Include="Lib\Client.cs" />
     <Compile Include="Lib\Frame.cs" />
     <Compile Include="Interfaces\IClient.cs" />
