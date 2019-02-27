@@ -1,4 +1,5 @@
 ﻿using Mitto.IMessaging;
+using Mitto.Utilities;
 using System;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
@@ -64,22 +65,62 @@ namespace Mitto.Messaging {
 	/// 
 	/// </summary>
 	internal class RequestManager : IRequestManager {
-		private ConcurrentDictionary<string, Delegate> Requests = new ConcurrentDictionary<string, Delegate>();
+        ConcurrentDictionary<string, IRequestWrapper> Requests = new ConcurrentDictionary<string, IRequestWrapper>();
 
-		public void Request<T>(IQueue.IQueue pClient, IMessage pMessage, Action<T> pCallback) where T : IResponseMessage {
-			if (Requests.TryAdd(pMessage.ID, pCallback)) {
-				pClient.Transmit(MessagingFactory.Provider.GetByteArray(pMessage));
+        public void Request<T>(IClient pClient, IMessage pMessage, Action<T> pCallback) where T : IResponseMessage {
+            var objRequest = new RequestWrapper<T>(pClient, pMessage, pCallback);
+
+			if (Requests.TryAdd(pMessage.ID, objRequest)) {
+				objRequest.Transmit();
 			}
 		}
 
 		public void SetResponse(IResponseMessage pMessage) {
-			Delegate objAction;
+			IRequestWrapper objRequest;
 			if (
 				Requests.ContainsKey(pMessage.ID) &&
-				Requests.TryRemove(pMessage.ID, out objAction)
+				Requests.TryRemove(pMessage.ID, out objRequest)
 			) {
-				objAction.DynamicInvoke(pMessage);
+				objRequest.SetResponse(pMessage);
 			}
 		}
+
+
+        class RequestWrapper<T> : IRequestWrapper where T : IResponseMessage {
+            private Delegate _objAction;
+            private IClient _objClient;
+            private IMessage _objMessage;
+            private IKeepAliveMonitor _objKeepAliveMonitor; 
+
+            public RequestWrapper(IClient pClient, IMessage pMessage, Action<T> pCallback) {
+                _objClient = pClient;
+                _objMessage = pMessage;
+                _objAction = pCallback;
+                _objKeepAliveMonitor = new KeepAliveMonitor(300000);
+                _objKeepAliveMonitor.TimeOut += _objKeepAliveMonitor_TimeOut;
+                _objKeepAliveMonitor.UnResponsive += _objKeepAliveMonitor_UnResponsive;
+            }
+
+            private void _objKeepAliveMonitor_UnResponsive(object sender, EventArgs e) {
+                throw new NotImplementedException();
+            }
+
+            private void _objKeepAliveMonitor_TimeOut(object sender, EventArgs e) {
+                _objKeepAliveMonitor.StartCountDown();
+                //Send Ping
+                if(false) {
+
+                }
+            }
+
+            public void Transmit() {
+                _objClient.Transmit(_objMessage);
+
+            }
+
+            public void SetResponse(IResponseMessage pResponse) {
+                _objAction.DynamicInvoke(pResponse);
+            }
+        }
 	}
 }

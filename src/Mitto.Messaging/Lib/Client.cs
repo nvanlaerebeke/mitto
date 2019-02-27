@@ -22,7 +22,7 @@ namespace Mitto.Messaging {
 		/// <param name="pMessage"></param>
 		/// <param name="pAction"></param>
 		public void Request<R>(IMessage pMessage, Action<R> pAction) where R : IResponseMessage {
-			_objRequestManager.Request(_objClient, pMessage, pAction);
+			_objRequestManager.Request(this, pMessage, pAction);
 		}
 
 		/// <summary>
