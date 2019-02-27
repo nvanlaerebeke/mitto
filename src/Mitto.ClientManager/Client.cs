@@ -97,16 +97,16 @@ namespace Mitto {
 			return Requester.Send<R>(new MessageClient(_objClient.ID, this), pRequest);
 		}*/
 
-		public void Request<R>(IMessage pRequest, Action<R> pResponseAction) where R: IResponseMessage {
+		/*public void Request<R>(IMessage pRequest, Action<R> pResponseAction) where R: IResponseMessage {
 			MessagingFactory.Processor.Request(this, pRequest, pResponseAction);
-		}
+		}*/
 
-		#region Connection Queue implemenation (IConnection traffic)
+		#region Connection Queue implementation (IConnection traffic)
 		public event IQueue.DataHandler Rx;
 
 		/// <summary>
 		/// Transmitting data to the server from the internal queue
-		/// ToDo: Split off the internal queue functionallity and the Client IQueue implementation 
+		/// ToDo: Split off the internal queue functionality and the Client IQueue implementation 
 		///       Also making sure it cannot be abused
 		/// </summary>
 		/// <param name="pMessage"></param>
@@ -116,7 +116,7 @@ namespace Mitto {
 		}
 
 		/// <summary>
-		/// Data from the connection (Receiving) passing it off the the internal communication queue
+		/// Data from the connection (Receiving) passing it off the internal communication queue
 		/// </summary>
 		/// <param name="pMessage"></param>
 		public void Respond(byte[] pMessage) {
