@@ -1,4 +1,5 @@
-﻿using NSubstitute;
+﻿using Mitto.IMessaging;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace Mitto.Messaging.Tests.Action.Request {
@@ -11,7 +12,7 @@ namespace Mitto.Messaging.Tests.Action.Request {
 		[Test]
 		public void TestMethod() {
 			//Arrange
-			var objClient = Substitute.For<IQueue.IQueue>();
+			var objClient = Substitute.For<IClient>();
 			var objMessage = Substitute.For<Messaging.Request.Ping>();
 
 			//Act

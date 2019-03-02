@@ -7,7 +7,7 @@ namespace Mitto.Messaging {
 	internal class ActionManager : IActionManager {
 		private ConcurrentDictionary<string, IAction> Actions = new ConcurrentDictionary<string, IAction>();
 
-		public void RunAction(IQueue.IQueue pClient, IMessage pMessage, IAction pAction) {
+		public void RunAction(IClient pClient, IMessage pMessage, IAction pAction) {
 			if (pAction == null) { return; } // -- nothing to do
 
 			if (Actions.TryAdd(pMessage.ID, pAction)) {
@@ -21,15 +21,13 @@ namespace Mitto.Messaging {
 						case MessageType.Request:
 							try {
 								pClient.Transmit(
-									MessagingFactory.Provider.GetByteArray(
-										((IRequestAction)pAction).Start()
-									)
+									((IRequestAction)pAction).Start()
 								);
 							} catch (Exception ex) {
 								ResponseCode enmCode = (ex is MessagingException) ? ((MessagingException)ex).Code : ResponseCode.Error;
 								var objResponse = MessagingFactory.Provider.GetResponseMessage(pMessage, enmCode);
 								if (objResponse != null) {
-									pClient.Transmit(MessagingFactory.Provider.GetByteArray(objResponse));
+									pClient.Transmit(objResponse);
 								}
 							}
 							break;
@@ -39,8 +37,11 @@ namespace Mitto.Messaging {
 			}
 		}
 
-		public bool IsBusy(string pID) {
-			return Actions.ContainsKey(pID);
+		public MessageStatusType GetStatus(string pRequestID) {
+			if (Actions.ContainsKey(pRequestID)) {
+				return MessageStatusType.Busy;
+			}
+			return MessageStatusType.UnKnown;
 		}
 	}
 }

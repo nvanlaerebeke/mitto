@@ -34,7 +34,8 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionManager.cs" />
+    <Compile Include="Action\Request\MessageStatus.cs" />
+    <Compile Include="Lib\ActionManager.cs" />
     <Compile Include="Action\BaseAction.cs" />
     <Compile Include="Action\Notification\Info.cs" />
     <Compile Include="Action\Notification\LogStatus.cs" />
@@ -43,6 +44,7 @@
     <Compile Include="Action\Request\Echo.cs" />
     <Compile Include="Action\Request\Ping.cs" />
     <Compile Include="Interfaces\IActionManager.cs" />
+    <Compile Include="Lib\IRequest.cs" />
     <Compile Include="Lib\Client.cs" />
     <Compile Include="Lib\Frame.cs" />
     <Compile Include="Interfaces\IClient.cs" />
@@ -57,15 +59,18 @@
     <Compile Include="Message\Notification\Info.cs" />
     <Compile Include="Message\Notification\LogStatus.cs" />
     <Compile Include="Message\RequestMessage.cs" />
+    <Compile Include="Message\Request\MessageStatus.cs" />
     <Compile Include="Message\Request\Echo.cs" />
     <Compile Include="Message\Request\Ping.cs" />
     <Compile Include="Message\ResponseMessage.cs" />
     <Compile Include="Message\Response\ACK.cs" />
+    <Compile Include="Message\Response\MessageStatus.cs" />
     <Compile Include="Message\Response\Echo.cs" />
     <Compile Include="Message\Response\Pong.cs" />
     <Compile Include="Lib\MessagingException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RequestManager.cs" />
+    <Compile Include="Lib\RequestManager.cs" />
+    <Compile Include="Lib\Request.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -76,6 +81,10 @@
     <ProjectReference Include="..\Mitto.IQueue\Mitto.IQueue.csproj">
       <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
       <Name>Mitto.IQueue</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Utilities\Mitto.Utilities.csproj">
+      <Project>{d184bf09-fd6d-4f36-bc6e-bf05e763e3ac}</Project>
+      <Name>Mitto.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

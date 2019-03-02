@@ -27,7 +27,7 @@ namespace Mitto.Messaging.Tests {
 
 			objMessage.Type.Returns(pMessageType);
 			objProvider.GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 }))).Returns(objMessage);
-			objProvider.GetAction(Arg.Is(objClient), Arg.Is(objMessage)).Returns(objAction);
+			objProvider.GetAction(Arg.Any<IClient>(), Arg.Is(objMessage)).Returns(objAction);
 
 			Config.Initialize(new Config.ConfigParams() {
 				MessageProvider = objProvider
@@ -39,11 +39,11 @@ namespace Mitto.Messaging.Tests {
 			//Assert
 			objProvider.Received(1).GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
 			if (pHasAction) {
-				objProvider.Received(1).GetAction(Arg.Is(objClient), Arg.Is(objMessage));
-				objActionManager.Received(1).RunAction(Arg.Is(objClient), Arg.Is(objMessage), Arg.Is(objAction));
+				objProvider.Received(1).GetAction(Arg.Any<IClient>(), Arg.Is(objMessage));
+				objActionManager.Received(1).RunAction(Arg.Any<IClient>(), Arg.Is(objMessage), Arg.Is(objAction));
 			} else {
-				objProvider.Received(0).GetAction(Arg.Any<IQueue.IQueue>(), Arg.Any<IMessage>());
-				objActionManager.Received(0).RunAction(Arg.Any<IQueue.IQueue>(), Arg.Any<IMessage>(), Arg.Any<IAction>());
+				objProvider.Received(0).GetAction(Arg.Any<IClient>(), Arg.Any<IMessage>());
+				objActionManager.Received(0).RunAction(Arg.Any<IClient>(), Arg.Any<IMessage>(), Arg.Any<IAction>());
 			}
 		}
 
@@ -73,8 +73,8 @@ namespace Mitto.Messaging.Tests {
 			//Assert
 			objProvider.Received(1).GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
 			objRequestManager.Received(0).SetResponse(Arg.Any<IResponseMessage>());
-			objProvider.Received(0).GetAction(Arg.Any<IQueue.IQueue>(), Arg.Any<IMessage>());
-			objActionManager.Received(0).RunAction(Arg.Any<IQueue.IQueue>(), Arg.Any<IMessage>(), Arg.Any<IAction>());
+			objProvider.Received(0).GetAction(Arg.Any<IClient>(), Arg.Any<IMessage>());
+			objActionManager.Received(0).RunAction(Arg.Any<IClient>(), Arg.Any<IMessage>(), Arg.Any<IAction>());
 		}
 
 
@@ -102,8 +102,8 @@ namespace Mitto.Messaging.Tests {
 
 			//Assert
 			objRequestManager.Received(1).SetResponse(Arg.Is<IResponseMessage>(m => m.Equals(objResponse)));
-			objProvider.Received(0).GetAction(Arg.Any<IQueue.IQueue>(), Arg.Any<IMessage>());
-			objActionManager.Received(0).RunAction(Arg.Any<IQueue.IQueue>(), Arg.Any<IMessage>(), Arg.Any<IAction>());
+			objProvider.Received(0).GetAction(Arg.Any<IClient>(), Arg.Any<IMessage>());
+			objActionManager.Received(0).RunAction(Arg.Any<IClient>(), Arg.Any<IMessage>(), Arg.Any<IAction>());
 		}
 
 		/// <summary>
@@ -116,14 +116,47 @@ namespace Mitto.Messaging.Tests {
 			var objClient = Substitute.For<IQueue.IQueue>();
 			var objMessage = Substitute.For<IMessage>();
 			var objAction = Substitute.For<Action<IResponseMessage>>();
+
 			var objRequestManager = Substitute.For<IRequestManager>();
 			var objActionManager = Substitute.For<IActionManager>();
 
 			//Act
-			new MessageProcessor(objRequestManager, objActionManager).Request(objClient, objMessage, objAction);
+			new MessageProcessor(objRequestManager, objActionManager).Request<IResponseMessage>(objClient, objMessage, objAction);
 
 			//Assert
-			objRequestManager.Received(1).Request(Arg.Is(objClient), Arg.Is(objMessage), Arg.Is(objAction));
+			objRequestManager.Received(1).Request<IResponseMessage>(Arg.Any<IRequest>());
+		}
+
+
+		/// <summary>
+		/// Tests the GetStatus method
+		/// This means that the GetStatus is called on the ActionManager first, if 
+		/// it is unknown, the status from the RequestManager is gotten
+		/// </summary>
+		[Test, Sequential]
+		public void GetStatusTest(
+			[Values(
+				MessageStatusType.Busy,
+				MessageStatusType.Queued,
+				MessageStatusType.UnKnown
+			)]	MessageStatusType pType,
+			[Values(false, false, true)] bool pRequestManagerExpected
+		) {
+			//Arrange
+			var objRequestManager = Substitute.For<IRequestManager>();
+			var objActionManager = Substitute.For<IActionManager>();
+			objActionManager.GetStatus("MyID").Returns(pType);
+
+			//Act
+			new MessageProcessor(objRequestManager, objActionManager).GetStatus("MyID");
+
+			//Assert
+			objActionManager.Received(1).GetStatus(Arg.Is("MyID"));
+			if (pRequestManagerExpected) {
+				objRequestManager.Received(1).GetStatus(Arg.Is("MyID"));
+			} else {
+				objRequestManager.Received(0).GetStatus(Arg.Any<string>());
+			}
 		}
 	}
 }

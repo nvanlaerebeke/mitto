@@ -11,9 +11,9 @@ namespace Mitto.Messaging.Action {
 		public string RequestID => Request.ID;
 		public T Request { get; private set; }
 		
-		protected IQueue.IQueue Client { private set; get; }
+		protected IClient Client { private set; get; }
 
-		public BaseAction(IQueue.IQueue pClient, IMessage pRequest) {
+		public BaseAction(IClient pClient, IMessage pRequest) {
 			Client = pClient;
 			Request = (T)pRequest;
 		}

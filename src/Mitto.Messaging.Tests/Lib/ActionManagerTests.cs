@@ -15,7 +15,7 @@ namespace Mitto.Messaging.Tests {
 		[Test]
 		public void NullActionTest() {
 			//Arrange
-			var objClient = Substitute.For<IQueue.IQueue>();
+			var objClient = Substitute.For<IClient>();
 			var objMessage = Substitute.For<IMessage>();
 			var objAction = Substitute.For<IRequestAction>();
 			objMessage.Type.Returns(MessageType.Request);
@@ -44,7 +44,7 @@ namespace Mitto.Messaging.Tests {
 			//Arrange
 			var objProvider = Substitute.For<IMessageProvider>();
 
-			var objClient = Substitute.For<IQueue.IQueue>();
+			var objClient = Substitute.For<IClient>();
 			var objMessage = Substitute.For<IMessage>();
 			var objAction = Substitute.For<IAction>();
 			var objResponse = Substitute.For<IResponseMessage>();
@@ -74,10 +74,10 @@ namespace Mitto.Messaging.Tests {
 			if (pTransmitExpected) {
 				((IRequestAction)objAction).Received(1).Start();
 				objProvider.Received(1).GetResponseMessage(Arg.Is(objMessage), ResponseCode.Error);
-				objClient.Received(1).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
+				objClient.Received(1).Transmit(Arg.Is(objResponse));
 			} else {
 				((INotificationAction)objAction).Received(1).Start();
-				objClient.Received(0).Transmit(Arg.Any<byte[]>());
+				objClient.Received(0).Transmit(Arg.Any<IMessage>());
 			}
 		}
 
@@ -92,7 +92,7 @@ namespace Mitto.Messaging.Tests {
 			//Arrange
 			var objProvider = Substitute.For<IMessageProvider>();
 
-			var objClient = Substitute.For<IQueue.IQueue>();
+			var objClient = Substitute.For<IClient>();
 			var objMessage = Substitute.For<IMessage>();
 			var objAction = Substitute.For<IRequestAction>();
 
@@ -116,8 +116,7 @@ namespace Mitto.Messaging.Tests {
 			//Assert
 			objAction.Received(1).Start();
 			objProvider.Received(1).GetResponseMessage(Arg.Is(objMessage), ResponseCode.Cancelled);
-			objProvider.Received(1).GetByteArray(Arg.Is(objResponse));
-			objClient.Received(1).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
+			objClient.Received(1).Transmit(Arg.Is(objResponse));
 		}
 
 		/// <summary>
@@ -127,7 +126,7 @@ namespace Mitto.Messaging.Tests {
 		[Test]
 		public void ProcessNotificationMessageTest() {
 			//Arrange
-			var objClient = Substitute.For<IQueue.IQueue>();
+			var objClient = Substitute.For<IClient>();
 			var objMessage = Substitute.For<IMessage>();
 			var objAction = Substitute.For<INotificationAction>();
 
@@ -148,7 +147,7 @@ namespace Mitto.Messaging.Tests {
 
 			//Assert
 			objAction.Received(1).Start();
-			objClient.Received(0).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
+			objClient.Received(0).Transmit(Arg.Any<IMessage>());
 		}
 
 		/// <summary>
@@ -160,7 +159,7 @@ namespace Mitto.Messaging.Tests {
 		[Test]
 		public void ProcessRequestMessageTest() {
 			//Arrange
-			var objClient = Substitute.For<IQueue.IQueue>();
+			var objClient = Substitute.For<IClient>();
 			var objMessage = Substitute.For<IMessage>();
 			var objAction = Substitute.For<IRequestAction>();
 
@@ -182,33 +181,59 @@ namespace Mitto.Messaging.Tests {
 
 			//Assert
 			objAction.Received(1).Start();
-			objProvider.Received(1).GetByteArray(Arg.Is(objResponse));
-			objClient.Received(1).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
+			objClient.Received(1).Transmit(Arg.Is(objResponse));
 		}
 
 		/// <summary>
-		/// Tests if an Action for a request is still in progress
+		/// Tests the GetStatus method where a Busy state is expected
+		/// This means that a RunAction is done, and then the GetStatus is called
+		/// It's expected that the Status would be busy
 		/// </summary>
 		[Test]
-		public void IsAliveTest() {
+		public void GetStatusBusyTest() {
 			//Arrange
+			var objClient = Substitute.For<IClient>();
 			var objMessage = Substitute.For<IMessage>();
 			var objAction = Substitute.For<IRequestAction>();
+
+			var objProvider = Substitute.For<IMessageProvider>();
+			var objResponse = Substitute.For<IResponseMessage>();
 
 			objMessage.ID.Returns("MyID");
 			objMessage.Type.Returns(MessageType.Request);
 
+			objProvider.GetByteArray(Arg.Is(objResponse)).Returns(new byte[] { 1, 2, 3, 4, 5 });
+			objAction.Start().Returns(objResponse);
+
 			Config.Initialize(new Config.ConfigParams() {
-				MessageProvider = Substitute.For<IMessageProvider>()
+				MessageProvider = objProvider
 			});
 
 			//Act
-			var objActionManager = new ActionManager();
-			objActionManager.RunAction(Substitute.For<IQueue.IQueue>(), objMessage, objAction);
-			objAction.When(a => a.Start()).Do(a => System.Threading.Thread.Sleep(5000));
+			var obj = new ActionManager();
+			obj.RunAction(objClient, objMessage, objAction);
 
 			//Assert
-			Assert.IsTrue(objActionManager.IsBusy("MyID"));
+			Assert.AreEqual(MessageStatusType.Busy, obj.GetStatus(objMessage.ID));
+		}
+
+		/// <summary>
+		/// Tests the GetStatus method where an UnKnwon state is expected
+		/// This means that a GetStatus is done for a IMessage.ID that 
+		/// was never started
+		/// </summary>
+		[Test]
+		public void GetStatusUnKnownTest() {
+			//Arrange
+			var objClient = Substitute.For<IClient>();
+			var objMessage = Substitute.For<IMessage>();
+			var objAction = Substitute.For<IRequestAction>();
+
+			//Act
+			var obj = new ActionManager();
+
+			//Assert
+			Assert.AreEqual(MessageStatusType.UnKnown, obj.GetStatus("MyID"));
 		}
 	}
 }

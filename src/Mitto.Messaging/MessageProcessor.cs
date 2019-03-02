@@ -61,10 +61,11 @@ namespace Mitto.Messaging {
 				return;
 			}
 
+			var objClient = new Client(pClient, RequestManager);
 			ActionManager.RunAction(
-				pClient, 
+				objClient, 
 				objMessage, 
-				MessagingFactory.Provider.GetAction(pClient, objMessage)
+				MessagingFactory.Provider.GetAction(objClient, objMessage)
 			);
 		}
 
@@ -75,8 +76,23 @@ namespace Mitto.Messaging {
 		/// <param name="pClient"></param>
 		/// <param name="pMessage"></param>
 		/// <param name="pCallback"></param>
-		public void Request<T>(IQueue.IQueue pClient, IMessage pMessage, Action<T> pCallback) where T : IResponseMessage {
-			RequestManager.Request(pClient, pMessage, pCallback);
+		public void Request<T>(IQueue.IQueue pClient, IMessage pMessage, Action<T> pAction) where T : IResponseMessage {
+			RequestManager.Request<T>(new Request<T>(new Client(pClient, RequestManager), pMessage, pAction));
+		}
+
+		/// <summary>
+		/// Gets the current status of a message
+		/// First checks if the message is being processed, if it is not, 
+		/// check if it's still in the queue
+		/// </summary>
+		/// <param name="pRequestID"></param>
+		/// <returns></returns>
+		public MessageStatusType GetStatus(string pRequestID) {
+			var objActionStatus = ActionManager.GetStatus(pRequestID);
+			if(objActionStatus == MessageStatusType.UnKnown) {
+				return RequestManager.GetStatus(pRequestID);
+			}
+			return objActionStatus;
 		}
 	}
 }

@@ -41,6 +41,7 @@
     <Compile Include="IMessageConverter.cs" />
     <Compile Include="IMessageProvider.cs" />
     <Compile Include="IResponseMessage.cs" />
+    <Compile Include="MessageStatusType.cs" />
     <Compile Include="MessagingFactory.cs" />
     <Compile Include="MessageType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

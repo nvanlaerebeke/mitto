@@ -2,7 +2,7 @@
 
 namespace Mitto.Messaging {
 	internal interface IActionManager {
-		bool IsBusy(string pID);
-		void RunAction(IQueue.IQueue pClient, IMessage pMessage, IAction pAction);
+		void RunAction(IClient pClient, IMessage pMessage, IAction pAction);
+		MessageStatusType GetStatus(string pRequestID);
 	}
 }

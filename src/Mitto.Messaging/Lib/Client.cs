@@ -9,6 +9,10 @@ namespace Mitto.Messaging {
 		private IQueue.IQueue _objClient;
 		private IRequestManager _objRequestManager;
 
+		public IQueue.IQueue Queue {
+			get { return _objClient; }
+		}
+
 		public Client(IQueue.IQueue pClient, IRequestManager pRequestManager) {
 			_objClient = pClient;
 			_objRequestManager = pRequestManager;
@@ -22,7 +26,7 @@ namespace Mitto.Messaging {
 		/// <param name="pMessage"></param>
 		/// <param name="pAction"></param>
 		public void Request<R>(IMessage pMessage, Action<R> pAction) where R : IResponseMessage {
-			_objRequestManager.Request(this, pMessage, pAction);
+			_objRequestManager.Request<R>(new Request<R>(this, pMessage, pAction));
 		}
 
 		/// <summary>
@@ -31,7 +35,11 @@ namespace Mitto.Messaging {
 		/// </summary>
 		/// <param name="pMessage"></param>
 		public void Transmit(IMessage pMessage) {
-			_objClient.Transmit(MessagingFactory.Converter.GetByteArray(pMessage));
+			_objClient.Transmit(new Frame(
+				pMessage.Type, 
+				pMessage.Name, 
+				MessagingFactory.Converter.GetByteArray(pMessage)
+			).GetByteArray());
 		}
 	}
 }

@@ -42,18 +42,21 @@
     <Compile Include="Action\Request\EchoTests.cs" />
     <Compile Include="Lib\ClientTests.cs" />
     <Compile Include="Lib\FrameTests.cs" />
+    <Compile Include="Lib\RequestTests.cs" />
     <Compile Include="MessageProcessorTests.cs" />
     <Compile Include="MessageProviderTests.cs" />
     <Compile Include="Message\Notification\LogStatusTests.cs" />
     <Compile Include="Message\Notification\InfoTests.cs" />
+    <Compile Include="Message\Request\MessageStatusTests.cs" />
     <Compile Include="Message\Request\PingTests.cs" />
     <Compile Include="Message\Request\EchoTests.cs" />
+    <Compile Include="Message\Response\MessageStatusTests.cs" />
     <Compile Include="Message\Response\PongTests.cs" />
     <Compile Include="Message\Response\EchoTests.cs" />
     <Compile Include="Message\Response\ACKTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ActionManagerTests.cs" />
-    <Compile Include="RequestManagerTests.cs" />
+    <Compile Include="Lib\ActionManagerTests.cs" />
+    <Compile Include="Lib\RequestManagerTests.cs" />
     <Compile Include="TestData\Action\Notification\NotificationTestAction.cs" />
     <Compile Include="TestData\Action\Request\RequestTestAction.cs" />
     <Compile Include="TestData\Messasge\Notification\NotificationTestMessage.cs" />
@@ -84,6 +87,10 @@
     <ProjectReference Include="..\Mitto.Messaging\Mitto.Messaging.csproj">
       <Project>{c29037e3-9c2f-4996-8434-36600735d465}</Project>
       <Name>Mitto.Messaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Utilities\Mitto.Utilities.csproj">
+      <Project>{d184bf09-fd6d-4f36-bc6e-bf05e763e3ac}</Project>
+      <Name>Mitto.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

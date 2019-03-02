@@ -14,7 +14,7 @@ namespace Mitto.Messaging.Tests.Message.Response {
 			objMessage.ID.Returns("MyID");
 			objMessage.Message = "MyCustomMessage";
 
-			var obj = new Messaging.Response.Echo(objMessage, ResponseCode.Success);
+			var obj = new Messaging.Response.Echo(objMessage);
 
 			Assert.AreEqual("MyID", obj.ID);
 			Assert.AreEqual("Echo", obj.Name);

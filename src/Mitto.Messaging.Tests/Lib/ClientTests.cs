@@ -21,9 +21,9 @@ namespace Mitto.Messaging.Tests {
 			//Act
 			var objClient = new Client(objQueue, objRequestManager);
 			objClient.Request(objMessage, objAction);
-
+			
 			//Assert
-			objRequestManager.Received(1).Request<Response.ACK>(Arg.Is(objQueue), Arg.Is(objMessage), Arg.Is(objAction));
+			objRequestManager.Received(1).Request<Response.ACK>(Arg.Any<IRequest>());
 		}
 
 		/// <summary>
@@ -50,7 +50,7 @@ namespace Mitto.Messaging.Tests {
 
 			//Assert
 			objConverter.Received(1).GetByteArray(Arg.Is(objMessage));
-			objQueue.Received(1).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
+			objQueue.Received(1).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 0, 0, 1, 2, 3, 4, 5 })));
 		}
 	}
 }

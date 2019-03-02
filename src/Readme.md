@@ -65,7 +65,7 @@ Benchmarking:
 	  - Websocket TransmitQueue/Thread vs SendAsync
 
 Features:
-  - Create a connection type for IPC
+  - Create a connection type for IPC (WCF) - what can can be used on linux & osx?
 
   - Add bandwidth limiting to WebSocketSharp
 

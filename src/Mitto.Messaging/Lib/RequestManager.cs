@@ -65,62 +65,35 @@ namespace Mitto.Messaging {
 	/// 
 	/// </summary>
 	internal class RequestManager : IRequestManager {
-        ConcurrentDictionary<string, IRequestWrapper> Requests = new ConcurrentDictionary<string, IRequestWrapper>();
+        ConcurrentDictionary<string, IRequest> Requests = new ConcurrentDictionary<string, IRequest>();
 
-        public void Request<T>(IClient pClient, IMessage pMessage, Action<T> pCallback) where T : IResponseMessage {
-            var objRequest = new RequestWrapper<T>(pClient, pMessage, pCallback);
-
-			if (Requests.TryAdd(pMessage.ID, objRequest)) {
-				objRequest.Transmit();
+		public void Request<T>(IRequest pRequest) where T : IResponseMessage {
+			if (Requests.TryAdd(pRequest.Message.ID, pRequest)) {
+				pRequest.RequestTimedOut += PRequest_RequestTimedOut;
+				pRequest.Transmit();
 			}
 		}
 
 		public void SetResponse(IResponseMessage pMessage) {
-			IRequestWrapper objRequest;
+			IRequest objRequest;
 			if (
 				Requests.ContainsKey(pMessage.ID) &&
 				Requests.TryRemove(pMessage.ID, out objRequest)
 			) {
+				objRequest.RequestTimedOut -= PRequest_RequestTimedOut;
 				objRequest.SetResponse(pMessage);
 			}
 		}
 
+		private void PRequest_RequestTimedOut(object sender, IRequest e) {
+			SetResponse(MessagingFactory.Provider.GetResponseMessage(e.Message, ResponseCode.TimeOut));
+		}
 
-        class RequestWrapper<T> : IRequestWrapper where T : IResponseMessage {
-            private Delegate _objAction;
-            private IClient _objClient;
-            private IMessage _objMessage;
-            private IKeepAliveMonitor _objKeepAliveMonitor; 
-
-            public RequestWrapper(IClient pClient, IMessage pMessage, Action<T> pCallback) {
-                _objClient = pClient;
-                _objMessage = pMessage;
-                _objAction = pCallback;
-                _objKeepAliveMonitor = new KeepAliveMonitor(300000);
-                _objKeepAliveMonitor.TimeOut += _objKeepAliveMonitor_TimeOut;
-                _objKeepAliveMonitor.UnResponsive += _objKeepAliveMonitor_UnResponsive;
-            }
-
-            private void _objKeepAliveMonitor_UnResponsive(object sender, EventArgs e) {
-                throw new NotImplementedException();
-            }
-
-            private void _objKeepAliveMonitor_TimeOut(object sender, EventArgs e) {
-                _objKeepAliveMonitor.StartCountDown();
-                //Send Ping
-                if(false) {
-
-                }
-            }
-
-            public void Transmit() {
-                _objClient.Transmit(_objMessage);
-
-            }
-
-            public void SetResponse(IResponseMessage pResponse) {
-                _objAction.DynamicInvoke(pResponse);
-            }
-        }
+		public MessageStatusType GetStatus(string pRequestID) {
+			if(Requests.ContainsKey(pRequestID)) {
+				return MessageStatusType.Queued;
+			}
+			return MessageStatusType.UnKnown;
+		}
 	}
 }

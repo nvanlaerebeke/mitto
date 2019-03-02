@@ -7,6 +7,10 @@ namespace Mitto.Messaging.Response {
 			Message = pMessage.Message;
 		}
 
+		public Echo(Request.Echo pMessage) : base(pMessage, ResponseCode.Success) {
+			Message = pMessage.Message;
+		}
+
 		public string Message { get; set; }
     }
 }

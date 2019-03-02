@@ -204,7 +204,7 @@ namespace Mitto.Messaging {
 		/// <param name="pClient"></param>
 		/// <param name="pMessage"></param>
 		/// <returns></returns>
-		public IAction GetAction(IQueue.IQueue pClient, IMessage pMessage) {
+		public IAction GetAction(IClient pClient, IMessage pMessage) {
 			if (
 				Actions.ContainsKey(pMessage.Type) &&
 				Actions[pMessage.Type].ContainsKey(pMessage.Name)

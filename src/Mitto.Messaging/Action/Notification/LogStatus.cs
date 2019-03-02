@@ -3,7 +3,7 @@
 namespace Mitto.Messaging.Action.Notification
 {
     public class LogStatus: NotificationAction<Messaging.Notification.LogStatus> {
-        public LogStatus(IQueue.IQueue pClient, Messaging.Notification.LogStatus pMessage) : base(pClient, pMessage) { }
+        public LogStatus(IClient pClient, Messaging.Notification.LogStatus pMessage) : base(pClient, pMessage) { }
 
         public override void Start() {
             //only allow this by servers
