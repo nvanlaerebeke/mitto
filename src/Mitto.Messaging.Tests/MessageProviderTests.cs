@@ -18,7 +18,7 @@ namespace Mitto.Messaging.Tests {
 		public void GetActionForUnknownMessageTest() {
 			//Arrange
 			var objClient = Substitute.For<IClient>();
-			var objMessage = Substitute.For<IMessage>();
+			var objMessage = Substitute.For<IRequestMessage>();
 
 			objMessage.Type.Returns(MessageType.Request);
 			objMessage.Name.Returns("NoneExistingMessage");

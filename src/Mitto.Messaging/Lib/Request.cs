@@ -10,17 +10,17 @@ namespace Mitto.Messaging {
 
 		public event EventHandler<IRequest> RequestTimedOut;
 
-		public IMessage Message { get; private set; }
+		public IRequestMessage Message { get; private set; }
 
-		public Request(IClient pClient, IMessage pMessage, Action<T> pCallback, IKeepAliveMonitor pKeepAliveMonitor) {
+		public Request(IClient pClient, IRequestMessage pMessage, Action<T> pCallback, IKeepAliveMonitor pKeepAliveMonitor) {
 			init(pClient, pMessage, pCallback, pKeepAliveMonitor);
 		}
 
-		public Request(IClient pClient, IMessage pMessage, Action<T> pCallback) {
+		public Request(IClient pClient, IRequestMessage pMessage, Action<T> pCallback) {
 			init(pClient, pMessage, pCallback, new KeepAliveMonitor(30000));
 		}
 
-		private void init(IClient pClient, IMessage pMessage, Action<T> pCallback, IKeepAliveMonitor pKeepAliveMonitor) {
+		private void init(IClient pClient, IRequestMessage pMessage, Action<T> pCallback, IKeepAliveMonitor pKeepAliveMonitor) {
 			_objClient = pClient;
 			Message = pMessage;
 			_objAction = pCallback;

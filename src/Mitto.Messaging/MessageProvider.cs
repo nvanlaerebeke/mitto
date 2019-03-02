@@ -187,7 +187,7 @@ namespace Mitto.Messaging {
 		/// <param name="pMessage"></param>
 		/// <param name="pCode"></param>
 		/// <returns></returns>
-		public IResponseMessage GetResponseMessage(IMessage pMessage, ResponseCode pCode) {
+		public IResponseMessage GetResponseMessage(IRequestMessage pMessage, ResponseCode pCode) {
 			Type objResponseType = typeof(Response.ACK); // -- default
 			if (
 				Types.ContainsKey(MessageType.Response) &&
@@ -204,7 +204,7 @@ namespace Mitto.Messaging {
 		/// <param name="pClient"></param>
 		/// <param name="pMessage"></param>
 		/// <returns></returns>
-		public IAction GetAction(IClient pClient, IMessage pMessage) {
+		public IAction GetAction(IClient pClient, IRequestMessage pMessage) {
 			if (
 				Actions.ContainsKey(pMessage.Type) &&
 				Actions[pMessage.Type].ContainsKey(pMessage.Name)

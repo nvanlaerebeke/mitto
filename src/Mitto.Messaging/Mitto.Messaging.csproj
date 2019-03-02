@@ -51,7 +51,6 @@
     <Compile Include="Interfaces\IFrame.cs" />
     <Compile Include="Interfaces\IMessageRequest.cs" />
     <Compile Include="Interfaces\IRequestManager.cs" />
-    <Compile Include="Interfaces\IRequestMessage.cs" />
     <Compile Include="MessageProcessor.cs" />
     <Compile Include="MessageProvider.cs" />
     <Compile Include="Message\Message.cs" />

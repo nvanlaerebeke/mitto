@@ -1,7 +1,5 @@
 ToDo's before v1:
 
-- Mitto.ClientManager references Metto.Messaging.Base - should be Mitto.IMessaging only
-
 - For requets, add a IRequestMessage interface, it's the same as IMessage but it's 
 
   so we have a type difference between the base IMessage and derived IRequestMessage and IResponseMessage

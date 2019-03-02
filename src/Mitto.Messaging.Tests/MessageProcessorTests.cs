@@ -22,7 +22,7 @@ namespace Mitto.Messaging.Tests {
 			var objProvider = Substitute.For<IMessageProvider>();
 			var objRequestManager = Substitute.For<IRequestManager>();
 			var objActionManager = Substitute.For<IActionManager>();
-			var objMessage = Substitute.For<IMessage>();
+			var objMessage = Substitute.For<IRequestMessage>();
 			var objAction = Substitute.For<IAction>();
 
 			objMessage.Type.Returns(pMessageType);
@@ -42,8 +42,8 @@ namespace Mitto.Messaging.Tests {
 				objProvider.Received(1).GetAction(Arg.Any<IClient>(), Arg.Is(objMessage));
 				objActionManager.Received(1).RunAction(Arg.Any<IClient>(), Arg.Is(objMessage), Arg.Is(objAction));
 			} else {
-				objProvider.Received(0).GetAction(Arg.Any<IClient>(), Arg.Any<IMessage>());
-				objActionManager.Received(0).RunAction(Arg.Any<IClient>(), Arg.Any<IMessage>(), Arg.Any<IAction>());
+				objProvider.Received(0).GetAction(Arg.Any<IClient>(), Arg.Any<IRequestMessage>());
+				objActionManager.Received(0).RunAction(Arg.Any<IClient>(), Arg.Any<IRequestMessage>(), Arg.Any<IAction>());
 			}
 		}
 
@@ -73,8 +73,8 @@ namespace Mitto.Messaging.Tests {
 			//Assert
 			objProvider.Received(1).GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
 			objRequestManager.Received(0).SetResponse(Arg.Any<IResponseMessage>());
-			objProvider.Received(0).GetAction(Arg.Any<IClient>(), Arg.Any<IMessage>());
-			objActionManager.Received(0).RunAction(Arg.Any<IClient>(), Arg.Any<IMessage>(), Arg.Any<IAction>());
+			objProvider.Received(0).GetAction(Arg.Any<IClient>(), Arg.Any<IRequestMessage>());
+			objActionManager.Received(0).RunAction(Arg.Any<IClient>(), Arg.Any<IRequestMessage>(), Arg.Any<IAction>());
 		}
 
 
@@ -102,8 +102,8 @@ namespace Mitto.Messaging.Tests {
 
 			//Assert
 			objRequestManager.Received(1).SetResponse(Arg.Is<IResponseMessage>(m => m.Equals(objResponse)));
-			objProvider.Received(0).GetAction(Arg.Any<IClient>(), Arg.Any<IMessage>());
-			objActionManager.Received(0).RunAction(Arg.Any<IClient>(), Arg.Any<IMessage>(), Arg.Any<IAction>());
+			objProvider.Received(0).GetAction(Arg.Any<IClient>(), Arg.Any<IRequestMessage>());
+			objActionManager.Received(0).RunAction(Arg.Any<IClient>(), Arg.Any<IRequestMessage>(), Arg.Any<IAction>());
 		}
 
 		/// <summary>
@@ -114,7 +114,7 @@ namespace Mitto.Messaging.Tests {
 		public void RequestTest() {
 			//Arrange
 			var objClient = Substitute.For<IQueue.IQueue>();
-			var objMessage = Substitute.For<IMessage>();
+			var objMessage = Substitute.For<IRequestMessage>();
 			var objAction = Substitute.For<Action<IResponseMessage>>();
 
 			var objRequestManager = Substitute.For<IRequestManager>();

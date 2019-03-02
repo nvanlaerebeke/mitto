@@ -97,7 +97,7 @@ namespace Mitto {
 			return Requester.Send<R>(new MessageClient(_objClient.ID, this), pRequest);
 		}*/
 
-		public void Request<R>(IMessage pRequest, Action<R> pResponseAction) where R: IResponseMessage {
+		public void Request<R>(IRequestMessage pRequest, Action<R> pResponseAction) where R: IResponseMessage {
 			MessagingFactory.Processor.Request(this, pRequest, pResponseAction);
 		}
 

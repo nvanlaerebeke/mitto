@@ -20,7 +20,7 @@ namespace Mitto.Messaging.Tests {
 		public void UnResponsiveTest() {
 			//Arrange
 			var objClient = Substitute.For<IClient>();
-			var objMessage = Substitute.For<IMessage>();
+			var objMessage = Substitute.For<IRequestMessage>();
 			var objAction = Substitute.For<Action<Response.MessageStatus>>();
 			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
 			var objHandler = Substitute.For<EventHandler<IRequest>>();
@@ -48,7 +48,7 @@ namespace Mitto.Messaging.Tests {
 		public void ActionTimeOutTest() {
 			//Arrange
 			var objClient = Substitute.For<IClient>();
-			var objMessage = Substitute.For<IMessage>();
+			var objMessage = Substitute.For<IRequestMessage>();
 			var objAction = Substitute.For<Action<Response.MessageStatus>>();
 			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
 
@@ -73,7 +73,7 @@ namespace Mitto.Messaging.Tests {
 			var blnActionCalled = false;
 
 			var objClient = Substitute.For<IClient>();
-			var objMessage = Substitute.For<IMessage>();
+			var objMessage = Substitute.For<IRequestMessage>();
 			var objAction = new Action<IResponseMessage>(r => {
 				blnActionCalled = true;
 			});
@@ -96,7 +96,7 @@ namespace Mitto.Messaging.Tests {
 		public void TransmitTest() {
 			//Arrange
 			var objClient = Substitute.For<IClient>();
-			var objMessage = Substitute.For<IMessage>();
+			var objMessage = Substitute.For<IRequestMessage>();
 			var objAction = Substitute.For<Action<IResponseMessage>>();
 
 			//Act

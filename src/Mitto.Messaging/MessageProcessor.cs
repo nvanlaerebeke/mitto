@@ -64,8 +64,8 @@ namespace Mitto.Messaging {
 			var objClient = new Client(pClient, RequestManager);
 			ActionManager.RunAction(
 				objClient, 
-				objMessage, 
-				MessagingFactory.Provider.GetAction(objClient, objMessage)
+				objMessage as IRequestMessage, 
+				MessagingFactory.Provider.GetAction(objClient, objMessage as IRequestMessage)
 			);
 		}
 
@@ -76,7 +76,7 @@ namespace Mitto.Messaging {
 		/// <param name="pClient"></param>
 		/// <param name="pMessage"></param>
 		/// <param name="pCallback"></param>
-		public void Request<T>(IQueue.IQueue pClient, IMessage pMessage, Action<T> pAction) where T : IResponseMessage {
+		public void Request<T>(IQueue.IQueue pClient, IRequestMessage pMessage, Action<T> pAction) where T : IResponseMessage {
 			RequestManager.Request<T>(new Request<T>(new Client(pClient, RequestManager), pMessage, pAction));
 		}
 

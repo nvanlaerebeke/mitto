@@ -8,8 +8,8 @@
 	/// </summary>
 	public interface IMessageProvider {
 		IMessage GetMessage(byte[] pData);
-		IResponseMessage GetResponseMessage(IMessage pMessage, ResponseCode pCode);
-		IAction GetAction(IClient pClient, IMessage pMessage);
+		IResponseMessage GetResponseMessage(IRequestMessage pMessage, ResponseCode pCode);
+		IAction GetAction(IClient pClient, IRequestMessage pMessage);
 		byte[] GetByteArray(IMessage pMessage);
 	}
 }

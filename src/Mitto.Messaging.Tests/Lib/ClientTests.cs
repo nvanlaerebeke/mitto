@@ -15,7 +15,7 @@ namespace Mitto.Messaging.Tests {
 			//Arrange
 			var objRequestManager = Substitute.For<IRequestManager>();
 			var objQueue = Substitute.For<IQueue.IQueue>();
-			var objMessage = Substitute.For<IMessage>();
+			var objMessage = Substitute.For<IRequestMessage>();
 			Action<Response.ACK> objAction = r => { };
 
 			//Act

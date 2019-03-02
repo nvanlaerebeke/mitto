@@ -25,7 +25,7 @@ namespace Mitto.Messaging {
 		/// <typeparam name="R"></typeparam>
 		/// <param name="pMessage"></param>
 		/// <param name="pAction"></param>
-		public void Request<R>(IMessage pMessage, Action<R> pAction) where R : IResponseMessage {
+		public void Request<R>(IRequestMessage pMessage, Action<R> pAction) where R : IResponseMessage {
 			_objRequestManager.Request<R>(new Request<R>(this, pMessage, pAction));
 		}
 

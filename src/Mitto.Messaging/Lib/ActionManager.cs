@@ -7,7 +7,7 @@ namespace Mitto.Messaging {
 	internal class ActionManager : IActionManager {
 		private ConcurrentDictionary<string, IAction> Actions = new ConcurrentDictionary<string, IAction>();
 
-		public void RunAction(IClient pClient, IMessage pMessage, IAction pAction) {
+		public void RunAction(IClient pClient, IRequestMessage pMessage, IAction pAction) {
 			if (pAction == null) { return; } // -- nothing to do
 
 			if (Actions.TryAdd(pMessage.ID, pAction)) {

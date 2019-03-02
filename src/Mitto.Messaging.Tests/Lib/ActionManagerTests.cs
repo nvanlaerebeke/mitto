@@ -16,7 +16,7 @@ namespace Mitto.Messaging.Tests {
 		public void NullActionTest() {
 			//Arrange
 			var objClient = Substitute.For<IClient>();
-			var objMessage = Substitute.For<IMessage>();
+			var objMessage = Substitute.For<IRequestMessage>();
 			var objAction = Substitute.For<IRequestAction>();
 			objMessage.Type.Returns(MessageType.Request);
 			//Act
@@ -45,7 +45,7 @@ namespace Mitto.Messaging.Tests {
 			var objProvider = Substitute.For<IMessageProvider>();
 
 			var objClient = Substitute.For<IClient>();
-			var objMessage = Substitute.For<IMessage>();
+			var objMessage = Substitute.For<IRequestMessage>();
 			var objAction = Substitute.For<IAction>();
 			var objResponse = Substitute.For<IResponseMessage>();
 
@@ -93,7 +93,7 @@ namespace Mitto.Messaging.Tests {
 			var objProvider = Substitute.For<IMessageProvider>();
 
 			var objClient = Substitute.For<IClient>();
-			var objMessage = Substitute.For<IMessage>();
+			var objMessage = Substitute.For<IRequestMessage>();
 			var objAction = Substitute.For<IRequestAction>();
 
 			var objResponse = Substitute.For<IResponseMessage>();
@@ -127,7 +127,7 @@ namespace Mitto.Messaging.Tests {
 		public void ProcessNotificationMessageTest() {
 			//Arrange
 			var objClient = Substitute.For<IClient>();
-			var objMessage = Substitute.For<IMessage>();
+			var objMessage = Substitute.For<IRequestMessage>();
 			var objAction = Substitute.For<INotificationAction>();
 
 			var objProvider = Substitute.For<IMessageProvider>();
@@ -160,7 +160,7 @@ namespace Mitto.Messaging.Tests {
 		public void ProcessRequestMessageTest() {
 			//Arrange
 			var objClient = Substitute.For<IClient>();
-			var objMessage = Substitute.For<IMessage>();
+			var objMessage = Substitute.For<IRequestMessage>();
 			var objAction = Substitute.For<IRequestAction>();
 
 			var objProvider = Substitute.For<IMessageProvider>();
@@ -193,7 +193,7 @@ namespace Mitto.Messaging.Tests {
 		public void GetStatusBusyTest() {
 			//Arrange
 			var objClient = Substitute.For<IClient>();
-			var objMessage = Substitute.For<IMessage>();
+			var objMessage = Substitute.For<IRequestMessage>();
 			var objAction = Substitute.For<IRequestAction>();
 
 			var objProvider = Substitute.For<IMessageProvider>();

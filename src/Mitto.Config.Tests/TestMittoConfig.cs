@@ -63,7 +63,7 @@ namespace Mitto.Tests {
 		public void ConfigMessageProviderTest() {
 			//Arrange
 			var objProvider = Substitute.For<IMessageProvider>();
-			var objMessage = Substitute.For<IMessage>();
+			var objMessage = Substitute.For<IRequestMessage>();
 			var objClient = Substitute.For<IMessaging.IClient>();
 
 			Config.Initialize(new Config.ConfigParams() {
@@ -78,8 +78,8 @@ namespace Mitto.Tests {
 
 			//Assert
 			objProvider.Received(1).GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1,2,3,4})));
-			objProvider.Received(1).GetResponseMessage(Arg.Is<IMessage>(m => m.Equals(objMessage)), Arg.Is(ResponseCode.Success));
-			objProvider.Received(1).GetAction(Arg.Is<IMessaging.IClient>(c => c.Equals(objClient)), Arg.Is<IMessage>(m => m.Equals(objMessage)));
+			objProvider.Received(1).GetResponseMessage(Arg.Is<IRequestMessage>(m => m.Equals(objMessage)), Arg.Is(ResponseCode.Success));
+			objProvider.Received(1).GetAction(Arg.Is<IMessaging.IClient>(c => c.Equals(objClient)), Arg.Is<IRequestMessage>(m => m.Equals(objMessage)));
 		}
 
 		/// <summary>
