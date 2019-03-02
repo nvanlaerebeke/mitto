@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2018
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Server", "Mitto.ServerManager\Mitto.Server.csproj", "{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Client", "Mitto.ClientManager\Mitto.Client.csproj", "{CA4B0313-343A-4837-A437-76060C3DB728}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Main", "Mitto.Main\Mitto.Main.csproj", "{CA4B0313-343A-4837-A437-76060C3DB728}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Connection.Websocket", "Mitto.Connection.Websocket\Mitto.Connection.Websocket.csproj", "{CF99D3F2-2C06-4A9F-BA22-E2E0CA457B58}"
 EndProject
@@ -27,7 +25,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "websocket-sharp", "Lib\webs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto", "Mitto\Mitto.csproj", "{2CE575FC-7F33-45F9-A977-9A40266158CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Messaging.Json", "Mitto.Messaging.Json.Base\Mitto.Messaging.Json.csproj", "{786F3627-BC95-4C92-9240-B0CD3D8BBB58}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Messaging.Json", "Mitto.Messaging.Json\Mitto.Messaging.Json.csproj", "{786F3627-BC95-4C92-9240-B0CD3D8BBB58}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2C9ECECD-58D5-4386-AEF4-AADEC8D38DC8}"
 	ProjectSection(SolutionItems) = preProject
@@ -70,22 +68,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
-		{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}.Debug_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
-		{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}.Debug_Ubuntu|x64.ActiveCfg = Debug|x64
-		{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}.Debug_Ubuntu|x64.Build.0 = Debug|x64
-		{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}.Debug|x64.ActiveCfg = Debug|x64
-		{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}.Debug|x64.Build.0 = Debug|x64
-		{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}.Release_Ubuntu|Any CPU.ActiveCfg = Release|Any CPU
-		{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
-		{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}.Release_Ubuntu|x64.ActiveCfg = Release|x64
-		{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}.Release_Ubuntu|x64.Build.0 = Release|x64
-		{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}.Release|x64.ActiveCfg = Release|x64
-		{A6F9DAE3-8537-49E1-AE2E-13A2DC3FF9B8}.Release|x64.Build.0 = Release|x64
 		{CA4B0313-343A-4837-A437-76060C3DB728}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
 		{CA4B0313-343A-4837-A437-76060C3DB728}.Debug_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
 		{CA4B0313-343A-4837-A437-76060C3DB728}.Debug_Ubuntu|x64.ActiveCfg = Debug|Any CPU

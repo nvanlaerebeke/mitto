@@ -1,11 +1,5 @@
 ToDo's before v1:
 
-- Make sure when clients disconnect everything is cleaned up correctly (leaks)
-  Example:
-    - Mitto.Connection.Websocket.Client.WebsocketClient.Close(): needs adittional Disconnect method(see class for more info)
-	- Requests
-	- ...
-
 - Mitto.ClientManager references Metto.Messaging.Base - should be Mitto.IMessaging only
 
 - For requets, add a IRequestMessage interface, it's the same as IMessage but it's 

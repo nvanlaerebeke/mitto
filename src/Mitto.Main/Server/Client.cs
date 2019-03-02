@@ -2,9 +2,9 @@
 using Mitto.IQueue;
 using System;
 
-namespace Mitto.Server {
-	public class Client {
-		public event EventHandler<Client> Disconnected;
+namespace Mitto {
+	public class ClientConnection {
+		public event EventHandler<ClientConnection> Disconnected;
 		public IClientConnection Connection { get; private set; }
 
 		public string ID {
@@ -13,7 +13,7 @@ namespace Mitto.Server {
 			}
 		}
 
-		public Client(IClientConnection pConnection) {
+		public ClientConnection(IClientConnection pConnection) {
 			Connection = pConnection;
 			Connection.Disconnected += Connection_Disconnected;
 			Connection.Rx += Connection_Rx;
