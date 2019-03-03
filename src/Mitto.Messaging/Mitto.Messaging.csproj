@@ -39,7 +39,9 @@
     <Compile Include="Action\Request\SendToChannel.cs" />
     <Compile Include="Action\Subscribe\Channel.cs" />
     <Compile Include="Action\SubscriptionHandler\Channel.cs" />
+    <Compile Include="Action\SubscriptionHandler\IChannel.cs" />
     <Compile Include="Action\UnSubscribe\Channel.cs" />
+    <Compile Include="Request\ISendToChannel.cs" />
     <Compile Include="Request\ReceiveOnChannel.cs" />
     <Compile Include="Request\SendToChannel.cs" />
     <Compile Include="Subscribe\Channel.cs" />

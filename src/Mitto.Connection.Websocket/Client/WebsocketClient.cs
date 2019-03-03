@@ -57,7 +57,7 @@ namespace Mitto.Connection.Websocket.Client {
 
 		private void _objKeepAliveMonitor_TimeOut(object sender, EventArgs e) {
 			_objKeepAliveMonitor.StartCountDown();
-			if(_objWebSocketClient.Ping()) {
+			if (_objWebSocketClient.Ping()) {
 				_objKeepAliveMonitor.Reset();
 			}
 		}
@@ -73,36 +73,28 @@ namespace Mitto.Connection.Websocket.Client {
 			//The thread must be running before we say the client is 'connected(ready)'
 			StartTransmitQueue();
 			_objKeepAliveMonitor.Start();
-			ThreadPool.QueueUserWorkItem(s => {
-				Connected?.Invoke(this, this);
-			});
+			Connected?.Invoke(this, this);
 		}
 
 		private void Connection_OnError(object sender, IErrorEventArgs e) {
 			this.Close();
-			ThreadPool.QueueUserWorkItem(s => {
-				Disconnected?.Invoke(this, this);
-			});
+			Disconnected?.Invoke(this, this);
 		}
 
 		private void Connection_OnClose(object sender, ICloseEventArgs e) {
 			this.Close();
-			ThreadPool.QueueUserWorkItem(s => {
-				Disconnected?.Invoke(this, this);
-			});
+			Disconnected?.Invoke(this, this);
 		}
 
 		private void Connection_OnMessage(object sender, IMessageEventArgs e) {
 			_objKeepAliveMonitor.Reset();
-			ThreadPool.QueueUserWorkItem(s => {
-				if (e.IsText) {
-					var data = System.Text.Encoding.UTF32.GetBytes(e.Data);
-					Rx?.Invoke(this, data);
-				} else if (e.IsPing) { // -- do nothing, keepalive is handled in this class
-				} else if (e.IsBinary) {
-					Rx?.Invoke(this, e.RawData);
-				}
-			});
+			if (e.IsText) {
+				var data = System.Text.Encoding.UTF32.GetBytes(e.Data);
+				Rx?.Invoke(this, data);
+			} else if (e.IsPing) { // -- do nothing, keepalive is handled in this class
+			} else if (e.IsBinary) {
+				Rx?.Invoke(this, e.RawData);
+			}
 		}
 		#endregion
 

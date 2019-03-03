@@ -17,11 +17,15 @@ namespace Mitto.Messaging.Tests.Action.Request {
 			//Arrange
 			var objProvider = Substitute.For<IMessageProvider>();
 			var objClient = Substitute.For<IClient>();
-			var objMessage = Substitute.For<Messaging.Request.SendToChannel>("MyChannel", "MyMessage");
-			var objSubscriptionHandler = Substitute.For<Messaging.Action.SubscriptionHandler.Channel>();
+			var objMessage = Substitute.For<Messaging.Request.ISendToChannel>();
+			var objSubscriptionHandler = Substitute.For<Messaging.Action.SubscriptionHandler.IChannel>();
 
 			objMessage.ID.Returns("MyRequestID");
-			objProvider.GetSubscriptionHandler<Messaging.Action.SubscriptionHandler.Channel>().Returns(objSubscriptionHandler);
+			objMessage.ChannelName.Returns("MyChannel");
+			objMessage.Message.Returns("MyMessage");
+
+			objProvider.GetSubscriptionHandler<Messaging.Action.SubscriptionHandler.IChannel>().Returns(objSubscriptionHandler);
+			objSubscriptionHandler.Notify(Arg.Is(objClient), Arg.Is(objMessage)).Returns(true);
 
 			Config.Initialize(new Config.ConfigParams() {
 				MessageProvider = objProvider
@@ -36,7 +40,7 @@ namespace Mitto.Messaging.Tests.Action.Request {
 			Assert.IsNotNull(objResponse);
 			Assert.AreEqual("MyRequestID", objResponse.ID);
 			Assert.AreEqual(ResponseCode.Success, objResponse.Status);
-			objProvider.Received(1).GetSubscriptionHandler<Messaging.Action.SubscriptionHandler.Channel>();
+			objProvider.Received(1).GetSubscriptionHandler<Messaging.Action.SubscriptionHandler.IChannel>();
 			objSubscriptionHandler.Received(1).Notify(Arg.Is(objClient), Arg.Is(objMessage));
 		}
 	}

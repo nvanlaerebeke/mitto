@@ -17,8 +17,6 @@ namespace Mitto.Messaging.Tests {
 			//Arrange
 			var objClient = Substitute.For<IClient>();
 			var objMessage = Substitute.For<IRequestMessage>();
-			var objAction = Substitute.For<IRequestAction>();
-			objMessage.Type.Returns(MessageType.Request);
 			//Act
 			new ActionManager().RunAction(objClient, objMessage, null);
 		}
@@ -73,7 +71,7 @@ namespace Mitto.Messaging.Tests {
 			//Assert
 			if (pTransmitExpected) {
 				((IRequestAction)objAction).Received(1).Start();
-				objProvider.Received(1).GetResponseMessage(Arg.Is(objMessage), ResponseCode.Error);
+				objProvider.Received(1).GetResponseMessage(Arg.Any<IRequestMessage>(), ResponseCode.Error);
 				objClient.Received(1).Transmit(Arg.Is(objResponse));
 			} else {
 				((INotificationAction)objAction).Received(1).Start();
@@ -98,15 +96,15 @@ namespace Mitto.Messaging.Tests {
 
 			var objResponse = Substitute.For<IResponseMessage>();
 
-			objMessage.Type.Returns(MessageType.Request);
-			objAction.When(a => a.Start()).Do(a => throw new MessagingException(ResponseCode.Cancelled));
-
-			objProvider.GetResponseMessage(Arg.Is(objMessage), ResponseCode.Cancelled).Returns(objResponse);
-			objProvider.GetByteArray(Arg.Is(objResponse)).Returns(new byte[] { 1, 2, 3, 4, 5 });
-
 			Config.Initialize(new Config.ConfigParams() {
 				MessageProvider = objProvider
 			});
+
+			objMessage.Type.Returns(MessageType.Request);
+			objAction.When(a => a.Start()).Do(a => throw new MessagingException(ResponseCode.Cancelled));
+
+			objProvider.GetResponseMessage(Arg.Any<IRequestMessage>(), Arg.Any<ResponseCode>()).Returns(objResponse);
+			objProvider.GetByteArray(Arg.Any<IMessage>()).Returns(new byte[] { 1, 2, 3, 4, 5 });
 
 			//Act
 			new ActionManager().RunAction(objClient, objMessage, objAction);
@@ -193,7 +191,6 @@ namespace Mitto.Messaging.Tests {
 		/// </summary>
 		[Test]
 		public void GetStatusBusyTest() {
-			Assert.Ignore();
 			//Arrange
 			var objClient = Substitute.For<IClient>();
 			var objMessage = Substitute.For<IRequestMessage>();

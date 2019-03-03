@@ -6,7 +6,7 @@ namespace Mitto.Messaging.Action.UnSubscribe {
 		public Channel(IClient pClient, Messaging.UnSubscribe.Channel pRequest) : base (pClient, pRequest) { }
 
 		public override IResponseMessage Start() {
-			if (MessagingFactory.Provider.GetSubscriptionHandler<SubscriptionHandler.Channel>().UnSub(Client, Request)) {
+			if (MessagingFactory.Provider.GetSubscriptionHandler<SubscriptionHandler.IChannel>().UnSub(Client, Request)) {
 				return new Response.ACK(Request, ResponseCode.Success);
 			}
 			return new Response.ACK(Request, ResponseCode.Error);

@@ -141,7 +141,7 @@ namespace Mitto.Messaging.Tests {
 			Assert.IsTrue(objProvider.Actions[MessageType.Sub].Count.Equals(1));
 			Assert.IsTrue(objProvider.Actions[MessageType.UnSub].Count.Equals(1));
 
-			Assert.IsTrue(objProvider.SubscriptionHandlers.Count.Equals(1));
+			Assert.IsTrue(objProvider.SubscriptionHandlers.Count.Equals(2));
 		}
 
 
@@ -178,7 +178,7 @@ namespace Mitto.Messaging.Tests {
 			Assert.IsTrue(objProvider.Actions[MessageType.Sub].Count.Equals(2));
 			Assert.IsTrue(objProvider.Actions[MessageType.UnSub].Count.Equals(2));
 
-			Assert.IsTrue(objProvider.SubscriptionHandlers.Count.Equals(2));
+			Assert.IsTrue(objProvider.SubscriptionHandlers.Count.Equals(3));
 		}
 
 		[Test]

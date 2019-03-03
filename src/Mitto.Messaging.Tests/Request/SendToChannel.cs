@@ -16,7 +16,6 @@ namespace Mitto.Messaging.Tests.Message.Request {
 			Assert.AreEqual(MessageType.Request, objMessage.Type);
 			Assert.AreEqual("Channel", objMessage.ChannelName);
 			Assert.AreEqual("MyMessage", objMessage.Message);
-			Assert.Ignore();
 		}
 	}
 }

@@ -28,17 +28,17 @@ namespace Mitto.Messaging {
 	/// ToDo: Move messages under Mitto.Messaging.Message so that it's uniform with actions
 	/// </summary>
 	public class MessageProvider : IMessageProvider {
-		
+
 		/// <summary>
 		/// The available IMessage classes
 		/// </summary>
 		internal Dictionary<MessageType, Dictionary<string, Type>> Types { get; } = new Dictionary<MessageType, Dictionary<string, Type>>();
-		
+
 		/// <summary>
 		/// The available IAction classes
 		/// </summary>
 		internal Dictionary<MessageType, Dictionary<string, Type>> Actions { get; } = new Dictionary<MessageType, Dictionary<string, Type>>();
-		
+
 		/// <summary>
 		/// The available SubscriptionHandler classes
 		/// </summary>
@@ -100,8 +100,8 @@ namespace Mitto.Messaging {
 			};
 
 			//Messages
-			foreach(var objKvp in dicMessageNamespaces) {
-				foreach(var objType in GetByNamespace(pNamespace + objKvp.Value)) {
+			foreach (var objKvp in dicMessageNamespaces) {
+				foreach (var objType in GetByNamespace(pNamespace + objKvp.Value)) {
 					AddMessageType(objKvp.Key, objType);
 				}
 			}
@@ -187,13 +187,22 @@ namespace Mitto.Messaging {
 		/// <param name="pName"></param>
 		/// <param name="pType"></param>
 		private void AddSubscriptionHandlerType(string pName, Type pType) {
-			if(pType.IsAbstract) { return; }
+			if (pType.IsAbstract) { return; }
+
+			var arrKeys = new List<string>() { pName };
+			foreach (var objInterface in pType.GetInterfaces()) {
+				if(objInterface.Namespace.Equals(pType.Namespace)) {
+					arrKeys.Add(objInterface.Name);
+				}
+			}
 
 			var obj = Activator.CreateInstance(pType);
-			if (!SubscriptionHandlers.ContainsKey(pName)) {
-				SubscriptionHandlers.Add(pName, obj);
-			} else {
-				SubscriptionHandlers[pName] = obj;
+			foreach (var strKey in arrKeys) {
+				if (!SubscriptionHandlers.ContainsKey(strKey)) {
+					SubscriptionHandlers.Add(strKey, obj);
+				} else {
+					SubscriptionHandlers[strKey] = obj;
+				}
 			}
 		}
 
@@ -209,20 +218,23 @@ namespace Mitto.Messaging {
 			foreach (
 				var ass in AppDomain.CurrentDomain.GetAssemblies()
 			) {
-				foreach (
+				try {
 					//foreach loaded assembly, get all it's types that match the given namespace
-					var objType in (from t in ass.GetTypes() where t.IsClass && t.Namespace == pNamespace select t)
-				) {
-					if (
-						objType.GetInterfaces().Contains(typeof(IRequestMessage)) ||
-						objType.GetInterfaces().Contains(typeof(IResponseMessage)) ||
-						objType.GetInterfaces().Contains(typeof(IAction)) ||
-						objType.Namespace.Contains(".Action.SubscriptionHandler") //is a generic type, easy solution is to just check the namespace string instead of  IsSubclassOf(typeof(Action.BaseAction<T>))
-						//objType.IsSubclassOf(typeof(NotificationMessage)) ||
+					var arrTypes = (from t in ass.GetTypes() where t.IsClass && t.Namespace == pNamespace select t);
+					foreach (
+						var objType in arrTypes
 					) {
-						lstTypes.Add(objType);
+						if (
+							objType.GetInterfaces().Contains(typeof(IRequestMessage)) ||
+							objType.GetInterfaces().Contains(typeof(IResponseMessage)) ||
+							objType.GetInterfaces().Contains(typeof(IAction)) ||
+							objType.Namespace.Contains(".Action.SubscriptionHandler") //is a generic type, easy solution is to just check the namespace string instead of  IsSubclassOf(typeof(Action.BaseAction<T>))
+							//objType.IsSubclassOf(typeof(NotificationMessage)) ||
+						) {
+							lstTypes.Add(objType);
+						}
 					}
-				}
+				} catch (Exception) { }
 			}
 			return lstTypes;
 		}

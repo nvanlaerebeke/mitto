@@ -36,13 +36,17 @@ namespace Mitto.Messaging.Tests.Action.SubscriptionHandler {
 		/// </summary>
 		[Test]
 		public void UnSub() {
-			Assert.Ignore();
 			//Arrange
 			var objClient1 = Substitute.For<IClient>();
 			var objClient2 = Substitute.For<IClient>();
 			var objSendMessage = Substitute.For<Messaging.Request.SendToChannel>("MyChannel", "MyMessage");
 			var objSubMessage = Substitute.For<Messaging.Subscribe.Channel>("MyChannel");
 			var objUnSubMessage = Substitute.For<Messaging.UnSubscribe.Channel>("MyChannel");
+
+			objClient1.ID.Returns("Client1");
+			objClient1.Equals(Arg.Is(objClient1)).Returns(true);
+
+			objClient2.ID.Returns("Client2");
 
 			//Act
 			var obj = new Messaging.Action.SubscriptionHandler.Channel();
@@ -55,6 +59,9 @@ namespace Mitto.Messaging.Tests.Action.SubscriptionHandler {
 			objClient2.Received(1).Transmit(Arg.Any<Messaging.Request.ReceiveOnChannel>());
 
 			//Act2
+			objClient1.ClearReceivedCalls();
+			objClient2.ClearReceivedCalls();
+
 			obj.UnSub(objClient2, objUnSubMessage);
 			obj.Notify(objClient1, objSendMessage);
 

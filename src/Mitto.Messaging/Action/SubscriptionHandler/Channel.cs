@@ -9,11 +9,11 @@ namespace Mitto.Messaging.Action.SubscriptionHandler {
 		ISubscriptionHandler<
 			Mitto.Messaging.Subscribe.Channel,
 			Mitto.Messaging.UnSubscribe.Channel,
-			Mitto.Messaging.Request.SendToChannel
-		> {
+			Mitto.Messaging.Request.ISendToChannel
+		>, IChannel {
 		private ConcurrentDictionary<string, List<IClient>> _dicSubscriptions = new ConcurrentDictionary<string, List<IClient>>();
 
-		public bool Notify(IClient pSender, SendToChannel pNotifyMessage) {
+		public bool Notify(IClient pSender, ISendToChannel pNotifyMessage) {
 			try {
 				if (_dicSubscriptions.ContainsKey(pNotifyMessage.ChannelName)) {
 					foreach (var objClient in _dicSubscriptions[pNotifyMessage.ChannelName]) {
@@ -51,7 +51,8 @@ namespace Mitto.Messaging.Action.SubscriptionHandler {
 			try {
 				if (!_dicSubscriptions.ContainsKey(pMessage.ChannelName)) { return true; } // -- nothing to do 
 				lock (_dicSubscriptions[pMessage.ChannelName]) {
-					return _dicSubscriptions[pMessage.ChannelName].Remove(pClient);
+					_dicSubscriptions[pMessage.ChannelName].RemoveAll(c => c.ID.Equals(pClient.ID));
+					return true;
 				}
 			} catch (Exception) {
 				return false;
