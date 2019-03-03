@@ -22,13 +22,14 @@ namespace Mitto.Connection.Websocket.Tests.Server {
 
 			//Act
 			var objServer = new WebsocketServer(objWebSocketServer);
-			objServer.Start(new ServerParams(IPAddress.Parse("127.0.0.1"), 80), objAction);
+			objServer.Start(new ServerParams(IPAddress.Parse("127.0.0.1"), 80) { ConnectionTimeoutSeconds = 666 }, objAction);
 			
 			//Assert
 			objWebSocketServer.Received(1).Start(
 				Arg.Is<IPAddress>(ip => ip.Equals(IPAddress.Parse("127.0.0.1"))),
 				Arg.Is<int>(p => p.Equals(80))
 			);
+			Assert.AreEqual(666, objWebSocketServer.ConnectionTimeoutSeconds);
 		}
 
 
@@ -49,7 +50,7 @@ namespace Mitto.Connection.Websocket.Tests.Server {
 
 			//Act
 			var objServer = new WebsocketServer(objWebSocketServer);
-			objServer.Start(new ServerParams(IPAddress.Parse("127.0.0.1"), 443, file, ""), objAction);
+			objServer.Start(new ServerParams(IPAddress.Parse("127.0.0.1"), 443, file, "") { ConnectionTimeoutSeconds = 666 }, objAction);
 
 			//Assert
 			objWebSocketServer.Received(1).Start(
@@ -57,6 +58,8 @@ namespace Mitto.Connection.Websocket.Tests.Server {
 				Arg.Is<int>(p => p.Equals(443)),
 				Arg.Is<X509Certificate2>(c => c != null) //could test the raw data?
 			);
+			Assert.AreEqual(666, objWebSocketServer.ConnectionTimeoutSeconds);
+
 		}
 
 		[Test]

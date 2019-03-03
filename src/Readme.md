@@ -1,11 +1,5 @@
 ToDo's before v1:
 
-- MessageProvider.LoadTypes called twice
-
-- Change namepace order for messages
-  Now it's: <Project>.Message.Request.<Class>
-  Sould be <Project>.Request, will change project structure a bit
-
 - Keepalive for message processing between Client -> Server -> Queue -> Worker
     Make it so that ping has more then 1 seconds time to respond when using "bool WebSocket.Ping()"
 	Might have to refactor a bit for passing properties to Mitto.Connection.Websockets, 
@@ -35,6 +29,12 @@ ToDo's before v1:
 	  
 	  This is to prevent what I did for the test Echo message and use the "Request" in the property to return the message
 	  This is obviously not possible, so we should prevent it so that a developer cannot make that mistake
+
+- Proxy support for web based connections 
+
+- Disconnect does not work?
+
+- Add logging
 
 After v1:
 

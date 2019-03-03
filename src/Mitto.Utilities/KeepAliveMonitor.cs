@@ -22,12 +22,12 @@ namespace Mitto.Utilities {
 		/// <summary>
 		/// Creates the KeepAliveMonitor with the provided timeout
 		/// </summary>
-		/// <param name="pTimeOut">Timeout in seconds</param>
-		public KeepAliveMonitor(int pTimeOut) {
-			_objKeepAliveTimer = new Timer(pTimeOut);
+		/// <param name="pTimeout">Timeout in seconds</param>
+		public KeepAliveMonitor(int pTimeout) {
+			_objKeepAliveTimer = new Timer(pTimeout);
 			_objKeepAliveTimer.Elapsed += _objKeepAliveTimerSender_Elapsed;
 
-			_objPingTimer = new Timer(pTimeOut);
+			_objPingTimer = new Timer(pTimeout);
 			_objPingTimer.Elapsed += _objPingTimer_Elapsed;
 		}
 
@@ -101,6 +101,17 @@ namespace Mitto.Utilities {
 				_objPingTimer = null;
 			} catch (Exception) { }
 		}
+
+		public void SetInterval(int pSeconds) {
+			if(_objPingTimer != null) {
+				_objPingTimer.SetTimeout(pSeconds);
+			}
+			if (_objKeepAliveTimer != null) {
+				_objKeepAliveTimer.SetTimeout(pSeconds);
+			}
+			Reset();
+		}
+
 
 		/// <summary>
 		/// Class deconstructor that cleans up so there is memory or timers in use that are not used

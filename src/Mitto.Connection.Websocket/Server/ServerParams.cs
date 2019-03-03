@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Mitto.Messaging.Tests.Action.Request")]
 [assembly: InternalsVisibleTo("Mitto.Connection.Websocket.Tests.Server")]
 namespace Mitto.Connection.Websocket {
-	public class ServerParams : IServerParams {
+	public class ServerParams : Params, IServerParams {
 
 		/// <summary>
 		/// Parameters the Websocket server will use to start
@@ -33,6 +33,8 @@ namespace Mitto.Connection.Websocket {
 			CertPath = pCertPath;
 			CertPassword = pCertPassword;
 		}
+
+		#region Required Parameters
 		/// <summary>
 		/// IP Address to listen on 
 		///
@@ -60,5 +62,6 @@ namespace Mitto.Connection.Websocket {
 		/// default: none
 		/// </summary>
 		public string CertPath { get; } = "";
+		#endregion
 	}
 }

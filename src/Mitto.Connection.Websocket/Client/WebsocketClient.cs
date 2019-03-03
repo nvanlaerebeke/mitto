@@ -30,10 +30,12 @@ namespace Mitto.Connection.Websocket.Client {
 		}
 
 		#region Constructor & Connecting
-		public void ConnectAsync(IClientParams pParams) { //string pHostname, int pPort, bool pSecure) {
+		public void ConnectAsync(IClientParams pParams) {
 			if (!(pParams is ClientParams objParams)) {
 				throw new Exception("Incorrect parameters for Websocket client");
 			}
+			_objWebSocketClient.ConnectionTimeoutSeconds = objParams.ConnectionTimeoutSeconds;
+			_objKeepAliveMonitor.SetInterval(objParams.ConnectionTimeoutSeconds);
 
 			_objWebSocketClient.OnOpen += Connection_OnOpen;
 			_objWebSocketClient.OnClose += Connection_OnClose;

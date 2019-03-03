@@ -123,7 +123,12 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 			var objClient = new WebsocketClient(objWebSocketClient, objKeepAliveMonitor);
 
 			//Act
-			objClient.ConnectAsync(new ClientParams() { Hostname = "localhost", Port = 80, Secure = false });
+			objClient.ConnectAsync(new ClientParams() {
+				Hostname = "localhost",
+				Port = 80,
+				Secure = false,
+				ConnectionTimeoutSeconds = 666
+			});
 
 			//Assert
 			objWebSocketClient.Received(1).OnOpen += Arg.Any<EventHandler>();
@@ -132,6 +137,8 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 			objWebSocketClient.Received(1).OnMessage += Arg.Any<EventHandler<IMessageEventArgs>>();
 			objKeepAliveMonitor.Received(1).TimeOut += Arg.Any<EventHandler>();
 			objKeepAliveMonitor.Received(1).UnResponsive += Arg.Any<EventHandler>();
+
+			Assert.AreEqual(666, objWebSocketClient.ConnectionTimeoutSeconds);
 		}
 
 		/// <summary>

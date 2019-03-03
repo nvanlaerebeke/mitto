@@ -17,7 +17,7 @@ namespace Mitto.Messaging {
 		}
 
 		public Request(IClient pClient, IRequestMessage pMessage, Action<T> pCallback) {
-			init(pClient, pMessage, pCallback, new KeepAliveMonitor(30000));
+			init(pClient, pMessage, pCallback, new KeepAliveMonitor(30));
 		}
 
 		private void init(IClient pClient, IRequestMessage pMessage, Action<T> pCallback, IKeepAliveMonitor pKeepAliveMonitor) {

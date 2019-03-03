@@ -13,5 +13,6 @@ namespace Mitto.Utilities {
 		void Reset();
 
 		void Dispose();
+		void SetTimeout(int pSeconds);
 	}
 }

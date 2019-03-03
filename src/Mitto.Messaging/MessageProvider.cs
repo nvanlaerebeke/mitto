@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Mitto.Messaging.Tests")]
@@ -14,18 +13,20 @@ namespace Mitto.Messaging {
 	///     - Action
 	///         - Notification
 	///         - Request
-	///     - Message
-	///         - Notification
-	///         - Request
-	///         - Response
+	///         - Subscribe
+	///         - SubscriptionHandler
+	///         - UnSubscribe
+	///     - Notification
+	///     - Request
+	///     - Response
+	///     - Subscribe
+	///     - UnSubscribe
 	///         
 	/// Examples:
-	///     <Namespace>.Request.Echo
-	///     <Namespace>.Response.Echo
-	///     <Namespace>.Action.Request.Echo
+	///     <Namespace>.Request.EchoRequest
+	///     <Namespace>.Response.EchoResponse
+	///     <Namespace>.Action.Request.EchoRequestAction
 	///     
-	/// 
-	/// ToDo: Move messages under Mitto.Messaging.Message so that it's uniform with actions
 	/// </summary>
 	public class MessageProvider : IMessageProvider {
 
@@ -49,9 +50,6 @@ namespace Mitto.Messaging {
 		/// The available SubscriptionHandler classes
 		/// </summary>
 		internal Dictionary<string, object> SubscriptionHandlers { get; } = new Dictionary<string, object>();
-
-		
-
 
 		/// <summary>
 		/// Loads the types present in the specified Namespaces

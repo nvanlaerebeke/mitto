@@ -7,8 +7,9 @@ namespace Mitto.Utilities {
 
 		public Timer(int pInterval) {
 			_objTimer = new System.Timers.Timer() {
-				Interval = pInterval,
-				AutoReset = false
+				Interval = pInterval * 1000,
+				AutoReset = false,
+				Enabled = true
 			};
 			_objTimer.Elapsed += _objTimer_Elapsed;
 		}
@@ -25,6 +26,11 @@ namespace Mitto.Utilities {
 		public void Reset() {
 			_objTimer.Stop();
 			_objTimer.Start();
+		}
+
+		public void SetTimeout(int pSeconds) {
+			_objTimer.Interval = pSeconds * 1000;
+			Reset();
 		}
 
 		public void Start() {

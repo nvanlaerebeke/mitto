@@ -1,5 +1,5 @@
 ﻿namespace Mitto.Connection.Websocket {
-	public class ClientParams : IConnection.IClientParams {
+	public class ClientParams : Params, IConnection.IClientParams {
 		/// <summary>
 		/// Hostname to connect to 
 		///

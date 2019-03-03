@@ -10,6 +10,8 @@ namespace Mitto.Connection.Websocket {
 		event EventHandler<IErrorEventArgs> OnError;
 		event EventHandler<IMessageEventArgs> OnMessage;
 
+		int ConnectionTimeoutSeconds { get; set; }
+
 		WebSocketState ReadyState { get; }
 
 		void ConnectAsync(string pUrl);

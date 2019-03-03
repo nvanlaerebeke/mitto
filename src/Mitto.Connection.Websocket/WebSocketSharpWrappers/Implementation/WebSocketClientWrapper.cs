@@ -6,13 +6,16 @@ namespace Mitto.Connection.Websocket {
 	internal class WebSocketClientWrapper : IWebSocketClient {
 		private WebSocket _objWebSocket;
 
-		public WebSocketClientWrapper() { }
 		public WebSocketState ReadyState => _objWebSocket.ReadyState;
+
+		public int ConnectionTimeoutSeconds { get; set; } = 30;
 
 		public event EventHandler OnOpen;
 		public event EventHandler<ICloseEventArgs> OnClose;
 		public event EventHandler<IErrorEventArgs> OnError;
 		public event EventHandler<IMessageEventArgs> OnMessage;
+
+		public WebSocketClientWrapper() { }
 
 		public void Close() {
 			_objWebSocket.OnOpen -= _objWebSocket_OnOpen;
@@ -36,7 +39,7 @@ namespace Mitto.Connection.Websocket {
 		/// <param name="pUrl"></param>
 		public void ConnectAsync(string pUrl) {
 			_objWebSocket = new WebSocket(pUrl) {
-				WaitTime = new TimeSpan(0, 0, 30),
+				WaitTime = new TimeSpan(0, 0, ConnectionTimeoutSeconds),
 				EmitOnPing = true
 			};
 			_objWebSocket.OnOpen += _objWebSocket_OnOpen;
@@ -105,6 +108,12 @@ namespace Mitto.Connection.Websocket {
 			_objWebSocket.Send(pData);
 		}
 
+		/// <summary>
+		/// Sends a ping over the connection to see if it is still alive
+		/// 
+		/// Note: Blocks until a response is received
+		/// </summary>
+		/// <returns></returns>
 		public bool Ping() {
 			return _objWebSocket.Ping();
 		}

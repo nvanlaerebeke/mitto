@@ -8,5 +8,6 @@ namespace Mitto.Utilities {
 		void Start();
 		void Stop();
 		void StartCountDown();
+		void SetInterval(int pSeconds);
 	}
 }

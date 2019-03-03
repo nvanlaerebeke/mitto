@@ -7,6 +7,8 @@ namespace Mitto.Connection.Websocket {
 	interface IWebSocketServer {
 		event EventHandler<IWebSocketBehavior> ClientConnected;
 
+		int ConnectionTimeoutSeconds { get; set; } 
+
 		void Start(IPAddress pIPAddress, int pPort);
 		void Start(IPAddress pIPAddress, int pPort, X509Certificate2 pCert);
 

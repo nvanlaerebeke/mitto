@@ -8,6 +8,8 @@ namespace Mitto.Connection.Websocket {
 	internal class WebSocketServerWrapper : IWebSocketServer {
 		private WebSocketServer _objWebSocket;
 
+		public int ConnectionTimeoutSeconds { get; set; } = 30;
+
 		public event EventHandler<IWebSocketBehavior> ClientConnected;
 
 		public void Start(IPAddress pIPAddress, int pPort) {
@@ -20,7 +22,7 @@ namespace Mitto.Connection.Websocket {
 
 		private void StartServer(IPAddress pIPAddress, int pPort, X509Certificate2 pCert = null) {
 			_objWebSocket = new WebSocketServer(pIPAddress, pPort, (pCert != null));
-			_objWebSocket.WaitTime = new TimeSpan(0, 0, 30);
+			_objWebSocket.WaitTime = new TimeSpan(0, 0, ConnectionTimeoutSeconds);
 
 			if (pCert != null) {
 				_objWebSocket.SslConfiguration.ServerCertificate = pCert;

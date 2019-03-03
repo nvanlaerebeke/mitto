@@ -38,6 +38,7 @@
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Client\WebsocketClient.cs" />
+    <Compile Include="Params.cs" />
     <Compile Include="Server\ServerParams.cs" />
     <Compile Include="Client\ClientParams.cs" />
     <Compile Include="ConnectionProvider.cs" />
