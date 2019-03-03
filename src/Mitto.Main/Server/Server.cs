@@ -22,11 +22,8 @@ namespace Mitto {
 		/// <param name="pAction">Action that will be run when a client connects</param>
 		public void Start(ServerParams pParams, Action<ClientConnection> pAction) {
 			_objAction = pAction;
-			pParams.ClientConnected = ClientConnected;
+			pParams.ClientConnected = new Action<IClientConnection>(c => { _objAction.Invoke(new ClientConnection(c)); });
 			_objWsServer.Start(pParams);
-		}
-		private void ClientConnected(IClientConnection pClient) {
-			_objAction.Invoke(new ClientConnection(pClient));
 		}
 	}
 }

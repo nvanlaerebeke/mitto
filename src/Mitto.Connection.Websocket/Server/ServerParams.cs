@@ -57,10 +57,5 @@ namespace Mitto.Connection.Websocket {
 		/// default: none
 		/// </summary>
 		public string CertPath { get; } = "";
-
-		/// <summary>
-		/// Action to execute when a client connects
-		/// </summary>
-		public new Action<IClientConnection> ClientConnected { get; set; }
 	}
 }
