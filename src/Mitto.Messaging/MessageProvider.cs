@@ -187,7 +187,11 @@ namespace Mitto.Messaging {
 		/// <param name="pName"></param>
 		/// <param name="pType"></param>
 		private void AddSubscriptionHandlerType(string pName, Type pType) {
-			if (pType.IsAbstract) { return; }
+			if (
+				pType.IsAbstract ||
+				!pType.GetInterfaces().Any() // -- need this else NSubstitute will add it's generated class as well
+											 //    would be beter to have the actual interface here but it's generic, this is easier 
+			) { return; }
 
 			var arrKeys = new List<string>() { pName };
 			foreach (var objInterface in pType.GetInterfaces()) {
