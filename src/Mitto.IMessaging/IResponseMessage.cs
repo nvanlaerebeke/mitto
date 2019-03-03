@@ -1,6 +1,6 @@
 ﻿namespace Mitto.IMessaging {
 	public interface IResponseMessage : IMessage {
-		ResponseCode Status { get; }
+		ResponseStatus Status { get; }
 		IMessage Request { get;  }
     }
 }

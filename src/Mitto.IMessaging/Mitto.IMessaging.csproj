@@ -50,6 +50,7 @@
     <Compile Include="MessagingFactory.cs" />
     <Compile Include="MessageType.cs" />
     <Compile Include="ResponseCode.cs" />
+    <Compile Include="ResponseStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mitto.IQueue\Mitto.IQueue.csproj">

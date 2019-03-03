@@ -35,7 +35,7 @@ namespace Mitto.Messaging.Tests.Action.UnSubscribe {
 			Assert.NotNull(obj);
 			Assert.NotNull(objResponse);
 			Assert.AreEqual("MyRequestID", objResponse.ID);
-			Assert.AreEqual(ResponseCode.Success, objResponse.Status);
+			Assert.AreEqual(ResponseState.Success, objResponse.Status.State);
 			objProvider.Received(1).GetSubscriptionHandler<Messaging.Action.SubscriptionHandler.IChannelSubscriptionHandler>();
 			objSubscriptionHandler.Received(1).UnSub(Arg.Is(objClient), Arg.Is(objRequestMessage));
 		}

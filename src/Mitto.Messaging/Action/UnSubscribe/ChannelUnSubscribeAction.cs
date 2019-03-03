@@ -9,9 +9,9 @@ namespace Mitto.Messaging.Action.UnSubscribe {
 
 		public override IResponseMessage Start() {
 			if (MessagingFactory.Provider.GetSubscriptionHandler<SubscriptionHandler.IChannelSubscriptionHandler>().UnSub(Client, Request)) {
-				return new Response.ACKResponse(Request, ResponseCode.Success);
+				return new Response.ACKResponse(Request);
 			}
-			return new Response.ACKResponse(Request, ResponseCode.Error);
+			return new Response.ACKResponse(Request, new ResponseStatus(ResponseState.Error, $"Failed to unsubscribe from {Request.ChannelName}"));
 		}
 	}
 }

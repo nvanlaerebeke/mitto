@@ -1,7 +1,5 @@
 ToDo's before v1:
 
-- Threading - only need ThreadPool.QueueWorkerItem when processing starts (example the Action<T> and callback methods)
-
 - Custom error codes
 
 - Make the Response messages type-safe, don't require IMessage but the actual Request type where needed

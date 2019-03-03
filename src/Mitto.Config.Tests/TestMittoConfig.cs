@@ -75,12 +75,12 @@ namespace Mitto.Tests {
 
 			//Act
 			MessagingFactory.Provider.GetMessage(new byte[] { 1, 2, 3, 4 });
-			MessagingFactory.Provider.GetResponseMessage(objMessage, ResponseCode.Success);
+			MessagingFactory.Provider.GetResponseMessage(objMessage, ResponseState.Success);
 			MessagingFactory.Provider.GetAction(objClient, objMessage);
 
 			//Assert
 			objProvider.Received(1).GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1,2,3,4})));
-			objProvider.Received(1).GetResponseMessage(Arg.Is<IRequestMessage>(m => m.Equals(objMessage)), Arg.Is(ResponseCode.Success));
+			objProvider.Received(1).GetResponseMessage(Arg.Is<IRequestMessage>(m => m.Equals(objMessage)), Arg.Is(ResponseState.Success));
 			objProvider.Received(1).GetAction(Arg.Is(objClient), Arg.Is<IRequestMessage>(m => m.Equals(objMessage)));
 		}
 

@@ -1,6 +1,7 @@
 ﻿using ChatSampleClient.Action.Request;
 using Mitto;
 using Mitto.Connection.Websocket;
+using Mitto.IMessaging;
 using Mitto.Messaging.Response;
 using System;
 using System.Threading;
@@ -29,7 +30,7 @@ namespace ChatSampleClient {
 				Console.WriteLine("Client Connected");
 				_objClient.Request<ACKResponse>(
 					new ChatSample.Messaging.Subscribe.ChatSubscribe("MyChannel"), (r => {
-						if (r.Status == Mitto.IMessaging.ResponseCode.Success) {
+						if (r.Status.State == ResponseState.Success) {
 							Start(); // -- start listening for messages to send to the channel
 						} else {
 							Console.WriteLine("Failed Subscribing to Channel");
@@ -64,7 +65,7 @@ namespace ChatSampleClient {
 						),
 						(r => {
 							//Show the failure on error
-							if (r.Status != Mitto.IMessaging.ResponseCode.Success) {
+							if (r.Status.State != ResponseState.Success) {
 								Console.WriteLine($"Send Failed: {text}");
 							}
 						})

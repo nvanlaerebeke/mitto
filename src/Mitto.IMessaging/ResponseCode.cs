@@ -1,5 +1,5 @@
 ﻿namespace Mitto.IMessaging {
-    public enum ResponseCode {
+    public enum ResponseState {
         Success = 0,
         Error = 1,
 		Cancelled = 2,

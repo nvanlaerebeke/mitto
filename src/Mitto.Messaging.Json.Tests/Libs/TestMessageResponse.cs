@@ -2,9 +2,9 @@
 
 namespace Mitto.Messaging.Json.Tests.Libs {
 	public class TestMessageResponse : IResponseMessage {
-		public TestMessageResponse(IMessage pRequest, ResponseCode pResponse) {
+		public TestMessageResponse(IMessage pRequest, ResponseStatus pStatus) {
 			Request = pRequest;
-			Status = pResponse;
+			Status = pStatus;
 		}
 		public string ID => "MyID";
 
@@ -12,7 +12,7 @@ namespace Mitto.Messaging.Json.Tests.Libs {
 
 		public MessageType Type => MessageType.Response;
 
-		public ResponseCode Status { get; set; }
+		public ResponseStatus Status { get; set; }
 
 		public IMessage Request { get; set; }
 

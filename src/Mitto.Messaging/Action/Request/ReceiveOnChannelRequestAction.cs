@@ -11,7 +11,7 @@ namespace Mitto.Messaging.Action.Request {
 
 		public override IResponseMessage Start() {
 			ChannelMessageReceived?.Invoke(Request.ChannelName, Request.Message);
-			return new ACKResponse(Request, ResponseCode.Success);
+			return new ACKResponse(Request);
 		}
 	}
 }

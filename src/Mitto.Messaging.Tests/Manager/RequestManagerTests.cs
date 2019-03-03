@@ -55,7 +55,7 @@ namespace Mitto.Messaging.Tests {
 			var objResponse = Substitute.For<IResponseMessage>();
 
 			objRequest.Message.Returns(Substitute.For<IRequestMessage>());
-			objProvider.GetResponseMessage(Arg.Is(objRequest.Message), ResponseCode.TimeOut).Returns(objResponse);
+			objProvider.GetResponseMessage(Arg.Is(objRequest.Message), ResponseState.TimeOut).Returns(objResponse);
 
 			Config.Initialize(new Config.ConfigParams() {
 				MessageProvider = objProvider
@@ -67,7 +67,7 @@ namespace Mitto.Messaging.Tests {
 			objRequest.RequestTimedOut += Raise.Event<EventHandler<IRequest>>(this, objRequest);
 
 			//Assert
-			objProvider.Received(1).GetResponseMessage(Arg.Is(objRequest.Message), Arg.Is(ResponseCode.TimeOut));
+			objProvider.Received(1).GetResponseMessage(Arg.Is(objRequest.Message), Arg.Is(ResponseState.TimeOut));
 			objRequest.Received(1).RequestTimedOut += Arg.Any<EventHandler<IRequest>>();
 			objRequest.Received(1).RequestTimedOut -= Arg.Any<EventHandler<IRequest>>();
 			objRequest.Received(1).SetResponse(Arg.Is(objResponse));

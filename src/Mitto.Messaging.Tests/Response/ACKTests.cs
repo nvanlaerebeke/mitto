@@ -12,12 +12,12 @@ namespace Mitto.Messaging.Tests.Message.Response {
 		public void CreateTest() {
 			var objMessage = Substitute.For<IRequestMessage>();
 			objMessage.ID.Returns("MyID");
-			var objACK = new Messaging.Response.ACKResponse(objMessage, ResponseCode.Success);
+			var objACK = new Messaging.Response.ACKResponse(objMessage);
 
 			Assert.AreEqual("MyID", objACK.ID);
 			Assert.AreEqual("ACKResponse", objACK.Name);
 			Assert.AreEqual(objACK.Request, objMessage);
-			Assert.AreEqual(ResponseCode.Success, objACK.Status);
+			Assert.AreEqual(ResponseState.Success, objACK.Status.State);
 			Assert.AreEqual(MessageType.Response, objACK.Type);
 		}
 	}

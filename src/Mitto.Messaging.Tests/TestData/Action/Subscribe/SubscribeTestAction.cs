@@ -8,7 +8,7 @@ namespace Mitto.Messaging.Tests.TestData.Action.Subscribe {
 		public SubscribeTestAction(IClient pClient, SubscribeTestMessage pRequest) : base(pClient, pRequest) { }
 
 		public override IResponseMessage Start() {
-			return new ACKResponse(Request, ResponseCode.Success);
+			return new ACKResponse(Request);
 		}
 	}
 }

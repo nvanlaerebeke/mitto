@@ -3,11 +3,11 @@
 namespace Mitto.Messaging.Response {
     public class EchoResponse: ResponseMessage {
         public EchoResponse() { }
-        public EchoResponse(Request.EchoRequest pMessage, ResponseCode pStatus) : base(pMessage, pStatus) {
+        public EchoResponse(Request.EchoRequest pMessage, ResponseStatus pStatus) : base(pMessage, pStatus) {
 			Message = pMessage.Message;
 		}
 
-		public EchoResponse(Request.EchoRequest pMessage) : base(pMessage, ResponseCode.Success) {
+		public EchoResponse(Request.EchoRequest pMessage) : base(pMessage, new ResponseStatus()) {
 			Message = pMessage.Message;
 		}
 

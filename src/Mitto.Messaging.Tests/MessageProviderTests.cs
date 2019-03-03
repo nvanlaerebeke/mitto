@@ -98,13 +98,13 @@ namespace Mitto.Messaging.Tests {
 			//objMessage.Name.Returns("Echo");
 			
 			//Act
-			var objReturnMessage = new MessageProvider().GetResponseMessage(objMessage, ResponseCode.TimeOut);
+			var objReturnMessage = new MessageProvider().GetResponseMessage(objMessage, ResponseState.TimeOut);
 
 			//Assert
 			Assert.NotNull(objReturnMessage);
 			Assert.AreEqual("EchoResponse", objReturnMessage.Name);
 			Assert.AreEqual(MessageType.Response, objReturnMessage.Type);
-			Assert.AreEqual(ResponseCode.TimeOut, objReturnMessage.Status);
+			Assert.AreEqual(ResponseState.TimeOut, objReturnMessage.Status.State);
 		}
 
 		/// <summary>

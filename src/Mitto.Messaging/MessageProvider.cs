@@ -1,4 +1,5 @@
 ﻿using Mitto.IMessaging;
+using Mitto.Messaging.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -308,14 +309,14 @@ namespace Mitto.Messaging {
 		/// <param name="pMessage"></param>
 		/// <param name="pCode"></param>
 		/// <returns></returns>
-		public IResponseMessage GetResponseMessage(IRequestMessage pMessage, ResponseCode pCode) {
+		public IResponseMessage GetResponseMessage(IRequestMessage pMessage, ResponseState pCode) {
 			Type objResponseType = typeof(Response.ACKResponse); // -- default
 			if (
 				ResponseMessageTranslation.ContainsKey(pMessage.Name)
 			) {
 				objResponseType = ResponseMessageTranslation[pMessage.Name];
 			}
-			return ((IResponseMessage)Activator.CreateInstance(objResponseType, pMessage, pCode));
+			return Activator.CreateInstance(objResponseType, pMessage, new ResponseStatus(pCode)) as IResponseMessage;
 		}
 
 		/// <summary>

@@ -11,7 +11,7 @@ namespace ChatSampleClient.Action.Request {
 		public ReceiveMessageRequestAction(IClient pClient, ReceiveMessageRequest pMessage) : base(pClient, pMessage) { }
 		public override IResponseMessage Start() {
 			MessageReceived?.Invoke(Request.Channel, Request.Message);
-			return new ACKResponse(Request, ResponseCode.Success);
+			return new ACKResponse(Request);
 		}
 	}
 }

@@ -37,7 +37,7 @@ namespace Mitto.Messaging.Tests.Action.Request {
 			Assert.IsNotNull(obj);
 			Assert.IsNotNull(objResponse);
 			Assert.AreEqual("MyRequestID", objResponse.ID);
-			Assert.AreEqual(ResponseCode.Success, objResponse.Status);
+			Assert.AreEqual(ResponseState.Success, objResponse.Status.State);
 			objProvider.Received(1).GetSubscriptionHandler<Messaging.Action.SubscriptionHandler.IChannelSubscriptionHandler>();
 			objSubscriptionHandler.Received(1).Notify(Arg.Is(objClient), Arg.Is(objMessage));
 		}

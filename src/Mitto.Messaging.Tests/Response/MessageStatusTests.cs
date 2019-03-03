@@ -12,7 +12,7 @@ namespace Mitto.Messaging.Tests.Message.Response {
 		public void CreateTest() {
 			//Arrange
 			var objMessage = Substitute.For<Messaging.Request.MessageStatusRequest>();
-			objMessage.RequestID.Returns("MyID");
+			objMessage.RequestID = "MyID";
 
 			//Act
 			var obj = new Messaging.Response.MessageStatusResponse(objMessage, MessageStatusType.Busy);
@@ -20,9 +20,8 @@ namespace Mitto.Messaging.Tests.Message.Response {
 			//Assert
 			Assert.AreEqual("MessageStatusResponse", obj.Name);
 			Assert.AreEqual(objMessage, obj.Request);
-			Assert.AreEqual(ResponseCode.Success, obj.Status);
+			Assert.AreEqual(ResponseState.Success, obj.Status.State);
 			Assert.AreEqual(MessageType.Response, obj.Type);
-			Assert.AreEqual(ResponseCode.Success, obj.Status);
 			Assert.AreEqual(MessageStatusType.Busy, obj.RequestStatus);
 		}
 	}

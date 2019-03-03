@@ -38,6 +38,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomResponseCode.cs" />
     <Compile Include="Request\ReceiveMessageRequest.cs" />
     <Compile Include="Request\SendMessageRequest.cs" />
     <Compile Include="Subscribe\ChatSubscribe.cs" />

@@ -8,7 +8,7 @@
 	/// </summary>
 	public interface IMessageProvider {
 		IMessage GetMessage(byte[] pData);
-		IResponseMessage GetResponseMessage(IRequestMessage pMessage, ResponseCode pCode);
+		IResponseMessage GetResponseMessage(IRequestMessage pMessage, ResponseState pCode);
 		IAction GetAction(IClient pClient, IRequestMessage pMessage);
 		T GetSubscriptionHandler<T>(); // where T : ISubscriptionHandler<IRequestMessage, IRequestMessage>;
 		byte[] GetByteArray(IMessage pMessage);

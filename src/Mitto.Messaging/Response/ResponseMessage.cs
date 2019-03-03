@@ -1,4 +1,5 @@
 ﻿using Mitto.IMessaging;
+using Mitto.Messaging.Response;
 using System;
 
 namespace Mitto.Messaging {
@@ -10,13 +11,18 @@ namespace Mitto.Messaging {
 	/// would be usefull is where the request was made meaning we have the info already
 	/// </summary>
     public abstract class ResponseMessage : Message, IResponseMessage {
-        public ResponseCode Status { get; set; } 
+        public ResponseStatus Status { get; set; } 
 		public ResponseMessage() : base(MessageType.Response, Guid.NewGuid().ToString()) { }
 		public IMessage Request { get; private set; }
 
-        public ResponseMessage(IRequestMessage pMessage, ResponseCode pStatus): base(MessageType.Response, pMessage.ID) {
+		public ResponseMessage(IRequestMessage pMessage) : base(MessageType.Response, pMessage.ID) {
 			Request = pMessage;
-            Status = pStatus;
+			Status = new ResponseStatus();
+		}
+
+        public ResponseMessage(IRequestMessage pMessage, ResponseStatus pStatus): base(MessageType.Response, pMessage.ID) {
+			Request = pMessage;
+			Status = pStatus;
         }
     }
 }

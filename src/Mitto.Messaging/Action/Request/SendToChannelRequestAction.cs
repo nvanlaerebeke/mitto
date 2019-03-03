@@ -10,9 +10,9 @@ namespace Mitto.Messaging.Action.Request {
 		public override IResponseMessage Start() {
 			var obj = MessagingFactory.Provider.GetSubscriptionHandler<IChannelSubscriptionHandler>();
 			if (obj.Notify(Client, Request)) {
-				return new ACKResponse(Request, ResponseCode.Success);
+				return new ACKResponse(Request);
 			}
-			return new ACKResponse(Request, ResponseCode.Error);
+			return new ACKResponse(Request, new ResponseStatus(ResponseState.Error, $"Failed to send message to channel {Request.ChannelName}"));
 		}
 	}
 }
