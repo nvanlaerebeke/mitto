@@ -13,9 +13,9 @@ namespace Mitto.Messaging.Action {
 		
 		protected IClient Client { private set; get; }
 
-		public BaseAction(IClient pClient, IMessage pRequest) {
+		public BaseAction(IClient pClient, T pRequest) {
 			Client = pClient;
-			Request = (T)pRequest;
+			Request = pRequest;
 		}
 	}
 }

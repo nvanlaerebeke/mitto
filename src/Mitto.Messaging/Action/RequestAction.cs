@@ -1,8 +1,11 @@
 ﻿using Mitto.IMessaging;
 
 namespace Mitto.Messaging.Action {
-	public abstract class RequestAction<T> : BaseAction<T>, IRequestAction where T : IMessage {
-		public RequestAction(IClient pClient, IMessage pRequest) : base(pClient, pRequest) { }
+	public abstract class RequestAction<I, O> : BaseAction<I>, IRequestAction
+		where I : IRequestMessage
+		where O : IResponseMessage {
+
+		public RequestAction(IClient pClient, I pRequest) : base(pClient, pRequest) { }
 		public abstract IResponseMessage Start();
 	}
 }

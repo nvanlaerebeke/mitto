@@ -1,8 +1,8 @@
 ﻿namespace Mitto.Messaging.UnSubscribe {
-	public class Channel : UnSubMessage {
+	public class ChannelUnSubscribe : UnSubMessage {
 		public string ChannelName { get; set; }
 
-		public Channel(string pName) {
+		public ChannelUnSubscribe(string pName) {
 			ChannelName = pName;
 		}
 	}

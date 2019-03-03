@@ -38,7 +38,7 @@ namespace Mitto.Messaging {
 		private void _objKeepAliveMonitor_TimeOut(object sender, EventArgs e) {
 			_objKeepAliveMonitor.StartCountDown();
 
-			_objClient.Request<Response.MessageStatus>(new Request.MessageStatus(Message.ID), (r => {
+			_objClient.Request<Response.MessageStatusResponse>(new Request.MessageStatusRequest(Message.ID), (r => {
 				if (
 					r.RequestStatus == MessageStatusType.Busy ||
 					r.RequestStatus == MessageStatusType.Queued

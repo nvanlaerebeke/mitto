@@ -11,11 +11,11 @@ namespace Mitto.Messaging.Tests.Message.Response {
 		[Test]
 		public void CreateTest() {
 			//Arrange
-			var objMessage = Substitute.For<Messaging.Request.MessageStatus>();
+			var objMessage = Substitute.For<Messaging.Request.MessageStatusRequest>();
 			objMessage.RequestID.Returns("MyID");
 
 			//Act
-			var obj = new Messaging.Response.MessageStatus(objMessage, MessageStatusType.Busy);
+			var obj = new Messaging.Response.MessageStatusResponse(objMessage, MessageStatusType.Busy);
 
 			//Assert
 			Assert.AreEqual("MessageStatus", obj.Name);

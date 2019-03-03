@@ -15,7 +15,7 @@ namespace Mitto.Messaging.Tests.Action.Request {
 			//Arrange
 			var objProcessor = Substitute.For<IMessageProcessor>();
 			var objClient = Substitute.For<IClient>();
-			var objMessage = Substitute.For<Messaging.Request.MessageStatus>("RequestIDFromRequested");
+			var objMessage = Substitute.For<Messaging.Request.MessageStatusRequest>("RequestIDFromRequested");
 			objMessage.ID.Returns("MyRequestID");
 			objProcessor.GetStatus(Arg.Is("RequestIDFromRequested")).Returns(MessageStatusType.Queued);
 
@@ -24,8 +24,8 @@ namespace Mitto.Messaging.Tests.Action.Request {
 			});
 
 			//Act
-			var objAction = new Messaging.Action.Request.MessageStatus(objClient, objMessage);
-			var objResponse = objAction.Start() as Response.MessageStatus;
+			var objAction = new Messaging.Action.Request.MessageStatusRequestAction(objClient, objMessage);
+			var objResponse = objAction.Start() as Response.MessageStatusResponse;
 
 			//Assert
 			Assert.IsNotNull(objAction);

@@ -14,10 +14,10 @@ namespace Mitto.Messaging.Tests.Action.Notification {
 		public void TestMethod() {
 			//Arrange
 			var objClient = Substitute.For<IClient>();
-			var objMessage = Substitute.For<Messaging.Notification.LogStatus>();
+			var objMessage = Substitute.For<Messaging.Notification.LogStatusNotification>();
 
 			//Act
-			var objAction = new Messaging.Action.Notification.LogStatus(objClient, objMessage);
+			var objAction = new Messaging.Action.Notification.LogStatusNotificationAction(objClient, objMessage);
 			objAction.Start();
 		}
 	}

@@ -9,7 +9,7 @@ namespace Mitto.Messaging.Tests.Message.Request {
 		/// </summary>
 		[Test]
 		public void CreateTest() {
-			var objMessage = new Messaging.Request.Ping();
+			var objMessage = new Messaging.Request.PingRequest();
 
 			Assert.IsNotEmpty(objMessage.ID);
 			Assert.AreEqual("Ping", objMessage.Name);

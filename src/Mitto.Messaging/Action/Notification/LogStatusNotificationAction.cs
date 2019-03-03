@@ -2,8 +2,8 @@
 
 namespace Mitto.Messaging.Action.Notification
 {
-    public class LogStatus: NotificationAction<Messaging.Notification.LogStatus> {
-        public LogStatus(IClient pClient, Messaging.Notification.LogStatus pMessage) : base(pClient, pMessage) { }
+    public class LogStatusNotificationAction: NotificationAction<Messaging.Notification.LogStatusNotification> {
+        public LogStatusNotificationAction(IClient pClient, Messaging.Notification.LogStatusNotification pMessage) : base(pClient, pMessage) { }
 
         public override void Start() {
             //only allow this by servers

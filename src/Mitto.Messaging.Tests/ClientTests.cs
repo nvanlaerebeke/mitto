@@ -16,14 +16,14 @@ namespace Mitto.Messaging.Tests {
 			var objRequestManager = Substitute.For<IRequestManager>();
 			var objQueue = Substitute.For<IQueue.IQueue>();
 			var objMessage = Substitute.For<IRequestMessage>();
-			Action<Response.ACK> objAction = r => { };
+			Action<Response.ACKResponse> objAction = r => { };
 
 			//Act
 			var objClient = new Client(objQueue, objRequestManager);
 			objClient.Request(objMessage, objAction);
 			
 			//Assert
-			objRequestManager.Received(1).Request<Response.ACK>(Arg.Any<IRequest>());
+			objRequestManager.Received(1).Request<Response.ACKResponse>(Arg.Any<IRequest>());
 		}
 
 		/// <summary>

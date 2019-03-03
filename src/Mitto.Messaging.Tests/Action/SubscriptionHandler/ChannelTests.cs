@@ -15,20 +15,20 @@ namespace Mitto.Messaging.Tests.Action.SubscriptionHandler {
 			//Arrange
 			var objClient1 = Substitute.For<IClient>();
 			var objClient2 = Substitute.For<IClient>();
-			var objSendMessage = Substitute.For<Messaging.Request.SendToChannel>("MyChannel", "MyMessage");
-			var objSubMessage = Substitute.For<Messaging.Subscribe.Channel>("MyChannel");
+			var objSendMessage = Substitute.For<Messaging.Request.SendToChannelRequest>("MyChannel", "MyMessage");
+			var objSubMessage = Substitute.For<Messaging.Subscribe.ChannelSubscribe>("MyChannel");
 
 			objClient1.Equals(objClient1).Returns(true);
 
 			//Act
-			var obj = new Messaging.Action.SubscriptionHandler.Channel();
+			var obj = new Messaging.Action.SubscriptionHandler.ChannelSubscriptionHandler();
 			obj.Sub(objClient1, objSubMessage);
 			obj.Sub(objClient2, objSubMessage);
 			obj.Notify(objClient1, objSendMessage);
 
 			//Assert
-			objClient1.Received(0).Transmit(Arg.Any<Messaging.Request.ReceiveOnChannel>());
-			objClient2.Received(1).Transmit(Arg.Any<Messaging.Request.ReceiveOnChannel>());
+			objClient1.Received(0).Transmit(Arg.Any<Messaging.Request.ReceiveOnChannelRequest>());
+			objClient2.Received(1).Transmit(Arg.Any<Messaging.Request.ReceiveOnChannelRequest>());
 		}
 
 		/// <summary>
@@ -39,9 +39,9 @@ namespace Mitto.Messaging.Tests.Action.SubscriptionHandler {
 			//Arrange
 			var objClient1 = Substitute.For<IClient>();
 			var objClient2 = Substitute.For<IClient>();
-			var objSendMessage = Substitute.For<Messaging.Request.SendToChannel>("MyChannel", "MyMessage");
-			var objSubMessage = Substitute.For<Messaging.Subscribe.Channel>("MyChannel");
-			var objUnSubMessage = Substitute.For<Messaging.UnSubscribe.Channel>("MyChannel");
+			var objSendMessage = Substitute.For<Messaging.Request.SendToChannelRequest>("MyChannel", "MyMessage");
+			var objSubMessage = Substitute.For<Messaging.Subscribe.ChannelSubscribe>("MyChannel");
+			var objUnSubMessage = Substitute.For<Messaging.UnSubscribe.ChannelUnSubscribe>("MyChannel");
 
 			objClient1.ID.Returns("Client1");
 			objClient1.Equals(Arg.Is(objClient1)).Returns(true);
@@ -49,14 +49,14 @@ namespace Mitto.Messaging.Tests.Action.SubscriptionHandler {
 			objClient2.ID.Returns("Client2");
 
 			//Act
-			var obj = new Messaging.Action.SubscriptionHandler.Channel();
+			var obj = new Messaging.Action.SubscriptionHandler.ChannelSubscriptionHandler();
 			obj.Sub(objClient1, objSubMessage);
 			obj.Sub(objClient2, objSubMessage);
 			obj.Notify(objClient1, objSendMessage);
 
 			//Assert
-			objClient1.Received(0).Transmit(Arg.Any<Messaging.Request.ReceiveOnChannel>());
-			objClient2.Received(1).Transmit(Arg.Any<Messaging.Request.ReceiveOnChannel>());
+			objClient1.Received(0).Transmit(Arg.Any<Messaging.Request.ReceiveOnChannelRequest>());
+			objClient2.Received(1).Transmit(Arg.Any<Messaging.Request.ReceiveOnChannelRequest>());
 
 			//Act2
 			objClient1.ClearReceivedCalls();
@@ -66,8 +66,8 @@ namespace Mitto.Messaging.Tests.Action.SubscriptionHandler {
 			obj.Notify(objClient1, objSendMessage);
 
 			//Assert2
-			objClient1.Received(0).Transmit(Arg.Any<Messaging.Request.ReceiveOnChannel>());
-			objClient2.Received(0).Transmit(Arg.Any<Messaging.Request.ReceiveOnChannel>());
+			objClient1.Received(0).Transmit(Arg.Any<Messaging.Request.ReceiveOnChannelRequest>());
+			objClient2.Received(0).Transmit(Arg.Any<Messaging.Request.ReceiveOnChannelRequest>());
 		}
 	}
 }

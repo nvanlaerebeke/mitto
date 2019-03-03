@@ -9,7 +9,7 @@ namespace Mitto.Messaging.Tests.Message.Request {
 		/// </summary>
 		[Test]
 		public void CreateTest() {
-			var objMessage = new Messaging.Request.SendToChannel("Channel", "MyMessage");
+			var objMessage = new Messaging.Request.SendToChannelRequest("Channel", "MyMessage");
 
 			Assert.IsNotEmpty(objMessage.ID);
 			Assert.AreEqual("SendToChannel", objMessage.Name);

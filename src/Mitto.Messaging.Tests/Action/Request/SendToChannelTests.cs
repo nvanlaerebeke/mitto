@@ -17,14 +17,14 @@ namespace Mitto.Messaging.Tests.Action.Request {
 			//Arrange
 			var objProvider = Substitute.For<IMessageProvider>();
 			var objClient = Substitute.For<IClient>();
-			var objMessage = Substitute.For<Messaging.Request.ISendToChannel>();
-			var objSubscriptionHandler = Substitute.For<Messaging.Action.SubscriptionHandler.IChannel>();
+			var objMessage = Substitute.For<Messaging.Request.ISendToChannelRequest>();
+			var objSubscriptionHandler = Substitute.For<Messaging.Action.SubscriptionHandler.IChannelSubscriptionHandler>();
 
 			objMessage.ID.Returns("MyRequestID");
 			objMessage.ChannelName.Returns("MyChannel");
 			objMessage.Message.Returns("MyMessage");
 
-			objProvider.GetSubscriptionHandler<Messaging.Action.SubscriptionHandler.IChannel>().Returns(objSubscriptionHandler);
+			objProvider.GetSubscriptionHandler<Messaging.Action.SubscriptionHandler.IChannelSubscriptionHandler>().Returns(objSubscriptionHandler);
 			objSubscriptionHandler.Notify(Arg.Is(objClient), Arg.Is(objMessage)).Returns(true);
 
 			Config.Initialize(new Config.ConfigParams() {
@@ -32,15 +32,15 @@ namespace Mitto.Messaging.Tests.Action.Request {
 			});
 
 			//Act
-			var obj = new SendToChannel(objClient, objMessage);
-			var objResponse = obj.Start() as Response.ACK;
+			var obj = new SendToChannelRequestAction(objClient, objMessage);
+			var objResponse = obj.Start() as Response.ACKResponse;
 			
 			//Assert
 			Assert.IsNotNull(obj);
 			Assert.IsNotNull(objResponse);
 			Assert.AreEqual("MyRequestID", objResponse.ID);
 			Assert.AreEqual(ResponseCode.Success, objResponse.Status);
-			objProvider.Received(1).GetSubscriptionHandler<Messaging.Action.SubscriptionHandler.IChannel>();
+			objProvider.Received(1).GetSubscriptionHandler<Messaging.Action.SubscriptionHandler.IChannelSubscriptionHandler>();
 			objSubscriptionHandler.Received(1).Notify(Arg.Is(objClient), Arg.Is(objMessage));
 		}
 	}

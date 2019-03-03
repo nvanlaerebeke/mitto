@@ -39,8 +39,8 @@ namespace Mitto.Messaging.Tests {
 		public void GetActionTest() {
 			//Arrange
 			var objClient = Substitute.For<IClient>();
-			var objMessage = Substitute.For<Request.Echo>();
-			objMessage.Name.Returns("Echo");
+			var objMessage = Substitute.For<Request.EchoRequest>();
+			objMessage.Name.Returns("EchoRequest");
 
 			//Act
 			var objProvider = new MessageProvider();
@@ -61,7 +61,7 @@ namespace Mitto.Messaging.Tests {
 		public void GetMessageTest() {
 			//Arrange
 			var objConverter = Substitute.For<IMessageConverter>();
-			var strName = "Echo";
+			var strName = "EchoRequest";
 			var arrName = Encoding.UTF32.GetBytes(strName);
 			var arrData = new byte[] { 1, 2, 3, 4, 5 };
 
@@ -72,7 +72,7 @@ namespace Mitto.Messaging.Tests {
 			lstBytes.AddRange(arrData);
 
 			var objMessage = Substitute.For<IMessage>();
-			objConverter.GetMessage(Arg.Is(typeof(Request.Echo)), Arg.Is<byte[]>(b => b.SequenceEqual(arrData))).Returns(objMessage);
+			objConverter.GetMessage(Arg.Is(typeof(Request.EchoRequest)), Arg.Is<byte[]>(b => b.SequenceEqual(arrData))).Returns(objMessage);
 
 			Config.Initialize(new Config.ConfigParams() {
 				MessageConverter = objConverter
@@ -82,7 +82,7 @@ namespace Mitto.Messaging.Tests {
 			var objReturnMessage = new MessageProvider().GetMessage(lstBytes.ToArray());
 
 			//Assert
-			objConverter.Received(1).GetMessage(typeof(Request.Echo), Arg.Is<byte[]>(b => b.SequenceEqual(arrData)));
+			objConverter.Received(1).GetMessage(typeof(Request.EchoRequest), Arg.Is<byte[]>(b => b.SequenceEqual(arrData)));
 			Assert.NotNull(objMessage);
 			Assert.AreEqual(objMessage, objReturnMessage);
 		}
@@ -93,7 +93,7 @@ namespace Mitto.Messaging.Tests {
 		[Test]
 		public void GetResponseMessageTest() {
 			//Arrange
-			var objMessage = new Request.Echo("MyMessage"); // Substitute.For<Request.Echo>();
+			var objMessage = new Request.EchoRequest("MyMessage"); // Substitute.For<Request.Echo>();
 			//objMessage.ID.Returns("MyID");
 			//objMessage.Name.Returns("Echo");
 			
@@ -102,7 +102,7 @@ namespace Mitto.Messaging.Tests {
 
 			//Assert
 			Assert.NotNull(objReturnMessage);
-			Assert.AreEqual("Echo", objReturnMessage.Name);
+			Assert.AreEqual("EchoResponse", objReturnMessage.Name);
 			Assert.AreEqual(MessageType.Response, objReturnMessage.Type);
 			Assert.AreEqual(ResponseCode.TimeOut, objReturnMessage.Status);
 		}

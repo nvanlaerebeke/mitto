@@ -13,7 +13,7 @@ namespace Mitto.Messaging.Tests.Message.Response {
 			var objMessage = Substitute.For<IRequestMessage>();
 			objMessage.ID.Returns("MyID");
 
-			var obj = new Messaging.Response.Pong(objMessage);
+			var obj = new Messaging.Response.PongResponse(objMessage);
 
 			Assert.AreEqual("MyID", obj.ID);
 			Assert.AreEqual("Pong", obj.Name);
