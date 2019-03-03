@@ -10,6 +10,8 @@ namespace Mitto.Messaging.Tests.UnSubscribe {
 		[Test]
 		public void CreateTest() {
 			var obj = new Messaging.UnSubscribe.ChannelUnSubscribe("MyChannel");
+
+			Assert.AreEqual("ChannelUnSubscribe", obj.Name);
 			Assert.AreEqual("MyChannel", obj.ChannelName);
 			Assert.AreEqual(MessageType.UnSub, obj.Type);
 		}

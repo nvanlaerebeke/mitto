@@ -1,9 +1,12 @@
 ﻿using Mitto.IConnection;
 using System;
 using System.Net;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("Mitto.Messaging.Tests.Action.Request")]
+[assembly: InternalsVisibleTo("Mitto.Connection.Websocket.Tests.Server")]
 namespace Mitto.Connection.Websocket {
-	public class ServerParams : IConnection.ServerParams {
+	public class ServerParams : IServerParams {
 
 		/// <summary>
 		/// Parameters the Websocket server will use to start

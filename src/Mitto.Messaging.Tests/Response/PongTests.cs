@@ -16,7 +16,7 @@ namespace Mitto.Messaging.Tests.Message.Response {
 			var obj = new Messaging.Response.PongResponse(objMessage);
 
 			Assert.AreEqual("MyID", obj.ID);
-			Assert.AreEqual("Pong", obj.Name);
+			Assert.AreEqual("PongResponse", obj.Name);
 			Assert.AreEqual(obj.Request, objMessage);
 			Assert.AreEqual(ResponseCode.Success, obj.Status);
 			Assert.AreEqual(MessageType.Response, obj.Type);

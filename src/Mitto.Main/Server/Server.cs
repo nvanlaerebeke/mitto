@@ -1,18 +1,12 @@
 ﻿using Mitto.IConnection;
 using System;
-using System.Net;
 
 namespace Mitto {
-	/// <summary>
-	/// ToDo: Convert the start parameters specific for Websockets in to a internal Config class 
-	/// These parameters will then be set uppon initialization
-	/// </summary>
 	public class Server {
-		private IServer _objWsServer;
-		private Action<ClientConnection> _objAction;
+		private IServer _objServer;
 
 		public Server() {
-			_objWsServer = ConnectionFactory.CreateServer();
+			_objServer = ConnectionFactory.CreateServer();
 		}
 
 		/// <summary>
@@ -20,10 +14,8 @@ namespace Mitto {
 		/// </summary>
 		/// <param name="pParams">Parameters for the server</param>
 		/// <param name="pAction">Action that will be run when a client connects</param>
-		public void Start(ServerParams pParams, Action<ClientConnection> pAction) {
-			_objAction = pAction;
-			pParams.ClientConnected = new Action<IClientConnection>(c => { _objAction.Invoke(new ClientConnection(c)); });
-			_objWsServer.Start(pParams);
+		public void Start(IServerParams pParams, Action<ClientConnection> pAction) {
+			_objServer.Start(pParams, c => pAction.Invoke(new ClientConnection(c)));
 		}
 	}
 }

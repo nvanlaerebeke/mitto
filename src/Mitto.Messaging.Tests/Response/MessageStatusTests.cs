@@ -18,7 +18,7 @@ namespace Mitto.Messaging.Tests.Message.Response {
 			var obj = new Messaging.Response.MessageStatusResponse(objMessage, MessageStatusType.Busy);
 
 			//Assert
-			Assert.AreEqual("MessageStatus", obj.Name);
+			Assert.AreEqual("MessageStatusResponse", obj.Name);
 			Assert.AreEqual(objMessage, obj.Request);
 			Assert.AreEqual(ResponseCode.Success, obj.Status);
 			Assert.AreEqual(MessageType.Response, obj.Type);

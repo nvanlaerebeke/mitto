@@ -36,8 +36,8 @@ namespace Mitto.Main.Tests.Server {
 			//Arrange
 			var objConnectionProvider = Substitute.For<IConnection.IConnectionProvider>();
 			var objAction = Substitute.For<Action<ClientConnection>>();
-			var objConnection = Substitute.For<IConnection.IServer>();
-			var objParams = Substitute.For<IConnection.ServerParams>();
+			var objConnection = Substitute.For<IServer>();
+			var objParams = Substitute.For<IServerParams>();
 
 			objConnectionProvider.CreateServer().Returns(objConnection);
 
@@ -50,7 +50,7 @@ namespace Mitto.Main.Tests.Server {
 			obj.Start(objParams, objAction);
 
 			//Assert
-			objConnection.Received(1).Start(Arg.Is(objParams));
+			objConnection.Received(1).Start(Arg.Is(objParams), Arg.Any<Action<IClientConnection>>());
 		}
 
 		/// <summary>
@@ -61,8 +61,8 @@ namespace Mitto.Main.Tests.Server {
 			//Arrange
 			var objConnectionProvider = Substitute.For<IConnection.IConnectionProvider>();
 			var objAction = Substitute.For<Action<ClientConnection>>();
-			var objConnection = Substitute.For<IConnection.IServer>();
-			var objParams = Substitute.For<IConnection.ServerParams>();
+			var objConnection = Substitute.For<IServer>();
+			var objParams = Substitute.For<IServerParams>();
 
 			objConnectionProvider.CreateServer().Returns(objConnection);
 
@@ -75,27 +75,7 @@ namespace Mitto.Main.Tests.Server {
 			obj.Start(objParams, objAction);
 
 			//Assert
-			objConnection.Received(1).Start(Arg.Is(objParams));
-		}
-
-		[Test]
-		public void ClientConnected() {
-			//Arrange
-			var objProvider = Substitute.For<IConnectionProvider>();
-			var objParams = Substitute.For<ServerParams>();
-			var objAction = Substitute.For<Action<ClientConnection>>();
-			
-			Config.Initialize(new Config.ConfigParams() {
-				ConnectionProvider = objProvider
-			});
-
-			//Act
-			var obj = new Mitto.Server();
-			obj.Start(objParams, objAction);
-			objParams.ClientConnected.Invoke(Substitute.For<IClientConnection>());
-
-			//Assert
-			objAction.Received(1).Invoke(Arg.Any<ClientConnection>());
+			objConnection.Received(1).Start(Arg.Is(objParams), Arg.Any<Action<IClientConnection>>());
 		}
 	}
 }

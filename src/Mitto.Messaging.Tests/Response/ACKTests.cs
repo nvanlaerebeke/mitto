@@ -15,7 +15,7 @@ namespace Mitto.Messaging.Tests.Message.Response {
 			var objACK = new Messaging.Response.ACKResponse(objMessage, ResponseCode.Success);
 
 			Assert.AreEqual("MyID", objACK.ID);
-			Assert.AreEqual("ACK", objACK.Name);
+			Assert.AreEqual("ACKResponse", objACK.Name);
 			Assert.AreEqual(objACK.Request, objMessage);
 			Assert.AreEqual(ResponseCode.Success, objACK.Status);
 			Assert.AreEqual(MessageType.Response, objACK.Type);

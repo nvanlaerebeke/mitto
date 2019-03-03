@@ -14,7 +14,7 @@ namespace Mitto.Messaging.Tests.Message.Request {
 			var objMessage = new Messaging.Request.EchoRequest("MyMessage");
 
 			Assert.IsNotEmpty(objMessage.ID);
-			Assert.AreEqual("Echo", objMessage.Name);
+			Assert.AreEqual("EchoRequest", objMessage.Name);
 			Assert.AreEqual(MessageType.Request, objMessage.Type);
 			Assert.AreEqual("MyMessage", objMessage.Message);
 		}

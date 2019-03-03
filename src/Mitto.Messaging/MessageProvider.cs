@@ -40,9 +40,18 @@ namespace Mitto.Messaging {
 		internal Dictionary<MessageType, Dictionary<string, Type>> Actions { get; } = new Dictionary<MessageType, Dictionary<string, Type>>();
 
 		/// <summary>
+		/// Gives easy access to get the response type of a request message
+		/// Loaded based on the Action<RequestType, ResponseType> types
+		/// </summary>
+		internal Dictionary<string, Type> ResponseMessageTranslation = new Dictionary<string, Type>();
+
+		/// <summary>
 		/// The available SubscriptionHandler classes
 		/// </summary>
 		internal Dictionary<string, object> SubscriptionHandlers { get; } = new Dictionary<string, object>();
+
+		
+
 
 		/// <summary>
 		/// Loads the types present in the specified Namespaces
@@ -141,12 +150,7 @@ namespace Mitto.Messaging {
 		private void AddMessageType(MessageType pMessageType, Type pType) {
 			if (pType.IsAbstract || !pType.GetInterfaces().Contains(typeof(IMessage))) { return; }
 
-			var strName = pType.Name
-				.Replace("Request", "")
-				.Replace("Response", "")
-				.Replace("Notification", "")
-			;
-
+			var strName = pType.Name;
 			if (!Types.ContainsKey(pMessageType)) {
 				Types.Add(pMessageType, new Dictionary<string, Type> { { strName, pType } });
 			} else {
@@ -190,6 +194,14 @@ namespace Mitto.Messaging {
 
 				Type objRequestType = (tmpType.GenericTypeArguments.Length > 0) ? tmpType.GenericTypeArguments[0] : null;
 				Type objResponseType = (tmpType.GenericTypeArguments.Length > 1) ? tmpType.GenericTypeArguments[1] : null;
+
+				if (objResponseType != null) {
+					ResponseMessageTranslation.Add(objRequestType.Name, objResponseType);
+				}
+
+				if (objRequestType.IsInterface || objRequestType.IsAbstract) {
+					throw new Exception($"Unsupported request type {objRequestType.FullName}, must be a class that an be instantiated");
+				}
 
 				//Add the Action to the list for easy access when receiving Request X and needing the Action Y
 				if (!Actions.ContainsKey(pMessageType)) {
@@ -301,10 +313,9 @@ namespace Mitto.Messaging {
 		public IResponseMessage GetResponseMessage(IRequestMessage pMessage, ResponseCode pCode) {
 			Type objResponseType = typeof(Response.ACKResponse); // -- default
 			if (
-				Types.ContainsKey(MessageType.Response) &&
-				Types[MessageType.Response].ContainsKey(pMessage.Name)
+				ResponseMessageTranslation.ContainsKey(pMessage.Name)
 			) {
-				objResponseType = Types[MessageType.Response][pMessage.Name];
+				objResponseType = ResponseMessageTranslation[pMessage.Name];
 			}
 			return ((IResponseMessage)Activator.CreateInstance(objResponseType, pMessage, pCode));
 		}

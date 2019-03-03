@@ -18,12 +18,12 @@ namespace Mitto.Connection.Websocket.Server {
 			_objClientConnected?.Invoke(new Client(e, new KeepAliveMonitor(30000)));
 		}
 
-		public void Start(IServerParams pParams) {
+		public void Start(IServerParams pParams, Action<IClientConnection> pClientConnectedAction) {
 			if (!(pParams is ServerParams objParams)) {
 				throw new Exception("Incorrect parameters for Websocket server");
 			}
 
-			_objClientConnected = objParams.ClientConnected;
+			_objClientConnected = pClientConnectedAction;
 			if (!String.IsNullOrEmpty(objParams.CertPath)) {
 				if (!System.IO.File.Exists(objParams.CertPath)) {
 					throw new System.IO.FileNotFoundException($"{objParams.CertPath} not found");

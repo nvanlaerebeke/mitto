@@ -17,12 +17,10 @@ namespace Mitto.Messaging.Tests.Action.Request {
 			//Arrange
 			var objProvider = Substitute.For<IMessageProvider>();
 			var objClient = Substitute.For<IClient>();
-			var objMessage = Substitute.For<Messaging.Request.ISendToChannelRequest>();
+			var objMessage = Substitute.For<Messaging.Request.SendToChannelRequest>("MyChannel", "MyMessage");
 			var objSubscriptionHandler = Substitute.For<Messaging.Action.SubscriptionHandler.IChannelSubscriptionHandler>();
 
 			objMessage.ID.Returns("MyRequestID");
-			objMessage.ChannelName.Returns("MyChannel");
-			objMessage.Message.Returns("MyMessage");
 
 			objProvider.GetSubscriptionHandler<Messaging.Action.SubscriptionHandler.IChannelSubscriptionHandler>().Returns(objSubscriptionHandler);
 			objSubscriptionHandler.Notify(Arg.Is(objClient), Arg.Is(objMessage)).Returns(true);

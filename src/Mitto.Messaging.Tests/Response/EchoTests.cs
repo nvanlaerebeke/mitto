@@ -17,7 +17,7 @@ namespace Mitto.Messaging.Tests.Message.Response {
 			var obj = new Messaging.Response.EchoResponse(objMessage);
 
 			Assert.AreEqual("MyID", obj.ID);
-			Assert.AreEqual("Echo", obj.Name);
+			Assert.AreEqual("EchoResponse", obj.Name);
 			Assert.AreEqual(obj.Request, objMessage);
 			Assert.AreEqual(ResponseCode.Success, obj.Status);
 			Assert.AreEqual(MessageType.Response, obj.Type);

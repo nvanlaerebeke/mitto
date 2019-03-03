@@ -12,6 +12,8 @@ namespace Mitto.Messaging.Tests.Message.Request {
 		[Test]
 		public void CreateTest() {
 			var objMessage = new Messaging.Request.MessageStatusRequest("MyID");
+
+			Assert.AreEqual("MessageStatusRequest", objMessage.Name);
 			Assert.AreEqual(MessageType.Request, objMessage.Type);
 			Assert.AreEqual("MyID", objMessage.RequestID);
 		}

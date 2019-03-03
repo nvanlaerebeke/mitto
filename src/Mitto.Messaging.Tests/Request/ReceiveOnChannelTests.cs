@@ -12,7 +12,7 @@ namespace Mitto.Messaging.Tests.Message.Request {
 			var objMessage = new Messaging.Request.ReceiveOnChannelRequest("Channel", "MyMessage");
 
 			Assert.IsNotEmpty(objMessage.ID);
-			Assert.AreEqual("ReceiveOnChannel", objMessage.Name);
+			Assert.AreEqual("ReceiveOnChannelRequest", objMessage.Name);
 			Assert.AreEqual(MessageType.Request, objMessage.Type);
 			Assert.AreEqual("Channel", objMessage.ChannelName);
 			Assert.AreEqual("MyMessage", objMessage.Message);
