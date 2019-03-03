@@ -12,6 +12,7 @@
       TargetKind="Dll"
       DebugInfo="true"
       OutputFile="../../bin/$(AssemblyName).dll"
+      AttributeFile="$(OutputPath)\Mitto.dll"
       Verbose="true"
       Wildcards="true"
     />

@@ -34,6 +34,9 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Action\Request\MessageStatus.cs" />
     <Compile Include="Action\Request\ReceiveOnChannel.cs" />
     <Compile Include="Action\Request\SendToChannel.cs" />
@@ -78,7 +81,6 @@
     <Compile Include="Response\Echo.cs" />
     <Compile Include="Response\Pong.cs" />
     <Compile Include="MessagingException.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Manager\RequestManager.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="UnSubscribe\Channel.cs" />

@@ -34,6 +34,9 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="ConnectionFactory.cs" />
     <Compile Include="IConnectionParams.cs" />
     <Compile Include="IClient.cs" />
@@ -41,7 +44,7 @@
     <Compile Include="IServer.cs" />
     <Compile Include="IClientConnection.cs" />
     <Compile Include="IConnection.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

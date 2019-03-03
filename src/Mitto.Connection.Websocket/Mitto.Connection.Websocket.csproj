@@ -34,6 +34,9 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Client\WebsocketClient.cs" />
     <Compile Include="Server\ServerParams.cs" />
     <Compile Include="Client\ClientParams.cs" />
@@ -46,7 +49,6 @@
     <Compile Include="WebSocketSharpWrappers\Interfaces\ICloseEventArgs.cs" />
     <Compile Include="WebSocketSharpWrappers\Interfaces\IWebSocketClient.cs" />
     <Compile Include="WebSocketSharpWrappers\Interfaces\IWebSocketServer.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server\Client.cs" />
     <Compile Include="WebSocketSharpWrappers\Interfaces\IWebSocketBehavior.cs" />
     <Compile Include="WebSocketSharpWrappers\Implementation\WebscoketClientWrapper.cs" />

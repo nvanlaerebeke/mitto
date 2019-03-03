@@ -1,10 +1,5 @@
 ToDo's before v1:
 
-- Connection properties (secure/port/ip etc) to Config class
-    Connection stuff should be generic, example IPC/WCF/Websocket, each has different parameters
-
-- Fix assembly info's
-
 - Add postfix to messages, example:
 	Ping => PingRequest
 	Pong => PongResponse

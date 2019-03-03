@@ -34,9 +34,11 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="InternalQueue.cs" />
     <Compile Include="Passthrough.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueueProvider.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -49,5 +51,6 @@
       <Name>Mitto.IQueue</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

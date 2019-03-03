@@ -34,6 +34,9 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="IAction.cs" />
     <Compile Include="IClient.cs" />
     <Compile Include="IRequestMessage.cs" />
@@ -46,7 +49,6 @@
     <Compile Include="MessageStatusType.cs" />
     <Compile Include="MessagingFactory.cs" />
     <Compile Include="MessageType.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResponseCode.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -55,5 +57,6 @@
       <Name>Mitto.IQueue</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

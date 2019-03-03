@@ -39,11 +39,13 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Enums\ConnectionType.cs" />
     <Compile Include="Enums\MessagingType.cs" />
     <Compile Include="Enums\QueueType.cs" />
     <Compile Include="Mitto.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mitto.Connection.Websocket\Mitto.Connection.Websocket.csproj">
@@ -75,5 +77,6 @@
       <Name>Mitto.Queue.PassThrough</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

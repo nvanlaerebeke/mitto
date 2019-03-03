@@ -36,6 +36,9 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Action\Notification\InfoTests.cs" />
     <Compile Include="Action\Notification\LogStatusTests.cs" />
     <Compile Include="Action\Request\EchoTests.cs" />
@@ -64,7 +67,6 @@
     <Compile Include="Response\MessageStatusTests.cs" />
     <Compile Include="Response\PongTests.cs" />
     <Compile Include="Response\EchoTests.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Subscribe\ChannelTests.cs" />
     <Compile Include="TestData\Action\Notification\NotificationTestAction.cs" />
     <Compile Include="TestData\Action\Request\RequestTestAction.cs" />
