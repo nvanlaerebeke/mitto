@@ -18,24 +18,23 @@ namespace Mitto.Connection.Websocket.Server {
 			_objClientConnected?.Invoke(new Client(e, new KeepAliveMonitor(30000)));
 		}
 
-		public void Start(IPAddress pIPAddress, int pPort, Action<IClientConnection> pCallback) {
-			_objClientConnected = pCallback;
-			_objServer.Start(pIPAddress, pPort);
-		}
+		public void Start(IServerParams pParams) {
+			if (!(pParams is ServerParams objParams)) {
+				throw new Exception("Incorrect parameters for Websocket server");
+			}
 
-		public void Start(IPAddress pIPAddress, int pPort, string pCertPath, string pCertPassword, Action<IClientConnection> pCallback) {
-			_objClientConnected = pCallback;
-			if (!String.IsNullOrEmpty(pCertPath)) {
-				if (!System.IO.File.Exists(pCertPath)) {
-					throw new System.IO.FileNotFoundException($"{pCertPath} not found");
+			_objClientConnected = objParams.ClientConnected;
+			if (!String.IsNullOrEmpty(objParams.CertPath)) {
+				if (!System.IO.File.Exists(objParams.CertPath)) {
+					throw new System.IO.FileNotFoundException($"{objParams.CertPath} not found");
 				}
 				_objServer.Start(
-					pIPAddress,
-					pPort,
-					new X509Certificate2(new X509Certificate2(System.IO.File.ReadAllBytes(pCertPath), pCertPassword))
+					objParams.IP,
+					objParams.Port,
+					new X509Certificate2(new X509Certificate2(System.IO.File.ReadAllBytes(objParams.CertPath), objParams.CertPassword))
 				);
 			} else {
-				_objServer.Start(pIPAddress, pPort);
+				_objServer.Start(objParams.IP, objParams.Port);
 			}
 		}
 

@@ -26,7 +26,7 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 			objWebSocketClient.Ping().Returns(false);
 
 			//Act
-			objClient.ConnectAsync("localhost", 80, false);
+			objClient.ConnectAsync(new ClientParams() { Hostname = "localhost", Port = 80, Secure = false });
 			objKeepAliveMonitor.TimeOut += Raise.EventWith(this, new EventArgs());
 
 			//Assert
@@ -49,7 +49,7 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 			objWebSocketClient.Ping().Returns(true);
 
 			//Act
-			objClient.ConnectAsync("localhost", 80, false);
+			objClient.ConnectAsync(new ClientParams() { Hostname = "localhost", Port = 80, Secure = false });
 			objKeepAliveMonitor.TimeOut += Raise.EventWith(this, new EventArgs());
 
 			//Assert
@@ -92,15 +92,15 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 			objClient.Disconnected += objHandler;
 
 			//Act
-			objClient.ConnectAsync("hostname", 80, false);
+			objClient.ConnectAsync(new ClientParams() { Hostname = "localhost", Port = 80, Secure = false });
 			objClient.Disconnect();
-			
+
 			//Assert
 			objWebSocketClient.Received(1).OnOpen -= Arg.Any<EventHandler>();
 			objWebSocketClient.Received(1).OnClose -= Arg.Any<EventHandler<ICloseEventArgs>>();
 			objWebSocketClient.Received(1).OnError -= Arg.Any<EventHandler<IErrorEventArgs>>();
 			objWebSocketClient.Received(1).OnMessage -= Arg.Any<EventHandler<IMessageEventArgs>>();
-			objKeepAliveMonitor.Received(1).TimeOut -= Arg.Any<EventHandler>(); 
+			objKeepAliveMonitor.Received(1).TimeOut -= Arg.Any<EventHandler>();
 			objKeepAliveMonitor.Received(1).UnResponsive -= Arg.Any<EventHandler>();
 
 			objKeepAliveMonitor.Received(1).Stop();
@@ -121,9 +121,9 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 			var objWebSocketClient = Substitute.For<IWebSocketClient>();
 			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
 			var objClient = new WebsocketClient(objWebSocketClient, objKeepAliveMonitor);
-			
+
 			//Act
-			objClient.ConnectAsync("hostname", 80, false);
+			objClient.ConnectAsync(new ClientParams() { Hostname = "localhost", Port = 80, Secure = false });
 
 			//Assert
 			objWebSocketClient.Received(1).OnOpen += Arg.Any<EventHandler>();
@@ -147,9 +147,9 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 			var objClient = new WebsocketClient(objWebSocketClient, objKeepAliveMonitor);
 			var handler = Substitute.For<EventHandler<IConnection.IClient>>();
 			objClient.Connected += handler;
-			
+
 			//Act
-			objClient.ConnectAsync("hostname", 80, false);
+			objClient.ConnectAsync(new ClientParams() { Hostname = "localhost", Port = 80, Secure = false });
 			objWebSocketClient.Received().OnOpen += Raise.EventWith(objWebSocketClient, new EventArgs());
 
 			//Assert
@@ -198,7 +198,7 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 			objClient.Disconnected += handler;
 
 			//Act
-			objClient.ConnectAsync("hostname", 80, false);
+			objClient.ConnectAsync(new ClientParams() { Hostname = "localhost", Port = 80, Secure = false });
 			objWebSocketClient.OnClose += Raise.Event<EventHandler<ICloseEventArgs>>(objClient, eventArgs);
 
 			//Assert
@@ -235,7 +235,7 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 			objClient.Disconnected += handler;
 
 			//Act
-			objClient.ConnectAsync("hostname", 80, false);
+			objClient.ConnectAsync(new ClientParams() { Hostname = "localhost", Port = 80, Secure = false });
 			objWebSocketClient.OnError += Raise.Event<EventHandler<IErrorEventArgs>>(objClient, eventArgs);
 
 			//Assert
@@ -275,7 +275,7 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 			eventArgs.RawData.Returns(new byte[] { 1, 2, 3, 4 });
 
 			//Act
-			objClient.ConnectAsync("hostname", 80, false);
+			objClient.ConnectAsync(new ClientParams() { Hostname = "localhost", Port = 80, Secure = false });
 			objWebSocketClient.OnMessage += Raise.Event<EventHandler<IMessageEventArgs>>(objClient, eventArgs);
 
 			//Assert
@@ -306,7 +306,7 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 			eventArgs.Data.Returns("TEST");
 
 			//Act
-			objClient.ConnectAsync("hostname", 80, false);
+			objClient.ConnectAsync(new ClientParams() { Hostname = "localhost", Port = 80, Secure = false });
 			objWebSocketClient.OnMessage += Raise.Event<EventHandler<IMessageEventArgs>>(objClient, eventArgs);
 
 			//Assert
@@ -336,7 +336,7 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 			objClient.Rx += handler;
 
 			//Act
-			objClient.ConnectAsync("hostname", 80, false);
+			objClient.ConnectAsync(new ClientParams() { Hostname = "localhost", Port = 80, Secure = false });
 			objWebSocketClient.OnMessage += Raise.Event<EventHandler<IMessageEventArgs>>(objClient, eventArgs);
 
 			//Assert
@@ -358,13 +358,13 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 			var objWebSocketClient = Substitute.For<IWebSocketClient>();
 			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
 			var objClient = new WebsocketClient(objWebSocketClient, objKeepAliveMonitor);
-			objClient.ConnectAsync("localhost", 80, false);
+			objClient.ConnectAsync(new ClientParams() { Hostname = "localhost", Port = 80, Secure = false });
 			objWebSocketClient.Received().OnOpen += Raise.EventWith(objWebSocketClient, new EventArgs());
 
 			//Act
 			objClient.Transmit(new byte[] { 1, 2, 3, 4 });
 			Thread.Sleep(50); //-- wait a bit so the sender queue can call the IWebSocketClient.Send() method
-			
+
 			//Assert
 			objWebSocketClient.Received(1).Send(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
 		}

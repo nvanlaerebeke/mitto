@@ -122,6 +122,8 @@ namespace Mitto.Main.Tests.Client {
 			//Arrange
 			var objProvider = Substitute.For<IConnectionProvider>();
 			var objConnection = Substitute.For<IClient>();
+			var objParams = Substitute.For<IClientParams>();
+
 			objProvider.CreateClient().Returns(objConnection);
 
 			Config.Initialize(new Config.ConfigParams() {
@@ -130,10 +132,10 @@ namespace Mitto.Main.Tests.Client {
 
 			//Act
 			var obj = new Mitto.Client();
-			obj.ConnectAsync("localhost", 8080, false);
+			obj.ConnectAsync(objParams);
 
 			//Assert
-			objConnection.Received(1).ConnectAsync(Arg.Is("localhost"), Arg.Is(8080), Arg.Is(false));
+			objConnection.Received(1).ConnectAsync(Arg.Is(objParams));
 		}
 
 		/// <summary>

@@ -1,11 +1,7 @@
-﻿using NSubstitute;
+﻿using Mitto.IConnection;
+using NSubstitute;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Mitto.Main.Tests.Server {
 	[TestFixture]
@@ -41,6 +37,7 @@ namespace Mitto.Main.Tests.Server {
 			var objConnectionProvider = Substitute.For<IConnection.IConnectionProvider>();
 			var objAction = Substitute.For<Action<ClientConnection>>();
 			var objConnection = Substitute.For<IConnection.IServer>();
+			var objParams = Substitute.For<IConnection.ServerParams>();
 
 			objConnectionProvider.CreateServer().Returns(objConnection);
 
@@ -50,10 +47,10 @@ namespace Mitto.Main.Tests.Server {
 
 			//Act
 			var obj = new Mitto.Server();
-			obj.Start(IPAddress.Any, 8080, objAction);
+			obj.Start(objParams, objAction);
 
 			//Assert
-			objConnection.Received(1).Start(Arg.Any<IPAddress>(), 8080, Arg.Is(String.Empty), Arg.Is(String.Empty), Arg.Any<Action<IConnection.IClientConnection>>());
+			objConnection.Received(1).Start(Arg.Is(objParams));
 		}
 
 		/// <summary>
@@ -65,6 +62,7 @@ namespace Mitto.Main.Tests.Server {
 			var objConnectionProvider = Substitute.For<IConnection.IConnectionProvider>();
 			var objAction = Substitute.For<Action<ClientConnection>>();
 			var objConnection = Substitute.For<IConnection.IServer>();
+			var objParams = Substitute.For<IConnection.ServerParams>();
 
 			objConnectionProvider.CreateServer().Returns(objConnection);
 
@@ -74,12 +72,30 @@ namespace Mitto.Main.Tests.Server {
 
 			//Act
 			var obj = new Mitto.Server();
-			obj.Start(IPAddress.Any, 8080, "Path", "Password", objAction);
+			obj.Start(objParams, objAction);
 
 			//Assert
-			objConnection.Received(1).Start(Arg.Any<IPAddress>(), 8080, Arg.Is("Path"), Arg.Is("Password"), Arg.Any<Action<IConnection.IClientConnection>>());
+			objConnection.Received(1).Start(Arg.Is(objParams));
 		}
 
+		[Test]
+		public void ClientConnected() {
+			//Arrange
+			var objProvider = Substitute.For<IConnectionProvider>();
+			var objParams = Substitute.For<ServerParams>();
+			var objAction = Substitute.For<Action<ClientConnection>>();
+			
+			Config.Initialize(new Config.ConfigParams() {
+				ConnectionProvider = objProvider
+			});
 
+			//Act
+			var obj = new Mitto.Server();
+			obj.Start(objParams, objAction);
+			objParams.ClientConnected.Invoke(Substitute.For<IClientConnection>());
+
+			//Assert
+			objAction.Received(1).Invoke(Arg.Any<ClientConnection>());
+		}
 	}
 }

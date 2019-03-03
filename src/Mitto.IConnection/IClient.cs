@@ -4,6 +4,6 @@ namespace Mitto.IConnection {
 	public interface IClient: IClientConnection {
 		event EventHandler<IClient> Connected;
 
-		void ConnectAsync(string pHostname, int pPort, bool pSecure);
+		void ConnectAsync(IClientParams pParams); // string pHostname, int pPort, bool pSecure);
 	}
 }

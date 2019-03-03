@@ -30,13 +30,17 @@ namespace Mitto.Connection.Websocket.Client {
 		}
 
 		#region Constructor & Connecting
-		public void ConnectAsync(string pHostname, int pPort, bool pSecure) {
+		public void ConnectAsync(IClientParams pParams) { //string pHostname, int pPort, bool pSecure) {
+			if (!(pParams is ClientParams objParams)) {
+				throw new Exception("Incorrect parameters for Websocket client");
+			}
+
 			_objWebSocketClient.OnOpen += Connection_OnOpen;
 			_objWebSocketClient.OnClose += Connection_OnClose;
 			_objWebSocketClient.OnError += Connection_OnError;
 			_objWebSocketClient.OnMessage += Connection_OnMessage;
 
-			_objWebSocketClient.ConnectAsync(String.Format(((pSecure) ? "wss" : "ws") + "://{0}:{1}/", pHostname, pPort));
+			_objWebSocketClient.ConnectAsync(String.Format(((objParams.Secure) ? "wss" : "ws") + "://{0}:{1}/", objParams.Hostname, objParams.Port));
 		}
 
 		private void Close() {

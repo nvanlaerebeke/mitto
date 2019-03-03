@@ -34,8 +34,8 @@ namespace Mitto {
 			InternalQueue.Rx += InternalQueue_Rx;
 		}
 
-		public void ConnectAsync(string pHostname, int pPort, bool pSecure) {
-			Connection.ConnectAsync(pHostname, pPort, pSecure);
+		public void ConnectAsync(IClientParams pParams) {
+			Connection.ConnectAsync(pParams);
 		}
 
 		private void ObjClient_Connected(object sender, IConnection.IClient pClient) {

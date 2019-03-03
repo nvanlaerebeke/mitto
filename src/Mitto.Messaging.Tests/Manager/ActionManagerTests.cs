@@ -204,7 +204,7 @@ namespace Mitto.Messaging.Tests {
 
 			objProvider.GetByteArray(Arg.Is(objResponse)).Returns(new byte[] { 1, 2, 3, 4, 5 });
 			objAction.Start().Returns(objResponse);
-			objAction.When(a => a.Start()).Do(a => System.Threading.Thread.Sleep(1000));
+			objAction.When(a => a.Start()).Do(a => System.Threading.Thread.Sleep(50));
 
 			Config.Initialize(new Config.ConfigParams() {
 				MessageProvider = objProvider

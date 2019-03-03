@@ -20,7 +20,7 @@ namespace Mitto.Connection.Websocket.Tests.Server {
 			var objWebSocketServer = Substitute.For<IWebSocketServer>();
 			var objServer = new WebsocketServer(objWebSocketServer);
 			//Act
-			objServer.Start(IPAddress.Parse("127.0.0.1"), 80, delegate (IClientConnection pClient) { });
+			objServer.Start(new	ServerParams(IPAddress.Parse("127.0.0.1"), 80));
 			//Assert
 			objWebSocketServer.Received(1).Start(
 				Arg.Is<IPAddress>(ip => ip.Equals(IPAddress.Parse("127.0.0.1"))), 
@@ -45,7 +45,7 @@ namespace Mitto.Connection.Websocket.Tests.Server {
 			File.WriteAllBytes(file, Convert.FromBase64String(cert));
 
 			//Act
-			objServer.Start(IPAddress.Parse("127.0.0.1"), 443, file, "", delegate (IClientConnection pClient) { });
+			objServer.Start(new ServerParams(IPAddress.Parse("127.0.0.1"), 443, file, ""));
 
 			//Assert
 			objWebSocketServer.Received(1).Start(
@@ -62,9 +62,11 @@ namespace Mitto.Connection.Websocket.Tests.Server {
 			var objAction = Substitute.For<Action<IClientConnection>>();
 			var objEventArgs = Substitute.For<IWebSocketBehavior>();
 			var objServer = new WebsocketServer(objWebSocketServer);
-			
+
 			//Act
-			objServer.Start(IPAddress.Parse("127.0.0.1"), 80, objAction);
+			var objParams = new ServerParams(IPAddress.Any, 80);
+			objParams.ClientConnected = objAction;
+			objServer.Start(objParams);
 			objWebSocketServer.ClientConnected += Raise.Event<EventHandler<IWebSocketBehavior>>(objWebSocketServer, objEventArgs);
 
 			//Assert
@@ -84,7 +86,9 @@ namespace Mitto.Connection.Websocket.Tests.Server {
 			var objServer = new WebsocketServer(objWebSocketServer);
 
 			//Act
-			objServer.Start(IPAddress.Parse("127.0.0.1"), 80, objAction);
+			var objParams = new ServerParams(IPAddress.Any, 80);
+			objParams.ClientConnected = objAction;
+			objServer.Start(objParams);
 			objWebSocketServer.ClientConnected += Raise.Event<EventHandler<IWebSocketBehavior>>(objWebSocketServer, objEventArgs);
 			objServer.Stop();
 			objWebSocketServer.ClientConnected += Raise.Event<EventHandler<IWebSocketBehavior>>(objWebSocketServer, objEventArgs);

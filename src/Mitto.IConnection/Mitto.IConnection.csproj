@@ -35,6 +35,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConnectionFactory.cs" />
+    <Compile Include="IConnectionParams.cs" />
     <Compile Include="IClient.cs" />
     <Compile Include="IConnectionProvider.cs" />
     <Compile Include="IServer.cs" />

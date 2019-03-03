@@ -14,12 +14,16 @@ namespace Mitto {
 		public Server() {
 			_objWsServer = ConnectionFactory.CreateServer();
 		}
-		public void Start(IPAddress pIPAddress, int pPort, Action<ClientConnection> pCallback) {
-			Start(pIPAddress, pPort, "", "", pCallback);
-		}
-		public void Start(IPAddress pIPAddress, int pPort, string pCertPath, string pCertPassword, Action<ClientConnection> pCallback) {
-			_objAction = pCallback;
-			_objWsServer.Start(pIPAddress, pPort, pCertPath, pCertPassword, ClientConnected);
+
+		/// <summary>
+		/// Starts the Server connection 
+		/// </summary>
+		/// <param name="pParams">Parameters for the server</param>
+		/// <param name="pAction">Action that will be run when a client connects</param>
+		public void Start(ServerParams pParams, Action<ClientConnection> pAction) {
+			_objAction = pAction;
+			pParams.ClientConnected = ClientConnected;
+			_objWsServer.Start(pParams);
 		}
 		private void ClientConnected(IClientConnection pClient) {
 			_objAction.Invoke(new ClientConnection(pClient));
