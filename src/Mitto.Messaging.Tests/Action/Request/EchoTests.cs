@@ -11,7 +11,7 @@ namespace Mitto.Messaging.Tests.Action.Request {
 		/// message the string given in the requestmessage
 		/// </summary>
 		[Test]
-		public void TestMethod() {
+		public void CreateTest() {
 			//Arrange
 			var objClient = Substitute.For<IClient>();
 			var objMessage = Substitute.For<Messaging.Request.Echo>();

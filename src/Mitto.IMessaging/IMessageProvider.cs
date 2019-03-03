@@ -10,6 +10,7 @@
 		IMessage GetMessage(byte[] pData);
 		IResponseMessage GetResponseMessage(IRequestMessage pMessage, ResponseCode pCode);
 		IAction GetAction(IClient pClient, IRequestMessage pMessage);
+		T GetSubscriptionHandler<T>(); // where T : ISubscriptionHandler<IRequestMessage, IRequestMessage>;
 		byte[] GetByteArray(IMessage pMessage);
 	}
 }

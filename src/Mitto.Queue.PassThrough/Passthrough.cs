@@ -1,4 +1,5 @@
 ﻿using Mitto.IQueue;
+using System;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleToAttribute("Mitto.Queue.PassThrough.Tests")]
@@ -15,8 +16,13 @@ namespace Mitto.Queue.PassThrough {
 	/// </summary>
 	public class Passthrough : IQueue.IQueue {
 		public event DataHandler Rx;
+		private IQueue.IQueue Queue { get; set; }
 
-		internal IQueue.IQueue Queue { get; set; }
+		public string ID { get; } =  Guid.NewGuid().ToString();
+
+		internal Passthrough(IQueue.IQueue pInternalQueue) {
+			Queue = pInternalQueue;
+		}
 
 		public Passthrough() {
 			Queue = new InternalQueue(this);

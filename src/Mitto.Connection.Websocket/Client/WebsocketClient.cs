@@ -18,8 +18,8 @@ namespace Mitto.Connection.Websocket.Client {
 
 		public string ID { get; private set; } = Guid.NewGuid().ToString();
 
-		public event ConnectionHandler Connected;
-		public event ConnectionHandler Disconnected;
+		public event EventHandler<IClient> Connected;
+		public event EventHandler<IConnection.IConnection> Disconnected;
 		public event DataHandler Rx;
 
 		internal WebsocketClient(IWebSocketClient pWebSocket, IKeepAliveMonitor pKeepAliveMonitor) {
@@ -74,21 +74,21 @@ namespace Mitto.Connection.Websocket.Client {
 			StartTransmitQueue();
 			_objKeepAliveMonitor.Start();
 			ThreadPool.QueueUserWorkItem(s => {
-				Connected?.Invoke(this);
+				Connected?.Invoke(this, this);
 			});
 		}
 
 		private void Connection_OnError(object sender, IErrorEventArgs e) {
 			this.Close();
 			ThreadPool.QueueUserWorkItem(s => {
-				Disconnected?.Invoke(this);
+				Disconnected?.Invoke(this, this);
 			});
 		}
 
 		private void Connection_OnClose(object sender, ICloseEventArgs e) {
 			this.Close();
 			ThreadPool.QueueUserWorkItem(s => {
-				Disconnected?.Invoke(this);
+				Disconnected?.Invoke(this, this);
 			});
 		}
 
@@ -109,9 +109,7 @@ namespace Mitto.Connection.Websocket.Client {
 		#region Client Methods
 		public void Disconnect() {
 			this.Close();
-			ThreadPool.QueueUserWorkItem(s => {
-				Disconnected?.Invoke(this);
-			});
+			Disconnected?.Invoke(this, this);
 		}
 
 		private BlockingCollection<byte[]> _colQueue;

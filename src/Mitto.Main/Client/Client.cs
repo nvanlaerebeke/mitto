@@ -13,41 +13,55 @@ namespace Mitto {
 	///   - events for when the client connects/disconnects
 	///   - ability to make requests and receive a response
 	///   - ability to send a message (fire and forget)
-	///   - easy way to create a new client
 	/// 
 	/// </summary>
 	public class Client : IQueue.IQueue {
 		public event ClientConnectionHandler Connected;
 		public event ClientConnectionHandler Disconnected;
 
+		public string ID { get { return Connection.ID; } } 
+
 		#region IConnection stuff
-		private IConnection.IClient _objClient;
+		private IConnection.IClient Connection { get; set; }
+
 		public Client() {
-			_objClient = ConnectionFactory.CreateClient();
-			_objClient.Connected += ObjClient_Connected;
-			_objClient.Disconnected += ObjClient_Disconnected;
-			_objClient.Rx += _objClient_Rx;
+			Connection = ConnectionFactory.CreateClient();
+			Connection.Connected += ObjClient_Connected;
+			Connection.Disconnected += ObjClient_Disconnected;
+			Connection.Rx += _objClient_Rx;
+
+			InternalQueue = IQueue.QueueFactory.Create();
+			InternalQueue.Rx += InternalQueue_Rx;
 		}
 
 		public void ConnectAsync(string pHostname, int pPort, bool pSecure) {
-			_objClient.ConnectAsync(pHostname, pPort, pSecure);
+			Connection.ConnectAsync(pHostname, pPort, pSecure);
 		}
 
-		private void ObjClient_Connected(IConnection.IConnection pClient) {
+		private void ObjClient_Connected(object sender, IConnection.IClient pClient) {
 			Connected?.Invoke(this);
 		}
-		private void ObjClient_Disconnected(IConnection.IConnection pClient) {
-			_objClient.Connected -= ObjClient_Connected;
-			_objClient.Disconnected -= ObjClient_Disconnected;
 
-			Disconnected?.Invoke(this);
+		private void ObjClient_Disconnected(object sender, IConnection.IConnection pClient) {
+			Close();
 		}
 
 		/// <summary>
 		/// Closes the connection (IConnection) so that everything gets cleaned up
 		/// </summary>
 		public void Disconnect() {
-			_objClient.Disconnect();
+			Close();
+			Connection.Disconnect();
+		}
+
+		private void Close() {
+			Connection.Rx -= _objClient_Rx;
+			Connection.Connected -= ObjClient_Connected;
+			Connection.Disconnected -= ObjClient_Disconnected;
+
+			InternalQueue.Rx -= InternalQueue_Rx;
+
+			Disconnected?.Invoke(this);
 		}
 
 		/// <summary>
@@ -64,22 +78,14 @@ namespace Mitto {
 		}
 		#endregion
 
-		#region Internal Messaging (Passthrough)
-		private IQueue.IQueue _objQueue;
-		private IQueue.IQueue InternalQueue {
-			get {
-				if (_objQueue == null) {
-					_objQueue = IQueue.QueueFactory.Create();
-					_objQueue.Rx += _objQueue_Rx;
-				}
-				return _objQueue;
-			}
-		}
+		#region Internal Messaging
+		private IQueue.IQueue InternalQueue { get; set; }
+
 		/// <summary>
 		/// Send what we get on the internal messaging queue to the server
 		/// </summary>
 		/// <param name="pMessage"></param>
-		private void _objQueue_Rx(byte[] pMessage) {
+		private void InternalQueue_Rx(byte[] pMessage) {
 			this.Transmit(pMessage);
 		}
 		#endregion
@@ -112,7 +118,7 @@ namespace Mitto {
 		/// <param name="pMessage"></param>
 		public void Transmit(byte[] pMessage) {
 			Rx?.Invoke(pMessage);
-			_objClient.Transmit(pMessage);
+			Connection.Transmit(pMessage);
 		}
 
 		/// <summary>

@@ -1,17 +1,27 @@
 ToDo's before v1:
 
-- For requets, add a IRequestMessage interface, it's the same as IMessage but it's 
+- Connection properties (secure/port/ip etc) to Config class
+    Connection stuff should be generic, example IPC/WCF/Websocket, each has different parameters
 
-  so we have a type difference between the base IMessage and derived IRequestMessage and IResponseMessage
+- Fix assembly info's
 
-- Subscription support, this should be fairly easy as it's not really related to Mitto, it's higher level 
-  where the IClient is kept when a Action is run so something can be put on the IConnection
-  Note that this does mean that cleanup needs to be implemented properly, so that's why it would come in 
-  handy if it's already in Mitto as users can just inherit from a SubscriptionHandler or something
-  and don't have to thing about cleanups/memory leaks
+- Add postfix to messages, example:
+	Ping => PingRequest
+	Pong => PongResponse
+	ACK => ACKResponse
+
+	This is to prevent namespace conflicts even if the namespace makes the name obsolete
+	for developing it's much easier to have a postfixed
+
+- MessageProvider.LoadTypes called twice
+
+- Change namepace order for messages
+  Now it's: <Project>.Message.Request.<Class>
+  Sould be <Project>.Request, will change project structure a bit
 
 - Keepalive for message processing between Client -> Server -> Queue -> Worker
-    Make it so that ping has more then 1 seconds time to respond when using "bool WebSocket.Ping()""
+    Make it so that ping has more then 1 seconds time to respond when using "bool WebSocket.Ping()"
+	Might have to refactor a bit for passing properties to Mitto.Connection.Websockets, 
 
 - Threading - only need ThreadPool.QueueWorkerItem when processing starts (example the Action<T> and callback methods)
 
@@ -74,9 +84,10 @@ Features:
 
 Testing:
   - Unicode/UTF-32 tests for parts where were interact with text
-      - Json messages
+   - Json messages
 	  - Message names
 	  - Verify input byte[], so that no crashes happen when bogus/invalid data is tranfered
 	    There is no error handling on the Frame objects for example
-	  
-  - Message names where the text in byte[] > 255, should cause an exception
+	  - Think about how functional tests can be realized
+    - Message names where the text in byte[] > 255, should cause an exception
+      For UTF-32 this will be quite a bit faster than UTF-8 or even 16

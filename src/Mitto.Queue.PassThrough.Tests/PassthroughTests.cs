@@ -31,9 +31,7 @@ namespace Mitto.Queue.PassThrough.Tests {
 			var objInternalQueue = Substitute.For<IQueue.IQueue>();
 
 			//Act
-			new Passthrough {
-				Queue = objInternalQueue
-			}.Transmit(new byte[] { 1, 2, 3, 4 });
+			new Passthrough(objInternalQueue).Transmit(new byte[] { 1, 2, 3, 4 });
 
 			//Assert
 			objInternalQueue.Received(1).Receive(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));

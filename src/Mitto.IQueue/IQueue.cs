@@ -25,6 +25,7 @@
 	/// 
 	/// </summary>
 	public interface IQueue {
+		string ID { get; }
 		event DataHandler Rx;
 		void Transmit(byte[] pMessage);
 		void Receive(byte[] pMessage);

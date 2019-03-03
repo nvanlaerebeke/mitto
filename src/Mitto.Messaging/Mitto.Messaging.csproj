@@ -35,7 +35,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action\Request\MessageStatus.cs" />
-    <Compile Include="Lib\ActionManager.cs" />
+    <Compile Include="Action\Request\ReceiveOnChannel.cs" />
+    <Compile Include="Action\Request\SendToChannel.cs" />
+    <Compile Include="Action\Subscribe\Channel.cs" />
+    <Compile Include="Action\SubscriptionHandler\Channel.cs" />
+    <Compile Include="Action\UnSubscribe\Channel.cs" />
+    <Compile Include="Request\ReceiveOnChannel.cs" />
+    <Compile Include="Request\SendToChannel.cs" />
+    <Compile Include="Subscribe\Channel.cs" />
+    <Compile Include="UnSubMessage.cs" />
+    <Compile Include="SubMessage.cs" />
+    <Compile Include="Manager\ActionManager.cs" />
     <Compile Include="Action\BaseAction.cs" />
     <Compile Include="Action\Notification\Info.cs" />
     <Compile Include="Action\Notification\LogStatus.cs" />
@@ -43,33 +53,33 @@
     <Compile Include="Action\RequestAction.cs" />
     <Compile Include="Action\Request\Echo.cs" />
     <Compile Include="Action\Request\Ping.cs" />
-    <Compile Include="Interfaces\IActionManager.cs" />
-    <Compile Include="Lib\IRequest.cs" />
-    <Compile Include="Lib\Client.cs" />
-    <Compile Include="Lib\Frame.cs" />
-    <Compile Include="Interfaces\IClient.cs" />
-    <Compile Include="Interfaces\IFrame.cs" />
-    <Compile Include="Interfaces\IMessageRequest.cs" />
-    <Compile Include="Interfaces\IRequestManager.cs" />
+    <Compile Include="Manager\IActionManager.cs" />
+    <Compile Include="IRequest.cs" />
+    <Compile Include="Client.cs" />
+    <Compile Include="Frame.cs" />
+    <Compile Include="IFrame.cs" />
+    <Compile Include="IMessageRequest.cs" />
+    <Compile Include="Manager\IRequestManager.cs" />
     <Compile Include="MessageProcessor.cs" />
     <Compile Include="MessageProvider.cs" />
-    <Compile Include="Message\Message.cs" />
-    <Compile Include="Message\NotificationMessage.cs" />
-    <Compile Include="Message\Notification\Info.cs" />
-    <Compile Include="Message\Notification\LogStatus.cs" />
-    <Compile Include="Message\RequestMessage.cs" />
-    <Compile Include="Message\Request\MessageStatus.cs" />
-    <Compile Include="Message\Request\Echo.cs" />
-    <Compile Include="Message\Request\Ping.cs" />
-    <Compile Include="Message\ResponseMessage.cs" />
-    <Compile Include="Message\Response\ACK.cs" />
-    <Compile Include="Message\Response\MessageStatus.cs" />
-    <Compile Include="Message\Response\Echo.cs" />
-    <Compile Include="Message\Response\Pong.cs" />
-    <Compile Include="Lib\MessagingException.cs" />
+    <Compile Include="Message.cs" />
+    <Compile Include="NotificationMessage.cs" />
+    <Compile Include="Notification\Info.cs" />
+    <Compile Include="Notification\LogStatus.cs" />
+    <Compile Include="RequestMessage.cs" />
+    <Compile Include="Request\MessageStatus.cs" />
+    <Compile Include="Request\Echo.cs" />
+    <Compile Include="Request\Ping.cs" />
+    <Compile Include="ResponseMessage.cs" />
+    <Compile Include="Response\ACK.cs" />
+    <Compile Include="Response\MessageStatus.cs" />
+    <Compile Include="Response\Echo.cs" />
+    <Compile Include="Response\Pong.cs" />
+    <Compile Include="MessagingException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Lib\RequestManager.cs" />
-    <Compile Include="Lib\Request.cs" />
+    <Compile Include="Manager\RequestManager.cs" />
+    <Compile Include="Request.cs" />
+    <Compile Include="UnSubscribe\Channel.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

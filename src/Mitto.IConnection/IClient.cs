@@ -1,7 +1,8 @@
-﻿namespace Mitto.IConnection {
+﻿using System;
+
+namespace Mitto.IConnection {
 	public interface IClient: IClientConnection {
-		event ConnectionHandler Connected;
-		event ConnectionHandler Disconnected;
+		event EventHandler<IClient> Connected;
 
 		void ConnectAsync(string pHostname, int pPort, bool pSecure);
 	}

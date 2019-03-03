@@ -28,14 +28,41 @@ namespace Mitto.Messaging {
 	/// ToDo: Move messages under Mitto.Messaging.Message so that it's uniform with actions
 	/// </summary>
 	public class MessageProvider : IMessageProvider {
+		
 		/// <summary>
 		/// The available IMessage classes
 		/// </summary>
 		internal Dictionary<MessageType, Dictionary<string, Type>> Types { get; } = new Dictionary<MessageType, Dictionary<string, Type>>();
+		
 		/// <summary>
 		/// The available IAction classes
 		/// </summary>
 		internal Dictionary<MessageType, Dictionary<string, Type>> Actions { get; } = new Dictionary<MessageType, Dictionary<string, Type>>();
+		
+		/// <summary>
+		/// The available SubscriptionHandler classes
+		/// </summary>
+		internal Dictionary<string, object> SubscriptionHandlers { get; } = new Dictionary<string, object>();
+
+		/// <summary>
+		/// Loads the types present in the specified Namespaces
+		/// The build-in types will be automatically added first
+		/// 
+		/// It is possible to overwrite the build-in message types and actions by your 
+		/// own implementation when creating the class in your own namespaces
+		/// 
+		/// Note that the order of the passed namespaces will be respected and the last
+		/// in the list will win.
+		/// </summary>
+		/// <param name="pNamespace"></param>
+		public MessageProvider(IEnumerable<string> pNamespaces) {
+			LoadTypes(typeof(MessageProvider).Namespace);
+			foreach (var strNamespace in pNamespaces) {
+				if (strNamespace != typeof(MessageProvider).Namespace) {
+					LoadTypes(strNamespace);
+				}
+			}
+		}
 
 		/// <summary>
 		/// Loads the types present in the specified Namespace
@@ -46,7 +73,7 @@ namespace Mitto.Messaging {
 		/// </summary>
 		/// <param name="pNamespace"></param>
 		public MessageProvider(string pNamespace) {
-			if(pNamespace != typeof(MessageProvider).Namespace) {
+			if (pNamespace != typeof(MessageProvider).Namespace) {
 				LoadTypes(typeof(MessageProvider).Namespace);
 			}
 			LoadTypes(pNamespace);
@@ -64,22 +91,38 @@ namespace Mitto.Messaging {
 		/// </summary>
 		/// <param name="pNamespace"></param>
 		private void LoadTypes(string pNamespace) {
+			Dictionary<MessageType, string> dicMessageNamespaces = new Dictionary<MessageType, string> {
+				{ MessageType.Notification, ".Notification" },
+				{ MessageType.Request, ".Request" },
+				{ MessageType.Response, ".Response" },
+				{ MessageType.Sub, ".Subscribe" },
+				{ MessageType.UnSub, ".UnSubscribe" }
+			};
+
 			//Messages
-			foreach (var objType in GetByNamespace(pNamespace + ".Request")) {
-				AddMessageType(MessageType.Request, objType);
+			foreach(var objKvp in dicMessageNamespaces) {
+				foreach(var objType in GetByNamespace(pNamespace + objKvp.Value)) {
+					AddMessageType(objKvp.Key, objType);
+				}
 			}
-			foreach (var objType in GetByNamespace(pNamespace + ".Response")) {
-				AddMessageType(MessageType.Response, objType);
-			}
-			foreach (var objType in GetByNamespace(pNamespace + ".Notification")) {
-				AddMessageType(MessageType.Notification, objType);
-			}
+
 			//Actions
-			foreach (var objType in GetByNamespace(pNamespace + ".Action.Notification")) {
-				AddActionType(MessageType.Notification, objType);
+			Dictionary<MessageType, string> dicActionNamespaces = new Dictionary<MessageType, string> {
+				{ MessageType.Notification, ".Action.Notification" },
+				{ MessageType.Request, ".Action.Request" },
+				{ MessageType.Sub, ".Action.Subscribe" },
+				{ MessageType.UnSub, ".Action.UnSubscribe" }
+			};
+
+			foreach (var objKvp in dicActionNamespaces) {
+				foreach (var objType in GetByNamespace(pNamespace + objKvp.Value)) {
+					AddActionType(objKvp.Key, objType);
+				}
 			}
-			foreach (var objType in GetByNamespace(pNamespace + ".Action.Request")) {
-				AddActionType(MessageType.Request, objType);
+
+			//Subscription handlers
+			foreach (var objType in GetByNamespace(pNamespace + ".Action.SubscriptionHandler")) {
+				AddSubscriptionHandlerType(objType.Name, objType);
 			}
 		}
 
@@ -88,8 +131,9 @@ namespace Mitto.Messaging {
 		/// 
 		/// Messages must implement the IMessage interface and may not be abstract classes
 		///
-		/// When passing a message with a name that already exists it will not overwrite 
-		/// the already existing cache. 
+		/// When passing a message with a name that already exists it will overwrite 
+		/// the already existing cache version.
+		/// 
 		/// MessageType/Name combination should be unique
 		/// </summary>
 		/// <param name="pMessageType"></param>
@@ -102,6 +146,8 @@ namespace Mitto.Messaging {
 			} else {
 				if (!Types[pMessageType].ContainsKey(pType.Name)) {
 					Types[pMessageType].Add(pType.Name, pType);
+				} else {
+					Types[pMessageType][pType.Name] = pType;
 				}
 			}
 		}
@@ -111,8 +157,9 @@ namespace Mitto.Messaging {
 		/// 
 		/// Actions must implement the IRequestAction or INotification interfaces
 		/// 
-		/// When passing an action with a name that already exists it will not overwrite 
-		/// the already existing cache. 
+		/// When passing an action with a name that already exists it will overwrite 
+		/// the already existing cache version.
+		/// 
 		/// MessageType/Name combination should be unique
 		/// </summary>
 		/// <param name="pMessageType"></param>
@@ -125,7 +172,28 @@ namespace Mitto.Messaging {
 			} else {
 				if (!Actions[pMessageType].ContainsKey(pType.Name)) {
 					Actions[pMessageType].Add(pType.Name, pType);
+				} else {
+					Actions[pMessageType][pType.Name] = pType;
 				}
+			}
+		}
+
+		/// <summary>
+		/// Adds a subscription handler of type pType to the provider list
+		/// Overwrites any existing type present for that name
+		/// 
+		/// ToDo: add an interface like IAction 
+		/// </summary>
+		/// <param name="pName"></param>
+		/// <param name="pType"></param>
+		private void AddSubscriptionHandlerType(string pName, Type pType) {
+			if(pType.IsAbstract) { return; }
+
+			var obj = Activator.CreateInstance(pType);
+			if (!SubscriptionHandlers.ContainsKey(pName)) {
+				SubscriptionHandlers.Add(pName, obj);
+			} else {
+				SubscriptionHandlers[pName] = obj;
 			}
 		}
 
@@ -146,10 +214,11 @@ namespace Mitto.Messaging {
 					var objType in (from t in ass.GetTypes() where t.IsClass && t.Namespace == pNamespace select t)
 				) {
 					if (
-						objType.IsSubclassOf(typeof(RequestMessage)) ||
-						objType.IsSubclassOf(typeof(ResponseMessage)) ||
-						objType.IsSubclassOf(typeof(NotificationMessage)) ||
-						objType.Namespace.Contains(".Action") //is a generic type, easy solution is to just check the namespace string instead of  IsSubclassOf(typeof(Action.BaseAction<T>))
+						objType.GetInterfaces().Contains(typeof(IRequestMessage)) ||
+						objType.GetInterfaces().Contains(typeof(IResponseMessage)) ||
+						objType.GetInterfaces().Contains(typeof(IAction)) ||
+						objType.Namespace.Contains(".Action.SubscriptionHandler") //is a generic type, easy solution is to just check the namespace string instead of  IsSubclassOf(typeof(Action.BaseAction<T>))
+						//objType.IsSubclassOf(typeof(NotificationMessage)) ||
 					) {
 						lstTypes.Add(objType);
 					}
@@ -216,6 +285,10 @@ namespace Mitto.Messaging {
 			return null;
 		}
 
+		public T GetSubscriptionHandler<T>() { // where T : ISubscriptionHandler<IRequestMessage, IRequestMessage> {
+			return (SubscriptionHandlers.ContainsKey(typeof(T).Name)) ? (T)SubscriptionHandlers[typeof(T).Name] : default(T);
+		}
+
 		/// <summary>
 		/// Gets the byte[] representation for the given IMessage
 		/// 
@@ -226,8 +299,8 @@ namespace Mitto.Messaging {
 		/// <returns></returns>
 		public byte[] GetByteArray(IMessage pMessage) {
 			return new Frame(
-				pMessage.Type, 
-				pMessage.Name, 
+				pMessage.Type,
+				pMessage.Name,
 				MessagingFactory.Converter.GetByteArray(pMessage)
 			).GetByteArray();
 		}

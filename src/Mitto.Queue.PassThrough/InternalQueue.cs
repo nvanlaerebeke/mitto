@@ -1,12 +1,16 @@
 ﻿using Mitto.IQueue;
+using System;
 
 namespace Mitto.Queue.PassThrough {
 	internal class InternalQueue: IQueue.IQueue {
 		public event DataHandler Rx;
 
-		internal IQueue.IQueue _objQueue;
+		private IQueue.IQueue Queue { get; set; }
+
+		public string ID { get { return Queue.ID; } }
+
 		public InternalQueue(IQueue.IQueue pQueue) {
-			_objQueue = pQueue;
+			Queue = pQueue;
 		}
 
 		/// <summary>
@@ -26,7 +30,7 @@ namespace Mitto.Queue.PassThrough {
 		/// </summary>
 		/// <param name="pData"></param>
 		public void Transmit(byte[] pData) {
-			_objQueue.Receive(pData);
+			Queue.Receive(pData);
 		}
 	}
 }

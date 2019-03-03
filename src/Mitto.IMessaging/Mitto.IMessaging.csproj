@@ -42,6 +42,7 @@
     <Compile Include="IMessageConverter.cs" />
     <Compile Include="IMessageProvider.cs" />
     <Compile Include="IResponseMessage.cs" />
+    <Compile Include="ISubscriptionHandler.cs" />
     <Compile Include="MessageStatusType.cs" />
     <Compile Include="MessagingFactory.cs" />
     <Compile Include="MessageType.cs" />

@@ -5,7 +5,7 @@ namespace Mitto.Messaging.Action.Request {
         public Ping(IClient pClient, Messaging.Request.Ping pMessage) : base(pClient, pMessage) { }
 
         public override IResponseMessage Start() {
-            return new Response.Pong(Request, ResponseCode.Success);
+            return new Response.Pong(Request);
         }
     }
 }

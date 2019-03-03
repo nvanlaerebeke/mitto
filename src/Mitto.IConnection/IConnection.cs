@@ -1,9 +1,16 @@
-﻿namespace Mitto.IConnection {
-	public delegate void ConnectionHandler(IConnection pConnection);
+﻿using System;
+
+namespace Mitto.IConnection {
 	public delegate void DataHandler(IConnection pConnection, byte[] pData);
 
+	/// <summary>
+	/// ToDo: 
+	/// - EventHandler<IConnection> => EventHandler
+	/// - DataHandler Rx => EventHandler<byte[]>
+	/// 
+	/// </summary>
 	public interface IConnection {
-		event ConnectionHandler Disconnected;
+		event EventHandler<IConnection> Disconnected;
 		event DataHandler Rx;
 		string ID { get; }
 
