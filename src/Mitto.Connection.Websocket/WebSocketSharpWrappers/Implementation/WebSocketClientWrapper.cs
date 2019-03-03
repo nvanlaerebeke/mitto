@@ -57,9 +57,7 @@ namespace Mitto.Connection.Websocket {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void _objWebSocket_OnMessage(object sender, MessageEventArgs e) {
-			ThreadPool.QueueUserWorkItem(s => {
-				OnMessage?.Invoke(sender, new MessageEventArgWrapper(e));
-			});
+			OnMessage?.Invoke(sender, new MessageEventArgWrapper(e));
 		}
 
 		/// <summary>
@@ -70,9 +68,7 @@ namespace Mitto.Connection.Websocket {
 		/// <param name="e"></param>
 		private void _objWebSocket_OnError(object sender, ErrorEventArgs e) {
 			Close();
-			ThreadPool.QueueUserWorkItem(s => {
-				OnError?.Invoke(sender, new ErrorEventArgWrapper(e));
-			});
+			OnError?.Invoke(sender, new ErrorEventArgWrapper(e));
 		}
 
 		/// <summary>
@@ -83,9 +79,7 @@ namespace Mitto.Connection.Websocket {
 		/// <param name="e"></param>
 		private void _objWebSocket_OnClose(object sender, CloseEventArgs e) {
 			Close();
-			ThreadPool.QueueUserWorkItem(s => {
-				OnClose?.Invoke(sender, new CloseEventArgWrapper(e));
-			});
+			OnClose?.Invoke(sender, new CloseEventArgWrapper(e));
 		}
 
 		/// <summary>
@@ -95,9 +89,7 @@ namespace Mitto.Connection.Websocket {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void _objWebSocket_OnOpen(object sender, EventArgs e) {
-			ThreadPool.QueueUserWorkItem(s => {
-				OnOpen?.Invoke(sender, e);
-			});
+			OnOpen?.Invoke(sender, e);
 		}
 
 		/// <summary>

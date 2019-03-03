@@ -1,9 +1,5 @@
 ToDo's before v1:
 
-- Keepalive for message processing between Client -> Server -> Queue -> Worker
-    Make it so that ping has more then 1 seconds time to respond when using "bool WebSocket.Ping()"
-	Might have to refactor a bit for passing properties to Mitto.Connection.Websockets, 
-
 - Threading - only need ThreadPool.QueueWorkerItem when processing starts (example the Action<T> and callback methods)
 
 - Custom error codes
