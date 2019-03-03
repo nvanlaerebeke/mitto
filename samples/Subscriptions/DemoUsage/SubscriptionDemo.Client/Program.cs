@@ -1,6 +1,12 @@
 ﻿using System;
 using System.Threading;
 using Mitto;
+using Mitto.Connection.Websocket;
+using Mitto.IMessaging;
+using Mitto.Messaging.Action.Request;
+using Mitto.Messaging.Request;
+using Mitto.Messaging.Response;
+using Mitto.Messaging.Subscribe;
 
 namespace Quickstart.Client {
 	class Program {
@@ -12,7 +18,7 @@ namespace Quickstart.Client {
 			Config.Initialize();
 
 			//When a message is received, display it on the console
-			Mitto.Messaging.Action.Request.ReceiveOnChannel.ChannelMessageReceived += delegate (string pChannel, string pMessage) {
+			ReceiveOnChannelRequestAction.ChannelMessageReceived += delegate (string pChannel, string pMessage) {
 				Console.WriteLine($"{pChannel} > {pMessage}");
 			};
 
@@ -20,9 +26,9 @@ namespace Quickstart.Client {
 			_objClient = new Mitto.Client();
 			_objClient.Connected += delegate (Mitto.Client pClient) {
 				Console.WriteLine("Client Connected");
-				_objClient.Request<Mitto.Messaging.Response.ACK>(
-					new Mitto.Messaging.Subscribe.Channel("MyChannel"), r => {
-						if (r.Status == Mitto.IMessaging.ResponseCode.Success) {
+				_objClient.Request<ACKResponse>(
+					new ChannelSubscribe("MyChannel"), r => {
+						if (r.Status == ResponseCode.Success) {
 							Start();
 						} else {
 							Console.WriteLine("Failed Subscribing to Channel");
@@ -30,7 +36,11 @@ namespace Quickstart.Client {
 					}
 				);
 			};
-			_objClient.ConnectAsync("localhost", 8080, false);
+			_objClient.ConnectAsync(new ClientParams() {
+				Hostname = "localhost",
+				Port = 8080,
+				Secure = false
+			});
 
 			Console.CancelKeyPress += delegate (object sender, ConsoleCancelEventArgs e) {
 				_quit.Set();
@@ -42,10 +52,10 @@ namespace Quickstart.Client {
 			ThreadPool.QueueUserWorkItem(s => {
 				while (true) {
 					var text = Console.ReadLine();
-					_objClient.Request<Mitto.Messaging.Response.ACK>(
-						new Mitto.Messaging.Request.SendToChannel("MyChannel", text),
+					_objClient.Request<ACKResponse>(
+						new SendToChannelRequest("MyChannel", text),
 						r => {
-							if (r.Status != Mitto.IMessaging.ResponseCode.Success) {
+							if (r.Status != ResponseCode.Success) {
 								Console.WriteLine($"Failed Sending: {text}");
 							}
 						}

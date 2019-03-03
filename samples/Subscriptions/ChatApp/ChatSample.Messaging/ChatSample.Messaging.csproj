@@ -30,17 +30,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Mitto">
-      <HintPath>..\..\..\bin\Mitto.dll</HintPath>
+    <Reference Include="Mitto, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\bin\Mitto.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Message\Request\ReceiveMessage.cs" />
-    <Compile Include="Message\Request\SendMessage.cs" />
-    <Compile Include="Message\Subscribe\Chat.cs" />
-    <Compile Include="Message\UnSubscribe\Chat.cs" />
+    <Compile Include="Request\ReceiveMessageRequest.cs" />
+    <Compile Include="Request\SendMessageRequest.cs" />
+    <Compile Include="Subscribe\ChatSubscribe.cs" />
+    <Compile Include="UnSubscribe\ChatUnSubscribe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

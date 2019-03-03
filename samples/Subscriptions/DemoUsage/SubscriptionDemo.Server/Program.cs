@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using Mitto;
+using Mitto.Connection.Websocket;
 
 namespace Quickstart.Server {
 	class Program {
@@ -11,14 +12,10 @@ namespace Quickstart.Server {
 		static void Main(string[] args) {
 			Config.Initialize();
 
-			ThreadPool.QueueUserWorkItem((s) => {
-				Mitto.Server objServer = new Mitto.Server();
-				
-				objServer.Start(IPAddress.Any, 8080, delegate (ClientConnection pClient) {
-					pClient.Disconnected += PClient_Disconnected;
-					_lstClients.Add(pClient);
-					Console.WriteLine("Client Connected");
-				});
+			new Mitto.Server().Start(new ServerParams(IPAddress.Any, 8080),  c => {
+				c.Disconnected += PClient_Disconnected;
+				_lstClients.Add(c);
+				Console.WriteLine("Client Connected");
 			});
 
 			Console.CancelKeyPress += delegate (object sender, ConsoleCancelEventArgs e) {

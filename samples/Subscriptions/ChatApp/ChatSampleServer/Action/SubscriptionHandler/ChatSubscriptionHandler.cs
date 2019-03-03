@@ -3,16 +3,19 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Mitto.IMessaging;
 using ChatSample.Messaging.Request;
+using ChatSample.Messaging.UnSubscribe;
+using ChatSample.Messaging.Subscribe;
 
 namespace ChatSampleServer.Action.SubscriptionHandler {
-	public class Chat :
+	public class ChatSubscriptionHandler :
 		ISubscriptionHandler<
-			ChatSample.Messaging.Subscribe.Chat,
-			ChatSample.Messaging.UnSubscribe.Chat,
-			ChatSample.Messaging.Request.SendMessage
+			ChatSubscribe,
+			ChatUnSubscribe,
+			SendMessageRequest
 		> {
 		private ConcurrentDictionary<string, List<IClient>> _dicSubscriptions = new ConcurrentDictionary<string, List<IClient>>();
-		public bool Sub(IClient pClient, ChatSample.Messaging.Subscribe.Chat pMessage) {
+
+		public bool Sub(IClient pClient, ChatSubscribe pMessage) {
 			try {
 				if (!_dicSubscriptions.ContainsKey(pMessage.Channel)) {
 					_dicSubscriptions.TryAdd(pMessage.Channel, new List<IClient>());
@@ -26,7 +29,7 @@ namespace ChatSampleServer.Action.SubscriptionHandler {
 			}
 		}
 
-		public bool UnSub(IClient pClient, ChatSample.Messaging.UnSubscribe.Chat pMessage) {
+		public bool UnSub(IClient pClient, ChatSample.Messaging.UnSubscribe.ChatUnSubscribe pMessage) {
 			try {
 				if (!_dicSubscriptions.ContainsKey(pMessage.Channel)) { return true; } // -- nothing to do 
 				lock (_dicSubscriptions[pMessage.Channel]) {
@@ -37,12 +40,12 @@ namespace ChatSampleServer.Action.SubscriptionHandler {
 			}
 		}
 
-		public bool Notify(IClient pSender, ChatSample.Messaging.Request.SendMessage pNotifyMessage) {
+		public bool Notify(IClient pSender, ChatSample.Messaging.Request.SendMessageRequest pNotifyMessage) {
 			try {
 				if (_dicSubscriptions.ContainsKey(pNotifyMessage.Channel)) {
 					foreach (var objClient in _dicSubscriptions[pNotifyMessage.Channel]) {
 						if (!objClient.Equals(pSender)) {
-							objClient.Transmit(new ReceiveMessage(pNotifyMessage.Channel, pNotifyMessage.Message));
+							objClient.Transmit(new ReceiveMessageRequest(pNotifyMessage.Channel, pNotifyMessage.Message));
 						}
 					}
 				}

@@ -17,14 +17,16 @@ namespace ChatServer {
 				})
 			});
 
-			ThreadPool.QueueUserWorkItem((s) => {
-				Server objServer = new Server();
-				objServer.Start(IPAddress.Any, 8080, delegate (ClientConnection pClient) {
-					pClient.Disconnected += PClient_Disconnected;
-					_lstClients.Add(pClient);
-					Console.WriteLine("Client Connected");
-				});
-			});
+			new Server()
+				.Start(
+					new Mitto.Connection.Websocket.ServerParams(IPAddress.Any, 8080),
+					c => {
+						c.Disconnected += PClient_Disconnected;
+						_lstClients.Add(c);
+						Console.WriteLine("Client Connected");
+					}
+				)
+			;
 
 			Console.CancelKeyPress += delegate (object sender, ConsoleCancelEventArgs e) {
 				_quit.Set();

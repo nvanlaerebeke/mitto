@@ -1,13 +1,5 @@
 ToDo's before v1:
 
-- Add postfix to messages, example:
-	Ping => PingRequest
-	Pong => PongResponse
-	ACK => ACKResponse
-
-	This is to prevent namespace conflicts even if the namespace makes the name obsolete
-	for developing it's much easier to have a postfixed
-
 - MessageProvider.LoadTypes called twice
 
 - Change namepace order for messages
