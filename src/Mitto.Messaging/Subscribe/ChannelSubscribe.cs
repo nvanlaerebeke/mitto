@@ -1,7 +1,7 @@
 ﻿namespace Mitto.Messaging.Subscribe {
-	public class Channel : SubMessage {
+	public class ChannelSubscribe : SubMessage {
 		public string ChannelName { get; set; }
-		public Channel(string pName) {
+		public ChannelSubscribe(string pName) {
 			ChannelName = pName;
 		}
 	}

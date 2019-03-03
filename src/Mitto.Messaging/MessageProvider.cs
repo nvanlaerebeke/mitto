@@ -141,13 +141,19 @@ namespace Mitto.Messaging {
 		private void AddMessageType(MessageType pMessageType, Type pType) {
 			if (pType.IsAbstract || !pType.GetInterfaces().Contains(typeof(IMessage))) { return; }
 
+			var strName = pType.Name
+				.Replace("Request", "")
+				.Replace("Response", "")
+				.Replace("Notification", "")
+			;
+
 			if (!Types.ContainsKey(pMessageType)) {
-				Types.Add(pMessageType, new Dictionary<string, Type> { { pType.Name, pType } });
+				Types.Add(pMessageType, new Dictionary<string, Type> { { strName, pType } });
 			} else {
-				if (!Types[pMessageType].ContainsKey(pType.Name)) {
-					Types[pMessageType].Add(pType.Name, pType);
+				if (!Types[pMessageType].ContainsKey(strName)) {
+					Types[pMessageType].Add(strName, pType);
 				} else {
-					Types[pMessageType][pType.Name] = pType;
+					Types[pMessageType][strName] = pType;
 				}
 			}
 		}
@@ -167,13 +173,33 @@ namespace Mitto.Messaging {
 		private void AddActionType(MessageType pMessageType, Type pType) {
 			if (pType.IsAbstract || !pType.GetInterfaces().Contains(typeof(IAction))) { return; }
 
-			if (!Actions.ContainsKey(pMessageType)) {
-				Actions.Add(pMessageType, new Dictionary<string, Type> { { pType.Name, pType } });
-			} else {
-				if (!Actions[pMessageType].ContainsKey(pType.Name)) {
-					Actions[pMessageType].Add(pType.Name, pType);
+			//Requests have a response type, notifications do not
+			if (
+				pType.GetInterfaces().Contains(typeof(IRequestAction)) ||
+				pType.GetInterfaces().Contains(typeof(INotificationAction))
+			) {
+				var tmpType = pType;
+				while (
+					tmpType != null &&
+					!tmpType.FullName.Contains("Mitto.Messaging.Action.RequestAction") &&
+					!tmpType.FullName.Contains("Mitto.Messaging.Action.NotificationAction")
+				) {
+					tmpType = tmpType.BaseType;
+				}
+				if (tmpType == null) { return; }
+
+				Type objRequestType = (tmpType.GenericTypeArguments.Length > 0) ? tmpType.GenericTypeArguments[0] : null;
+				Type objResponseType = (tmpType.GenericTypeArguments.Length > 1) ? tmpType.GenericTypeArguments[1] : null;
+
+				//Add the Action to the list for easy access when receiving Request X and needing the Action Y
+				if (!Actions.ContainsKey(pMessageType)) {
+					Actions.Add(pMessageType, new Dictionary<string, Type> { { objRequestType.Name, pType } });
 				} else {
-					Actions[pMessageType][pType.Name] = pType;
+					if (!Actions[pMessageType].ContainsKey(objRequestType.Name)) {
+						Actions[pMessageType].Add(objRequestType.Name, pType);
+					} else {
+						Actions[pMessageType][objRequestType.Name] = pType;
+					}
 				}
 			}
 		}
@@ -195,7 +221,7 @@ namespace Mitto.Messaging {
 
 			var arrKeys = new List<string>() { pName };
 			foreach (var objInterface in pType.GetInterfaces()) {
-				if(objInterface.Namespace.Equals(pType.Namespace)) {
+				if (objInterface.Namespace.Equals(pType.Namespace)) {
 					arrKeys.Add(objInterface.Name);
 				}
 			}
@@ -233,7 +259,7 @@ namespace Mitto.Messaging {
 							objType.GetInterfaces().Contains(typeof(IResponseMessage)) ||
 							objType.GetInterfaces().Contains(typeof(IAction)) ||
 							objType.Namespace.Contains(".Action.SubscriptionHandler") //is a generic type, easy solution is to just check the namespace string instead of  IsSubclassOf(typeof(Action.BaseAction<T>))
-							//objType.IsSubclassOf(typeof(NotificationMessage)) ||
+																					  //objType.IsSubclassOf(typeof(NotificationMessage)) ||
 						) {
 							lstTypes.Add(objType);
 						}
@@ -273,7 +299,7 @@ namespace Mitto.Messaging {
 		/// <param name="pCode"></param>
 		/// <returns></returns>
 		public IResponseMessage GetResponseMessage(IRequestMessage pMessage, ResponseCode pCode) {
-			Type objResponseType = typeof(Response.ACK); // -- default
+			Type objResponseType = typeof(Response.ACKResponse); // -- default
 			if (
 				Types.ContainsKey(MessageType.Response) &&
 				Types[MessageType.Response].ContainsKey(pMessage.Name)

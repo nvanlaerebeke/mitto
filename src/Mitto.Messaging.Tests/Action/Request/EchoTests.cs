@@ -14,11 +14,11 @@ namespace Mitto.Messaging.Tests.Action.Request {
 		public void CreateTest() {
 			//Arrange
 			var objClient = Substitute.For<IClient>();
-			var objMessage = Substitute.For<Messaging.Request.Echo>();
+			var objMessage = Substitute.For<Messaging.Request.EchoRequest>();
 			objMessage.Message = "MyMessage";
 			//Act
-			var objAction = new Messaging.Action.Request.Echo(objClient, objMessage);
-			var objResponse = objAction.Start() as Response.Echo;
+			var objAction = new Messaging.Action.Request.EchoRequestAction(objClient, objMessage);
+			var objResponse = objAction.Start() as Response.EchoResponse;
 			//Assert
 			Assert.IsNotNull(objAction);
 			Assert.IsNotNull(objResponse);

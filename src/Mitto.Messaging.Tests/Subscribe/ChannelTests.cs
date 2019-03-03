@@ -9,7 +9,7 @@ namespace Mitto.Messaging.Tests.Subscribe {
 		/// </summary>
 		[Test]
 		public void CreateTest() {
-			var obj = new Messaging.Subscribe.Channel("MyChannel");
+			var obj = new Messaging.Subscribe.ChannelSubscribe("MyChannel");
 			Assert.AreEqual("MyChannel", obj.ChannelName);
 			Assert.AreEqual(MessageType.Sub, obj.Type);
 		}

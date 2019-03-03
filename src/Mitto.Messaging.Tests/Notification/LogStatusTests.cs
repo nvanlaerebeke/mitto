@@ -9,7 +9,7 @@ namespace Mitto.Messaging.Tests.Message.Notification {
 		/// </summary>
 		[Test]
 		public void CreateTest() {
-			var objMessage = new Messaging.Notification.LogStatus();
+			var objMessage = new Messaging.Notification.LogStatusNotification();
 
 			Assert.IsNotEmpty(objMessage.ID);
 			Assert.AreEqual("LogStatus", objMessage.Name);

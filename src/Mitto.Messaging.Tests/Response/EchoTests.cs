@@ -10,11 +10,11 @@ namespace Mitto.Messaging.Tests.Message.Response {
 		/// </summary>
 		[Test]
 		public void CreateTest() {
-			var objMessage = Substitute.For<Messaging.Request.Echo>();
+			var objMessage = Substitute.For<Messaging.Request.EchoRequest>();
 			objMessage.ID.Returns("MyID");
 			objMessage.Message = "MyCustomMessage";
 
-			var obj = new Messaging.Response.Echo(objMessage);
+			var obj = new Messaging.Response.EchoResponse(objMessage);
 
 			Assert.AreEqual("MyID", obj.ID);
 			Assert.AreEqual("Echo", obj.Name);

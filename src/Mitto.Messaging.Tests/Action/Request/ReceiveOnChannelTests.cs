@@ -15,14 +15,14 @@ namespace Mitto.Messaging.Tests.Action.Request {
 		public void CreateTest() {
 			//Arrange
 			var objClient = Substitute.For<IClient>();
-			var objMessage = Substitute.For<Messaging.Request.ReceiveOnChannel>("MyChannel", "MyMessage");
+			var objMessage = Substitute.For<Messaging.Request.ReceiveOnChannelRequest>("MyChannel", "MyMessage");
 			var objHandler = Substitute.For<ChannelMessageReceived>();
 
 			objMessage.ID.Returns("MyRequestID");
 			//Act
-			var obj = new ReceiveOnChannel(objClient, objMessage);
-			ReceiveOnChannel.ChannelMessageReceived += objHandler;
-			var objResponse = obj.Start() as Response.ACK;
+			var obj = new ReceiveOnChannelRequestAction(objClient, objMessage);
+			ReceiveOnChannelRequestAction.ChannelMessageReceived += objHandler;
+			var objResponse = obj.Start() as Response.ACKResponse;
 			
 			//Assert
 			Assert.IsNotNull(obj);

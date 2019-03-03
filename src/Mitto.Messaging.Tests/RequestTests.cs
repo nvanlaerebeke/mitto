@@ -21,12 +21,12 @@ namespace Mitto.Messaging.Tests {
 			//Arrange
 			var objClient = Substitute.For<IClient>();
 			var objMessage = Substitute.For<IRequestMessage>();
-			var objAction = Substitute.For<Action<Response.MessageStatus>>();
+			var objAction = Substitute.For<Action<Response.MessageStatusResponse>>();
 			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
 			var objHandler = Substitute.For<EventHandler<IRequest>>();
 
 			//Act
-			var obj = new Request<Response.MessageStatus>(objClient, objMessage, objAction, objKeepAliveMonitor);
+			var obj = new Request<Response.MessageStatusResponse>(objClient, objMessage, objAction, objKeepAliveMonitor);
 			obj.RequestTimedOut += objHandler;
 			objKeepAliveMonitor.UnResponsive += Raise.Event<EventHandler>(new object(), new EventArgs());
 
@@ -49,18 +49,18 @@ namespace Mitto.Messaging.Tests {
 			//Arrange
 			var objClient = Substitute.For<IClient>();
 			var objMessage = Substitute.For<IRequestMessage>();
-			var objAction = Substitute.For<Action<Response.MessageStatus>>();
+			var objAction = Substitute.For<Action<Response.MessageStatusResponse>>();
 			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
 
 			objMessage.ID.Returns("MyID");
 
 			//Act
-			var obj = new Request<Response.MessageStatus>(objClient, objMessage, objAction, objKeepAliveMonitor);
+			var obj = new Request<Response.MessageStatusResponse>(objClient, objMessage, objAction, objKeepAliveMonitor);
 			objKeepAliveMonitor.TimeOut += Raise.EventWith(new object(), new EventArgs());
 
 			//Assert
 			objKeepAliveMonitor.Received(1).StartCountDown();
-			objClient.Received(1).Request(Arg.Is<Request.MessageStatus>(m => m.RequestID.Equals(objMessage.ID)), Arg.Any<Action<Response.MessageStatus>>());
+			objClient.Received(1).Request(Arg.Is<Request.MessageStatusRequest>(m => m.RequestID.Equals(objMessage.ID)), Arg.Any<Action<Response.MessageStatusResponse>>());
 		}
 
 		/// <summary>

@@ -13,11 +13,11 @@ namespace Mitto.Messaging.Tests.Action.Request {
 		public void CreateTest() {
 			//Arrange
 			var objClient = Substitute.For<IClient>();
-			var objMessage = Substitute.For<Messaging.Request.Ping>();
+			var objMessage = Substitute.For<Messaging.Request.PingRequest>();
 
 			//Act
-			var objAction = new Messaging.Action.Request.Ping(objClient, objMessage);
-			var objResponse = objAction.Start() as Response.Pong;
+			var objAction = new Messaging.Action.Request.PingRequestAction(objClient, objMessage);
+			var objResponse = objAction.Start() as Response.PongResponse;
 			
 			//Assert
 			Assert.IsNotNull(objAction);

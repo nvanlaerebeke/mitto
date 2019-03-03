@@ -11,7 +11,7 @@ namespace Mitto.Messaging.Tests.Message.Request {
 		/// </summary>
 		[Test]
 		public void CreateTest() {
-			var objMessage = new Messaging.Request.Echo("MyMessage");
+			var objMessage = new Messaging.Request.EchoRequest("MyMessage");
 
 			Assert.IsNotEmpty(objMessage.ID);
 			Assert.AreEqual("Echo", objMessage.Name);

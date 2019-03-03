@@ -5,21 +5,21 @@ using Mitto.IMessaging;
 using Mitto.Messaging.Request;
 
 namespace Mitto.Messaging.Action.SubscriptionHandler {
-	public class Channel :
+	public class ChannelSubscriptionHandler :
 		ISubscriptionHandler<
-			Mitto.Messaging.Subscribe.Channel,
-			Mitto.Messaging.UnSubscribe.Channel,
-			Mitto.Messaging.Request.ISendToChannel
-		>, IChannel {
+			Mitto.Messaging.Subscribe.ChannelSubscribe,
+			Mitto.Messaging.UnSubscribe.ChannelUnSubscribe,
+			Mitto.Messaging.Request.ISendToChannelRequest
+		>, IChannelSubscriptionHandler {
 		private ConcurrentDictionary<string, List<IClient>> _dicSubscriptions = new ConcurrentDictionary<string, List<IClient>>();
 
-		public bool Notify(IClient pSender, ISendToChannel pNotifyMessage) {
+		public bool Notify(IClient pSender, ISendToChannelRequest pNotifyMessage) {
 			try {
 				if (_dicSubscriptions.ContainsKey(pNotifyMessage.ChannelName)) {
 					foreach (var objClient in _dicSubscriptions[pNotifyMessage.ChannelName]) {
 						if (!objClient.Equals(pSender)) {
 							objClient.Transmit(
-								new Messaging.Request.ReceiveOnChannel(
+								new Messaging.Request.ReceiveOnChannelRequest(
 									pNotifyMessage.ChannelName, 
 									pNotifyMessage.Message
 								)
@@ -33,7 +33,7 @@ namespace Mitto.Messaging.Action.SubscriptionHandler {
 			}
 		}
 
-		public bool Sub(IClient pClient, Messaging.Subscribe.Channel pMessage) {
+		public bool Sub(IClient pClient, Messaging.Subscribe.ChannelSubscribe pMessage) {
 			try {
 				if (!_dicSubscriptions.ContainsKey(pMessage.ChannelName)) {
 					_dicSubscriptions.TryAdd(pMessage.ChannelName, new List<IClient>());
@@ -47,7 +47,7 @@ namespace Mitto.Messaging.Action.SubscriptionHandler {
 			}
 		}
 
-		public bool UnSub(IClient pClient, Messaging.UnSubscribe.Channel pMessage) {
+		public bool UnSub(IClient pClient, Messaging.UnSubscribe.ChannelUnSubscribe pMessage) {
 			try {
 				if (!_dicSubscriptions.ContainsKey(pMessage.ChannelName)) { return true; } // -- nothing to do 
 				lock (_dicSubscriptions[pMessage.ChannelName]) {
