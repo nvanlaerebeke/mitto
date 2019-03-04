@@ -7,7 +7,7 @@ namespace Mitto.Messaging.Tests.TestData.Action.Request {
 	public class RequestTestAction : RequestAction<RequestTestMessage, ResponseTestMessage> {
 		public RequestTestAction(IClient pClient, RequestTestMessage pMessage) : base(pClient, pMessage) { }
 
-		public override IResponseMessage Start() {
+		public override ResponseTestMessage Start() {
 			return new ResponseTestMessage();
 		}
 	}

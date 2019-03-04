@@ -28,7 +28,7 @@ namespace Quickstart.Client {
 				Console.WriteLine("Client Connected");
 				_objClient.Request<ACKResponse>(
 					new ChannelSubscribe("MyChannel"), r => {
-						if (r.Status == ResponseCode.Success) {
+						if (r.Status.State == ResponseState.Success) {
 							Start();
 						} else {
 							Console.WriteLine("Failed Subscribing to Channel");
@@ -55,7 +55,7 @@ namespace Quickstart.Client {
 					_objClient.Request<ACKResponse>(
 						new SendToChannelRequest("MyChannel", text),
 						r => {
-							if (r.Status != ResponseCode.Success) {
+							if (r.Status.State != ResponseState.Success) {
 								Console.WriteLine($"Failed Sending: {text}");
 							}
 						}

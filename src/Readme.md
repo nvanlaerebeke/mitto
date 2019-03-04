@@ -1,15 +1,8 @@
 ToDo's before v1:
 
-- Custom error codes
-
-- Make the Response messages type-safe, don't require IMessage but the actual Request type where needed
-    Example:
-	  - Response.Echo requires the interface IEcho? that implements the Message property
-
-  Those that don't need the request can just accept IMessage, example ACK, Ping, ..
-
 - Fix rabbitmq + write tests for it
 - Add ability to close & clean up the server connection
+
 - Go over the public interface and make as much as possible private/internal 
     This is to make it easier for the user - only leave assemblies available that are needed to create new plugins and 
 	those that are needed to interact with Mitto - Also see if a few additional classes can't be made to make interaction
@@ -29,6 +22,9 @@ ToDo's before v1:
 - Disconnect does not work?
 
 - Add logging
+  - Add bandwidth limiting to WebSocketSharp
+
+  - add timetstamps to requests & responses
 
 After v1:
 
@@ -49,11 +45,7 @@ Benchmarking:
 
 Features:
   - Create a connection type for IPC (WCF) - what can can be used on linux & osx?
-
-  - Add bandwidth limiting to WebSocketSharp
-
-  - add timetstamps to requests & responses
-
+  
   - Add statistics in classes that do a lot of work or keep objects for a certain lifetime
     Example:
 	  - Current open requests

@@ -7,7 +7,7 @@ namespace Mitto.Messaging.Tests.TestData.Action.UnSubscribe {
 	public class UnSubscribeTestAction : RequestAction<UnSubscribeTestMessage, ACKResponse> {
 		public UnSubscribeTestAction(IClient pClient, UnSubscribeTestMessage pRequest) : base(pClient, pRequest) { }
 
-		public override IResponseMessage Start() {
+		public override ACKResponse Start() {
 			return new ACKResponse(Request);
 		}
 	}

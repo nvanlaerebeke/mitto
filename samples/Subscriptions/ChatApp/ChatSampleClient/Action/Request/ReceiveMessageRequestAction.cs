@@ -9,7 +9,7 @@ namespace ChatSampleClient.Action.Request {
 	public class ReceiveMessageRequestAction : RequestAction<ReceiveMessageRequest, ACKResponse> {
 		public static event ChatMessageReceived MessageReceived;
 		public ReceiveMessageRequestAction(IClient pClient, ReceiveMessageRequest pMessage) : base(pClient, pMessage) { }
-		public override IResponseMessage Start() {
+		public override ACKResponse Start() {
 			MessageReceived?.Invoke(Request.Channel, Request.Message);
 			return new ACKResponse(Request);
 		}

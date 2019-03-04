@@ -1,5 +1,5 @@
 ﻿namespace Mitto.Messaging.Request {
-    public class EchoRequest: RequestMessage {
+    public class EchoRequest : RequestMessage, IEchoRequest {
         public EchoRequest() : base() { }
 		public EchoRequest(string pMessage) : base() {
 			Message = pMessage;

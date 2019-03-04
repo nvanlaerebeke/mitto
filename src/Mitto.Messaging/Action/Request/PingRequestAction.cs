@@ -6,8 +6,8 @@ namespace Mitto.Messaging.Action.Request {
     public class PingRequestAction : RequestAction<PingRequest, PongResponse> {
         public PingRequestAction(IClient pClient, PingRequest pMessage) : base(pClient, pMessage) { }
 
-        public override IResponseMessage Start() {
-            return new Response.PongResponse(Request);
+        public override PongResponse Start() {
+            return new PongResponse(Request);
         }
     }
 }

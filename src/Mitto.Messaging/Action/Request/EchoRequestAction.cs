@@ -6,7 +6,7 @@ namespace Mitto.Messaging.Action.Request {
     public class EchoRequestAction : RequestAction<EchoRequest, EchoResponse> {
         public EchoRequestAction(IClient pClient, EchoRequest pMessage) : base(pClient, pMessage) { }
 
-		public override IResponseMessage Start() {
+		public override EchoResponse Start() {
 			return new EchoResponse(Request);
 		}
 	}

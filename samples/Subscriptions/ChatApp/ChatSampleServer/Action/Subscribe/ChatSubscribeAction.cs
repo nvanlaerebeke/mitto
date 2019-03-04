@@ -8,7 +8,7 @@ namespace ChatSampleServer.Action.Subscribe {
 	public class ChatSubscribeAction : RequestAction<ChatSubscribe, ACKResponse> {
 
 		public ChatSubscribeAction(IClient pClient, ChatSubscribe pMessage) : base(pClient, pMessage) { }
-		public override IResponseMessage Start() {
+		public override ACKResponse Start() {
 			var obj = MessagingFactory.Provider.GetSubscriptionHandler<SubscriptionHandler.ChatSubscriptionHandler>();
 			if(obj.Sub(Client, Request)) {
 				return new ACKResponse(Request);

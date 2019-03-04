@@ -2,7 +2,7 @@
 using System;
 
 namespace Mitto.Messaging.Response {
-    public class ACKResponse: ResponseMessage{
+    public class ACKResponse: ResponseMessage {
         public ACKResponse() { }
 
 		public ACKResponse(IRequestMessage pMessage): base(pMessage, new ResponseStatus()) {}

@@ -8,7 +8,7 @@ namespace Mitto.Messaging.Action.Subscribe {
 
 		public ChannelSubscribeAction(IClient pClient, ChannelSubscribe pRequest) : base (pClient, pRequest) { }
 
-		public override IResponseMessage Start() {
+		public override ACKResponse Start() {
 			if(MessagingFactory.Provider.GetSubscriptionHandler<IChannelSubscriptionHandler>().Sub(Client, Request)) {
 				return new ACKResponse(Request);
 			}

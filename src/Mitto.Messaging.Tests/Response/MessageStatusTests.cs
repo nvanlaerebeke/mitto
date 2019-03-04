@@ -1,4 +1,5 @@
 ﻿using Mitto.IMessaging;
+using Mitto.Messaging.Request;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -11,15 +12,17 @@ namespace Mitto.Messaging.Tests.Message.Response {
 		[Test]
 		public void CreateTest() {
 			//Arrange
-			var objMessage = Substitute.For<Messaging.Request.MessageStatusRequest>();
-			objMessage.RequestID = "MyID";
+			var objMessage = Substitute.For<IMessageStatusRequest>();
+			objMessage.ID.Returns("MyID");
+			objMessage.RequestID.Returns("MyRequestID");
 
 			//Act
 			var obj = new Messaging.Response.MessageStatusResponse(objMessage, MessageStatusType.Busy);
 
 			//Assert
 			Assert.AreEqual("MessageStatusResponse", obj.Name);
-			Assert.AreEqual(objMessage, obj.Request);
+			Assert.AreEqual("MyID", obj.ID);
+			Assert.AreEqual("MyRequestID", obj.RequestID);
 			Assert.AreEqual(ResponseState.Success, obj.Status.State);
 			Assert.AreEqual(MessageType.Response, obj.Type);
 			Assert.AreEqual(MessageStatusType.Busy, obj.RequestStatus);

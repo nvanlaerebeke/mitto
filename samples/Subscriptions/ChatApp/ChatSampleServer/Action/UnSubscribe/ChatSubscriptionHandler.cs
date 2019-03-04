@@ -8,7 +8,7 @@ namespace ChatSampleServer.Action.UnSubscribe {
 	public class ChatSubscriptionHandler : RequestAction<ChatUnSubscribe, ACKResponse> {
 
 		public ChatSubscriptionHandler(IClient pClient, ChatUnSubscribe pMessage) : base(pClient, pMessage) { }
-		public override IResponseMessage Start() {
+		public override ACKResponse Start() {
 			var obj = MessagingFactory.Provider.GetSubscriptionHandler<SubscriptionHandler.ChatSubscriptionHandler>();
 			if (obj.UnSub(Client, Request)) {
 				return new ACKResponse(Request);

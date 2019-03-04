@@ -178,8 +178,10 @@ namespace Mitto.Messaging {
 
 			//Requests have a response type, notifications do not
 			if (
-				pType.GetInterfaces().Contains(typeof(IRequestAction)) ||
-				pType.GetInterfaces().Contains(typeof(INotificationAction))
+				pType.GetInterfaces().Any(i => 
+					i.Name.StartsWith("IRequestAction") || 
+					i.Equals(typeof(INotificationAction))
+				)
 			) {
 				var tmpType = pType;
 				while (

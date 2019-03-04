@@ -7,7 +7,7 @@ namespace Mitto.Messaging.Action.Request {
 	public class SendToChannelRequestAction : RequestAction<SendToChannelRequest, ACKResponse> {
 		public SendToChannelRequestAction(IClient pClient, SendToChannelRequest pMessage) : base(pClient, pMessage) { }
 
-		public override IResponseMessage Start() {
+		public override ACKResponse Start() {
 			var obj = MessagingFactory.Provider.GetSubscriptionHandler<IChannelSubscriptionHandler>();
 			if (obj.Notify(Client, Request)) {
 				return new ACKResponse(Request);

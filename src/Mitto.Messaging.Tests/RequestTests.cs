@@ -83,10 +83,11 @@ namespace Mitto.Messaging.Tests {
 			var obj = new Request<IResponseMessage>(objClient, objMessage, objAction);
 			obj.SetResponse(objResponse);
 
+			System.Threading.Thread.Sleep(50);
+
 			//Assert
 			Assert.IsTrue(blnActionCalled);
 		}
-
 
 		/// <summary>
 		/// Test transmitting the request

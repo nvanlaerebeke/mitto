@@ -44,7 +44,9 @@
     <Compile Include="Action\SubscriptionHandler\ChannelSubscriptionHandler.cs" />
     <Compile Include="Action\SubscriptionHandler\IChannelSubscriptionHandler.cs" />
     <Compile Include="Action\UnSubscribe\ChannelUnSubscribeAction.cs" />
-    <Compile Include="Request\ISendToChannelRequest.cs" />
+    <Compile Include="Request\Interfaces\IEchoRequest.cs" />
+    <Compile Include="Request\Interfaces\IMessageStatusRequest.cs" />
+    <Compile Include="Request\Interfaces\ISendToChannelRequest.cs" />
     <Compile Include="Request\ReceiveOnChannelRequest.cs" />
     <Compile Include="Request\SendToChannelRequest.cs" />
     <Compile Include="Subscribe\ChannelSubscribe.cs" />

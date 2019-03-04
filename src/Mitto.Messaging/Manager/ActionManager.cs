@@ -1,6 +1,7 @@
 ﻿using Mitto.IMessaging;
 using System;
 using System.Collections.Concurrent;
+using System.Reflection;
 using System.Threading;
 
 namespace Mitto.Messaging {
@@ -23,9 +24,10 @@ namespace Mitto.Messaging {
 						case MessageType.UnSub:
 							try {
 								pClient.Transmit(
-									((IRequestAction)pAction).Start()
+									(IResponseMessage)pAction.GetType().GetMethod("Start").Invoke(pAction, new object[0])
 								);
-							} catch (Exception ex) {
+							} catch(TargetInvocationException objTargetInvocationException) {
+								var ex = objTargetInvocationException.InnerException;
 								ResponseState enmCode = (ex is MessagingException) ? ((MessagingException)ex).Code : ResponseState.Error;
 								var objResponse = MessagingFactory.Provider.GetResponseMessage(pMessage, enmCode);
 								if (objResponse != null) {

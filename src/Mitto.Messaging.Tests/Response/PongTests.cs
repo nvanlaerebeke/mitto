@@ -1,4 +1,5 @@
 ﻿using Mitto.IMessaging;
+using Mitto.Messaging.Request;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -10,14 +11,13 @@ namespace Mitto.Messaging.Tests.Message.Response {
 		/// </summary>
 		[Test]
 		public void CreateTest() {
-			var objMessage = Substitute.For<IRequestMessage>();
-			objMessage.ID.Returns("MyID");
+			var objMessage = Substitute.For<PingRequest>();
+			objMessage.ID = "MyID";
 
 			var obj = new Messaging.Response.PongResponse(objMessage);
 
 			Assert.AreEqual("MyID", obj.ID);
 			Assert.AreEqual("PongResponse", obj.Name);
-			Assert.AreEqual(obj.Request, objMessage);
 			Assert.AreEqual(ResponseState.Success, obj.Status.State);
 			Assert.AreEqual(MessageType.Response, obj.Type);
 		}

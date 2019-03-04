@@ -5,13 +5,13 @@ using Mitto.Messaging.Response;
 namespace Mitto.Messaging.Action.UnSubscribe {
 	public class ChannelUnSubscribeAction : RequestAction<ChannelUnSubscribe, ACKResponse> {
 
-		public ChannelUnSubscribeAction(IClient pClient, Messaging.UnSubscribe.ChannelUnSubscribe pRequest) : base (pClient, pRequest) { }
+		public ChannelUnSubscribeAction(IClient pClient, ChannelUnSubscribe pRequest) : base (pClient, pRequest) { }
 
-		public override IResponseMessage Start() {
+		public override ACKResponse Start() {
 			if (MessagingFactory.Provider.GetSubscriptionHandler<SubscriptionHandler.IChannelSubscriptionHandler>().UnSub(Client, Request)) {
-				return new Response.ACKResponse(Request);
+				return new ACKResponse(Request);
 			}
-			return new Response.ACKResponse(Request, new ResponseStatus(ResponseState.Error, $"Failed to unsubscribe from {Request.ChannelName}"));
+			return new ACKResponse(Request, new ResponseStatus(ResponseState.Error, $"Failed to unsubscribe from {Request.ChannelName}"));
 		}
 	}
 }
