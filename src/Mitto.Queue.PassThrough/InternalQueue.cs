@@ -1,8 +1,10 @@
-﻿using Mitto.IQueue;
+﻿using Mitto.IMessaging;
+using Mitto.IQueue;
 using System;
+using System.Threading;
 
 namespace Mitto.Queue.PassThrough {
-	internal class InternalQueue: IQueue.IQueue {
+	internal class InternalQueue : IQueue.IQueue {
 		public event DataHandler Rx;
 
 		private IQueue.IQueue Queue { get; set; }
@@ -19,7 +21,9 @@ namespace Mitto.Queue.PassThrough {
 		/// </summary>
 		/// <param name="pMessage"></param>
 		public void Receive(byte[] pData) {
-			IMessaging.MessagingFactory.Processor.Process(this, pData);
+			ThreadPool.QueueUserWorkItem((s) => {
+				MessagingFactory.Processor.Process(this, pData);
+			});
 		}
 
 		/// <summary>

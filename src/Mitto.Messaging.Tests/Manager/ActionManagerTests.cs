@@ -3,6 +3,8 @@ using NSubstitute;
 using System;
 using System.Linq;
 using Mitto.IMessaging;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Mitto.Messaging.Tests {
 	[TestFixture]
@@ -204,7 +206,7 @@ namespace Mitto.Messaging.Tests {
 
 			objProvider.GetByteArray(Arg.Is(objResponse)).Returns(new byte[] { 1, 2, 3, 4, 5 });
 			objAction.Start().Returns(objResponse);
-			objAction.When(a => a.Start()).Do(a => System.Threading.Thread.Sleep(50));
+			objAction.When(a => a.Start()).Do(a => Thread.Sleep(50) );
 
 			Config.Initialize(new Config.ConfigParams() {
 				MessageProvider = objProvider
@@ -212,10 +214,14 @@ namespace Mitto.Messaging.Tests {
 
 			//Act
 			var obj = new ActionManager();
-			obj.RunAction(objClient, objMessage, objAction);
-
+			ThreadPool.QueueUserWorkItem(s => {
+				//Run the action on a different thread so the status can be gotten while it's busy
+				obj.RunAction(objClient, objMessage, objAction);
+			});
+			Thread.Sleep(25);
 			//Assert
 			Assert.AreEqual(MessageStatusType.Busy, obj.GetStatus(objMessage.ID));
+
 		}
 
 		/// <summary>

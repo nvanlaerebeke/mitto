@@ -1,5 +1,7 @@
 ToDo's before v1:
 
+- Add more Request methods, Request/RequestAsync/Request action 
+
 - Fix rabbitmq + write tests for it
 - Add ability to close & clean up the server connection
 
@@ -8,22 +10,12 @@ ToDo's before v1:
 	those that are needed to interact with Mitto - Also see if a few additional classes can't be made to make interaction
 	easier, example Mitto.Client.Get() instead of Mitto.IConnection.ConnectionFactory().CreateClient();
 
-- Refactor ResponseMessage
-    - Remove objects that don't translate from object -> json -> byte{} -> json -> object
-	  Example: IMessage in the constructor, it's supposed to be the request, but there should be no 
-	  dependency on the request message, the constructor  should just only give the info it needs
-	  and the properties should be filled in from that. 
-	  
-	  This is to prevent what I did for the test Echo message and use the "Request" in the property to return the message
-	  This is obviously not possible, so we should prevent it so that a developer cannot make that mistake
-
 - Proxy support for web based connections 
 
 - Disconnect does not work?
 
 - Add logging
-  - Add bandwidth limiting to WebSocketSharp
-
+  - Add bandwidth limiting & monitoring to WebSocketSharp
   - add timetstamps to requests & responses
 
 After v1:
