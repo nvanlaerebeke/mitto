@@ -1,12 +1,10 @@
 ﻿using Mitto.IMessaging;
-using Mitto.IQueue;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Mitto.Queue.PassThrough {
 	internal class InternalQueue : IQueue.IQueue {
-		public event DataHandler Rx;
+		public event EventHandler<byte[]> Rx;
 
 		private IQueue.IQueue Queue { get; set; }
 

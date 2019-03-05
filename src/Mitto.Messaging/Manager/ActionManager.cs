@@ -26,7 +26,7 @@ namespace Mitto.Messaging {
 							);
 						} catch (TargetInvocationException objTargetInvocationException) {
 							var ex = objTargetInvocationException.InnerException;
-							ResponseState enmCode = (ex is MessagingException) ? ((MessagingException)ex).Code : ResponseState.Error;
+							ResponseState enmCode = (ex is MessagingException) ? ((MessagingException)ex).Status.State : ResponseState.Error;
 							var objResponse = MessagingFactory.Provider.GetResponseMessage(pMessage, enmCode);
 							if (objResponse != null) {
 								pClient.Transmit(objResponse);

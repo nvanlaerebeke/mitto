@@ -1,5 +1,6 @@
-﻿namespace Mitto.IQueue {
-	public delegate void DataHandler(byte[] pMessage);
+﻿using System;
+
+namespace Mitto.IQueue {
 	/// <summary>
 	/// 
 	/// The IQueue interface represents the boundery between the receiving/sending messages
@@ -26,7 +27,7 @@
 	/// </summary>
 	public interface IQueue {
 		string ID { get; }
-		event DataHandler Rx;
+		event EventHandler<byte[]> Rx;
 		void Transmit(byte[] pMessage);
 		void Receive(byte[] pMessage);
 	}

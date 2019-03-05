@@ -103,7 +103,7 @@ namespace Mitto.Messaging.Tests {
 			});
 
 			objMessage.Type.Returns(MessageType.Request);
-			objAction.When(a => a.Start()).Do(a => throw new MessagingException(ResponseState.Cancelled));
+			objAction.When(a => a.Start()).Do(a => throw new MessagingException(new ResponseStatus(ResponseState.Cancelled)));
 
 			objProvider.GetResponseMessage(Arg.Any<IRequestMessage>(), Arg.Any<ResponseState>()).Returns(objResponse);
 			objProvider.GetByteArray(Arg.Any<IMessage>()).Returns(new byte[] { 1, 2, 3, 4, 5 });

@@ -15,7 +15,7 @@ namespace Mitto.Queue.PassThrough {
 	/// IMessageProcessor that will process the message for us
 	/// </summary>
 	public class Passthrough : IQueue.IQueue {
-		public event DataHandler Rx;
+		public event EventHandler<byte[]> Rx;
 		private IQueue.IQueue Queue { get; set; }
 
 		public string ID { get; } =  Guid.NewGuid().ToString();
@@ -28,18 +28,18 @@ namespace Mitto.Queue.PassThrough {
 			Queue = new InternalQueue(this);
 		}
 
-		public void Receive(byte[] pData) {
-			Rx?.Invoke(pData);
+		public void Receive(byte[] data) {
+			Rx?.Invoke(this, data);
 		}
 
 		/// <summary>
 		/// Response/Transmit from Message Handler -> Client (Rx)
 		/// </summary>
 		/// <param name="pMessage"></param>
-		public void Transmit(byte[] pData) {
+		public void Transmit(byte[] data) {
 			//Here we take in a byte[] from the IConnection and must pass an IQueue that 
 			//handles the internal Tx/Rx, while this Queue handles the external Tx/Rx
-			Queue.Receive(pData);
+			Queue.Receive(data);
 		}
 	}
 }

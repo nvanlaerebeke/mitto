@@ -88,7 +88,7 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 			var objWebSocketClient = Substitute.For<IWebSocketClient>();
 			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
 			var objClient = new WebsocketClient(objWebSocketClient, objKeepAliveMonitor);
-			var objHandler = Substitute.For<EventHandler<IConnection.IConnection>>();
+			var objHandler = Substitute.For<EventHandler>();
 			objClient.Disconnected += objHandler;
 
 			//Act
@@ -107,7 +107,7 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 
 			objHandler
 				.Received(1)
-				.Invoke(Arg.Is(objClient), Arg.Is(objClient))
+				.Invoke(Arg.Is(objClient), Arg.Any<EventArgs>())
 			;
 		}
 
@@ -200,8 +200,9 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
 			var objClient = new WebsocketClient(objWebSocketClient, objKeepAliveMonitor);
 			var eventArgs = Substitute.For<ICloseEventArgs>();
-			var handler = Substitute.For<EventHandler<IConnection.IConnection>>();
 			objWebSocketClient.ReadyState.Returns(state);
+
+			var handler = Substitute.For<EventHandler>();
 			objClient.Disconnected += handler;
 
 			//Act
@@ -218,7 +219,7 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 
 			handler
 				.Received(1)
-				.Invoke(Arg.Is(objClient), Arg.Is(objClient))
+				.Invoke(Arg.Is(objClient), Arg.Any<EventArgs>())
 			;
 		}
 
@@ -237,7 +238,7 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
 			var objClient = new WebsocketClient(objWebSocketClient, objKeepAliveMonitor);
 			var eventArgs = Substitute.For<IErrorEventArgs>();
-			var handler = Substitute.For<EventHandler<IConnection.IConnection>>();
+			var handler = Substitute.For<EventHandler>();
 			objWebSocketClient.ReadyState.Returns(state);
 			objClient.Disconnected += handler;
 
@@ -257,7 +258,7 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 				.Received(1)
 				.Invoke(
 					Arg.Is<IConnection.IConnection>(c => c.Equals(objClient)),
-					Arg.Is<IConnection.IConnection>(c => c.Equals(objClient))
+					Arg.Any<EventArgs>()
 				)
 			;
 		}
@@ -272,7 +273,7 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 			var objWebSocketClient = Substitute.For<IWebSocketClient>();
 			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
 			var objClient = new WebsocketClient(objWebSocketClient, objKeepAliveMonitor);
-			var handler = Substitute.For<DataHandler>();
+			var handler = Substitute.For<EventHandler<byte[]>>();
 			var eventArgs = Substitute.For<IMessageEventArgs>();
 			eventArgs.IsText.Returns(false);
 			eventArgs.IsPing.Returns(false);
@@ -303,7 +304,7 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 			var objWebSocketClient = Substitute.For<IWebSocketClient>();
 			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
 			var objClient = new WebsocketClient(objWebSocketClient, objKeepAliveMonitor);
-			var handler = Substitute.For<DataHandler>();
+			var handler = Substitute.For<EventHandler<byte[]>>();
 			var eventArgs = Substitute.For<IMessageEventArgs>();
 			eventArgs.IsText.Returns(true);
 			eventArgs.IsPing.Returns(false);
@@ -334,7 +335,7 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 			var objWebSocketClient = Substitute.For<IWebSocketClient>();
 			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
 			var objClient = new WebsocketClient(objWebSocketClient, objKeepAliveMonitor);
-			var handler = Substitute.For<DataHandler>();
+			var handler = Substitute.For<EventHandler<byte[]>>();
 			var eventArgs = Substitute.For<IMessageEventArgs>();
 			eventArgs.IsText.Returns(false);
 			eventArgs.IsPing.Returns(true);

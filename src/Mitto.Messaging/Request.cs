@@ -1,11 +1,10 @@
 ﻿using Mitto.IMessaging;
 using Mitto.Utilities;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Mitto.Messaging {
-	public class Request<T> : IRequest where T : IResponseMessage {
+	internal class Request<T> : IRequest where T : IResponseMessage {
 		private Delegate _objAction;
 		private IClient _objClient;
 		private IKeepAliveMonitor _objKeepAliveMonitor;

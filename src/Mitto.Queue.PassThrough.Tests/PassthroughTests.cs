@@ -2,6 +2,7 @@
 using NSubstitute;
 using Mitto.IQueue;
 using System.Linq;
+using System;
 
 namespace Mitto.Queue.PassThrough.Tests {
 	[TestFixture()]
@@ -9,19 +10,17 @@ namespace Mitto.Queue.PassThrough.Tests {
 		[Test()]
 		public void ReceiveTest() {
 			//Arrange
-			var handler = Substitute.For<DataHandler>();
+			var handler = Substitute.For<EventHandler<byte[]>>();
+			
+			//Act
 			var obj = new Passthrough();
 			obj.Rx += handler;
-
-			//Act
-			//Do not pass an object to Receive and the .Equals to prevent comparing references
-			//and compare the actual content (.Equals)
 			obj.Receive(new byte[] { 0, 1, 2, 4 });
 
 			//Assert
 			handler
 				.Received(1)
-				.Invoke(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 0, 1, 2, 4 })))
+				.Invoke(Arg.Is(obj), Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 0, 1, 2, 4 })))
 			;
 		}
 

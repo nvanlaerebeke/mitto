@@ -16,7 +16,7 @@ namespace Mitto.Main.Tests.Client {
 			//Arrange
 			var objProvider = Substitute.For<IConnectionProvider>();
 			var objConnection = Substitute.For<IClient>();
-			var objHandler = Substitute.For<ClientConnectionHandler>();
+			var objHandler = Substitute.For<EventHandler<Mitto.Client>>();
 
 			objProvider.CreateClient().Returns(objConnection);
 			Config.Initialize(new Config.ConfigParams() {
@@ -31,9 +31,13 @@ namespace Mitto.Main.Tests.Client {
 			//Assert
 			objHandler
 				.Received(1)
-				.Invoke(Arg.Is(obj))
+				.Invoke(
+					Arg.Any<object>(),
+					Arg.Is(obj)
+				)
 			;
 		}
+
 
 		/// <summary>
 		/// Tests the IConnection.IClient data received event
@@ -60,7 +64,7 @@ namespace Mitto.Main.Tests.Client {
 
 			//Act
 			var obj = new Mitto.Client();
-			objConnection.Rx += Raise.Event<DataHandler>(Substitute.For<IConnection.IConnection>(), new byte[] { 1, 2, 3, 4, 5 });
+			objConnection.Rx += Raise.Event<EventHandler<byte[]>>(Substitute.For<IConnection.IConnection>(), new byte[] { 1, 2, 3, 4, 5 });
 
 			//Assert
 			objQueue.Received(1).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
@@ -79,7 +83,7 @@ namespace Mitto.Main.Tests.Client {
 			var objQueueProvider = Substitute.For<IQueue.IQueueProvider>();
 
 			var objConnection = Substitute.For<IClient>();
-			var objHandler = Substitute.For<ClientConnectionHandler>();
+			var objHandler = Substitute.For<EventHandler<Mitto.Client>>();
 			var objEventConnection = Substitute.For<IConnection.IConnection>();
 			var objQueue = Substitute.For<IQueue.IQueue>();
 
@@ -94,17 +98,17 @@ namespace Mitto.Main.Tests.Client {
 			//Act
 			var obj = new Mitto.Client();
 			obj.Disconnected += objHandler;
-			objConnection.Disconnected += Raise.Event<EventHandler<IConnection.IConnection>>(new object(), objEventConnection);
+			objConnection.Disconnected += Raise.Event<EventHandler>(objEventConnection, new EventArgs());
 
 			//Assert
-			objConnection.Received(1).Rx -= Arg.Any<DataHandler>();
+			objConnection.Received(1).Rx -= Arg.Any<EventHandler<byte[]>>();
 			objConnection.Received(1).Connected -= Arg.Any<EventHandler<IClient>>();
-			objConnection.Received(1).Disconnected -= Arg.Any<EventHandler<IConnection.IConnection>>();
-			objQueue.Received(1).Rx -= Arg.Any<Mitto.IQueue.DataHandler>();
+			objConnection.Received(1).Disconnected -= Arg.Any<EventHandler>();
+			objQueue.Received(1).Rx -= Arg.Any<EventHandler<byte[]>>();
 
 			objHandler
 				.Received(1)
-				.Invoke(Arg.Is(obj))
+				.Invoke(Arg.Is(obj), Arg.Is(obj))
 			;
 		}
 
@@ -162,10 +166,10 @@ namespace Mitto.Main.Tests.Client {
 			objProvider.Received(1).CreateClient();
 			objQueueProvider.Received(1).Create();
 
-			objConnection.Received(1).Rx += Arg.Any<DataHandler>();
+			objConnection.Received(1).Rx += Arg.Any<EventHandler<byte[]>>();
 			objConnection.Received(1).Connected += Arg.Any<EventHandler<IClient>>();
-			objConnection.Received(1).Disconnected += Arg.Any<EventHandler<IConnection.IConnection>>();
-			objQueue.Received(1).Rx += Arg.Any<Mitto.IQueue.DataHandler>();
+			objConnection.Received(1).Disconnected += Arg.Any<EventHandler>();
+			objQueue.Received(1).Rx += Arg.Any<EventHandler<byte[]>>();
 		}
 
 		/// <summary>
@@ -180,7 +184,7 @@ namespace Mitto.Main.Tests.Client {
 			var objQueueProvider = Substitute.For<IQueue.IQueueProvider>();
 
 			var objConnection = Substitute.For<IClient>();
-			var objHandler = Substitute.For<ClientConnectionHandler>();
+			var objHandler = Substitute.For<EventHandler<Mitto.Client>>();
 			var objQueue = Substitute.For<IQueue.IQueue>();
 
 			objProvider.CreateClient().Returns(objConnection);
@@ -197,14 +201,17 @@ namespace Mitto.Main.Tests.Client {
 			obj.Disconnect();
 
 			//Assert
-			objConnection.Received(1).Rx -= Arg.Any<DataHandler>();
+			objConnection.Received(1).Rx -= Arg.Any<EventHandler<byte[]>>();
 			objConnection.Received(1).Connected -= Arg.Any<EventHandler<IClient>>();
-			objConnection.Received(1).Disconnected -= Arg.Any<EventHandler<IConnection.IConnection>>();
-			objQueue.Received(1).Rx -= Arg.Any<Mitto.IQueue.DataHandler>();
+			objConnection.Received(1).Disconnected -= Arg.Any<EventHandler>();
+			objQueue.Received(1).Rx -= Arg.Any<EventHandler<byte[]>>();
 
 			objHandler
 				.Received(1)
-				.Invoke(Arg.Is(obj))
+				.Invoke(
+					Arg.Is(obj),
+					Arg.Is(obj)
+				)
 			;
 		}
 
@@ -219,7 +226,7 @@ namespace Mitto.Main.Tests.Client {
 			var objQueueProvider = Substitute.For<IQueue.IQueueProvider>();
 
 			var objConnection = Substitute.For<IClient>();
-			var objHandler = Substitute.For<Mitto.IQueue.DataHandler>();
+			var objHandler = Substitute.For<EventHandler<byte[]>>();
 			var objQueue = Substitute.For<IQueue.IQueue>();
 
 			objProvider.CreateClient().Returns(objConnection);
@@ -233,13 +240,13 @@ namespace Mitto.Main.Tests.Client {
 			//Act
 			var obj = new Mitto.Client();
 			obj.Rx += objHandler;
-			objQueue.Rx += Raise.Event<Mitto.IQueue.DataHandler>(new byte[] { 1, 2, 3, 4, 5 });
+			objQueue.Rx += Raise.Event<EventHandler<byte[]>>(objQueue, new byte[] { 1, 2, 3, 4, 5 });
 
 			//Assert
 			objConnection.Received(1).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
 			objHandler
 				.Received(1)
-				.Invoke(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
+				.Invoke(obj, Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
 			;
 		}
 
@@ -252,7 +259,7 @@ namespace Mitto.Main.Tests.Client {
 			//Arrange
 			var objProvider = Substitute.For<IConnectionProvider>();
 			var objQueueProvider = Substitute.For<IQueue.IQueueProvider>();
-			var objHandler = Substitute.For<Mitto.IQueue.DataHandler>();
+			var objHandler = Substitute.For<EventHandler<byte[]>>();
 
 			Config.Initialize(new Config.ConfigParams() {
 				ConnectionProvider = objProvider,
@@ -267,7 +274,7 @@ namespace Mitto.Main.Tests.Client {
 			//Assert
 			objHandler
 				.Received(1)
-				.Invoke(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
+				.Invoke(Arg.Is(obj), Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
 			;
 		}
 
@@ -336,7 +343,7 @@ namespace Mitto.Main.Tests.Client {
 			//Arrange
 			var objProvider = Substitute.For<IConnectionProvider>();
 			var objQueueProvider = Substitute.For<IQueue.IQueueProvider>();
-			var objHandler = Substitute.For<Mitto.IQueue.DataHandler>();
+			var objHandler = Substitute.For<EventHandler<byte[]>>();
 
 			//var objQueue = Substitute.For<IQueue.IQueue>();
 			//objQueueProvider.Create().Returns(objQueue);
@@ -357,7 +364,7 @@ namespace Mitto.Main.Tests.Client {
 			objConnection.Received(1).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
 			objHandler
 				.Received(1)
-				.Invoke(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
+				.Invoke(Arg.Is(obj), Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
 			;
 		}
 	}

@@ -5,7 +5,6 @@ using Mitto.IConnection;
 using Mitto.IMessaging;
 
 namespace Mitto {
-	public delegate void ClientConnectionHandler(Client pClient);
 	/// <summary>
 	/// Public interface for the Mitto.Client
 	/// 
@@ -18,8 +17,8 @@ namespace Mitto {
 	/// 
 	/// </summary>
 	public class Client : IQueue.IQueue {
-		public event ClientConnectionHandler Connected;
-		public event ClientConnectionHandler Disconnected;
+		public event EventHandler<Client> Connected;
+		public event EventHandler<Client> Disconnected;
 
 		public string ID { get { return Connection.ID; } }
 
@@ -42,11 +41,11 @@ namespace Mitto {
 
 		private void ObjClient_Connected(object sender, IConnection.IClient pClient) {
 			Task.Run(() => {
-				Connected?.Invoke(this);
+				Connected?.Invoke(sender, this);
 			});
 		}
 
-		private void ObjClient_Disconnected(object sender, IConnection.IConnection pClient) {
+		private void ObjClient_Disconnected(object sender, EventArgs e) {
 			Close();
 		}
 
@@ -65,7 +64,7 @@ namespace Mitto {
 
 			InternalQueue.Rx -= InternalQueue_Rx;
 
-			Disconnected?.Invoke(this);
+			Disconnected?.Invoke(this, this);
 		}
 
 		/// <summary>
@@ -77,7 +76,7 @@ namespace Mitto {
 		/// </summary>
 		/// <param name="pClient"></param>
 		/// <param name="pData"></param>
-		private void _objClient_Rx(IConnection.IConnection pClient, byte[] pData) {
+		private void _objClient_Rx(object sender, byte[] pData) {
 			InternalQueue.Transmit(pData);
 		}
 		#endregion
@@ -89,8 +88,8 @@ namespace Mitto {
 		/// Send what we get on the internal messaging queue to the server
 		/// </summary>
 		/// <param name="pMessage"></param>
-		private void InternalQueue_Rx(byte[] pMessage) {
-			this.Transmit(pMessage);
+		private void InternalQueue_Rx(object sender, byte[] message) {
+			this.Transmit(message);
 		}
 		#endregion
 
@@ -139,7 +138,7 @@ namespace Mitto {
 		#endregion
 
 		#region Connection Queue implementation (IConnection traffic)
-		public event IQueue.DataHandler Rx;
+		public event EventHandler<byte[]> Rx;
 
 		/// <summary>
 		/// Transmitting data to the server from the internal queue
@@ -147,9 +146,9 @@ namespace Mitto {
 		///       Also making sure it cannot be abused
 		/// </summary>
 		/// <param name="pMessage"></param>
-		public void Transmit(byte[] pMessage) {
-			Rx?.Invoke(pMessage);
-			Connection.Transmit(pMessage);
+		public void Transmit(byte[] data) {
+			Rx?.Invoke(this, data);
+			Connection.Transmit(data);
 		}
 
 		/// <summary>
@@ -160,8 +159,8 @@ namespace Mitto {
 			InternalQueue.Transmit(pMessage);
 		}
 
-		public void Receive(byte[] pMessage) {
-			Rx?.Invoke(pMessage);
+		public void Receive(byte[] data) {
+			Rx?.Invoke(this, data);
 		}
 		#endregion
 	}

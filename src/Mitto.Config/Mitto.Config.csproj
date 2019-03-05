@@ -42,9 +42,6 @@
     <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Enums\ConnectionType.cs" />
-    <Compile Include="Enums\MessagingType.cs" />
-    <Compile Include="Enums\QueueType.cs" />
     <Compile Include="Mitto.cs" />
   </ItemGroup>
   <ItemGroup>

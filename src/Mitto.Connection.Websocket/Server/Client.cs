@@ -12,8 +12,8 @@ namespace Mitto.Connection.Websocket.Server {
 		private IWebSocketBehavior _objClient;
 		private IKeepAliveMonitor _objKeepAliveMonitor; 
 
-		public event EventHandler<IConnection.IConnection> Disconnected;
-        public event DataHandler Rx;
+		public event EventHandler Disconnected;
+        public event EventHandler<byte[]> Rx;
 
         private BlockingCollection<byte[]> _colQueue;
         private CancellationTokenSource _objCancelationSource = new CancellationTokenSource();
@@ -75,7 +75,7 @@ namespace Mitto.Connection.Websocket.Server {
 			_objClient.OnMessageReceived -= _objClient_OnMessageReceived;
 
 			_objCancelationSource.Cancel();
-			Disconnected?.Invoke(this, this);
+			Disconnected?.Invoke(this, new EventArgs());
 
 			_objClient.Close();
 			_objKeepAliveMonitor.Stop();

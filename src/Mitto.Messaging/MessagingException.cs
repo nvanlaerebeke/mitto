@@ -3,9 +3,9 @@ using System;
 
 namespace Mitto.Messaging {
 	public class MessagingException : Exception {
-		public ResponseState Code { get; private set; }
-		public MessagingException(ResponseState pCode) : base(pCode.ToString()) {
-			Code = pCode;
+		public ResponseStatus Status { get; private set; }
+		public MessagingException(ResponseStatus pStatus) : base(pStatus.Message) {
+			Status = pStatus;
 		}
 	}
 }

@@ -30,7 +30,7 @@ namespace Mitto.Main.Tests.Server {
 
 			//Act
 			var obj = new ClientConnection(objConnection);
-			objConnection.Rx += Raise.Event<IConnection.DataHandler>(objBaseConnection, new byte[] { 1, 2, 3, 4, 5 });
+			objConnection.Rx += Raise.Event<EventHandler<byte[]>>(objBaseConnection, new byte[] { 1, 2, 3, 4, 5 });
 
 			//Assert
 			objQueue.Received(1).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
@@ -60,13 +60,13 @@ namespace Mitto.Main.Tests.Server {
 			//Act
 			var obj = new ClientConnection(objConnection);
 			obj.Disconnected += objHandler;
-			objConnection.Disconnected += Raise.Event<EventHandler<IConnection.IConnection>>(new object(), objEventConnection);
+			objConnection.Disconnected += Raise.Event<EventHandler>(objEventConnection, new EventArgs());
 
 			//Assert
-			objConnection.Received(1).Disconnected -= Arg.Any<EventHandler<IConnection.IConnection>>();
-			objConnection.Received(1).Rx -= Arg.Any<IConnection.DataHandler>();
-			objQueue.Received(1).Rx -= Arg.Any<IQueue.DataHandler>();
-			objHandler.Received(1).Invoke(Arg.Any<IConnection.IConnection>(), Arg.Is(obj));
+			objConnection.Received(1).Disconnected -= Arg.Any<EventHandler>();
+			objConnection.Received(1).Rx -= Arg.Any<EventHandler<byte[]>>();
+			objQueue.Received(1).Rx -= Arg.Any<EventHandler<byte[]>>();
+			objHandler.Received(1).Invoke(Arg.Is(obj), Arg.Is(obj));
 		}
 
 		/// <summary>
@@ -92,9 +92,9 @@ namespace Mitto.Main.Tests.Server {
 
 			//Assert
 			objQueueProvider.Received(1).Create();
-			objConnection.Received(1).Disconnected += Arg.Any<EventHandler<IConnection.IConnection>>();
-			objConnection.Received(1).Rx += Arg.Any<IConnection.DataHandler>();
-			objQueue.Received(1).Rx += Arg.Any<IQueue.DataHandler>();
+			objConnection.Received(1).Disconnected += Arg.Any<EventHandler>();
+			objConnection.Received(1).Rx += Arg.Any<EventHandler<byte[]>>();
+			objQueue.Received(1).Rx += Arg.Any<EventHandler<byte[]>>();
 		}
 
 		/// <summary>
@@ -116,7 +116,7 @@ namespace Mitto.Main.Tests.Server {
 
 			//Act
 			var obj = new ClientConnection(objConnection);
-			objQueue.Rx += Raise.Event<IQueue.DataHandler>(new byte[] { 1, 2, 3, 4, 5 });
+			objQueue.Rx += Raise.Event<EventHandler<byte[]>>(objQueue, new byte[] { 1, 2, 3, 4, 5 });
 
 			//Assert
 			objConnection.Received(1).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));

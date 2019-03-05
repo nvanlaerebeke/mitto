@@ -17,19 +17,19 @@ namespace Mitto {
 			InternalQueue.Rx += InternalQueue_Rx;
 		}
 
-		private void Connection_Rx(IConnection.IConnection pConnection, byte[] pData) {
-			InternalQueue.Transmit(pData);
+		private void Connection_Rx(object sender, byte[] data) {
+			InternalQueue.Transmit(data);
 		}
-		private void InternalQueue_Rx(byte[] pData) {
+		private void InternalQueue_Rx(object sender, byte[] pData) {
 			Connection.Transmit(pData);
 		}
 
-		private void Connection_Disconnected(object sender, IConnection.IConnection pConnection) {
+		private void Connection_Disconnected(object sender, EventArgs e) {
 			Connection.Disconnected -= Connection_Disconnected;
 			Connection.Rx -= Connection_Rx;
 			InternalQueue.Rx -= InternalQueue_Rx;
 
-			Disconnected?.Invoke(pConnection, this);
+			Disconnected?.Invoke(this, this);
 		}
 	}
 }
