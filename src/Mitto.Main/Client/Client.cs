@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Mitto.IConnection;
 using Mitto.IMessaging;
 
@@ -19,7 +21,7 @@ namespace Mitto {
 		public event ClientConnectionHandler Connected;
 		public event ClientConnectionHandler Disconnected;
 
-		public string ID { get { return Connection.ID; } } 
+		public string ID { get { return Connection.ID; } }
 
 		#region IConnection stuff
 		private IConnection.IClient Connection { get; set; }
@@ -39,7 +41,9 @@ namespace Mitto {
 		}
 
 		private void ObjClient_Connected(object sender, IConnection.IClient pClient) {
-			Connected?.Invoke(this);
+			Task.Run(() => {
+				Connected?.Invoke(this);
+			});
 		}
 
 		private void ObjClient_Disconnected(object sender, IConnection.IConnection pClient) {
@@ -90,22 +94,49 @@ namespace Mitto {
 		}
 		#endregion
 
+		#region Request Methods
+		public void Request<R>(IRequestMessage pRequest, Action<R> pResponseAction) where R : IResponseMessage {
+			MessagingFactory.Processor.Request(this, pRequest, pResponseAction);
+		}
+
 		/// <summary>
-		/// Sends a request and waits for a response
-		/// Handled by the IClient and the Requester knows how to send because this class
-		/// implements the IQueue interface (Rx, Tx) and this class knows that it means to send
-		/// the data over the wire
+		/// Runs the Request asynchoniously in a Task
+		/// 
+		/// Note that this uses an extra thread
+		/// it is recommended to use Request<R>(IRequestMessage, Action<R>) instead
+		/// as that uses much less resources 
 		/// </summary>
 		/// <typeparam name="R"></typeparam>
 		/// <param name="pRequest"></param>
 		/// <returns></returns>
-		/*public R Request<R>(RequestMessage pRequest) where R : ResponseMessage {
-			return Requester.Send<R>(new MessageClient(_objClient.ID, this), pRequest);
-		}*/
-
-		public void Request<R>(IRequestMessage pRequest, Action<R> pResponseAction) where R: IResponseMessage {
-			MessagingFactory.Processor.Request(this, pRequest, pResponseAction);
+		public async Task<R> RequestAsync<R>(IRequestMessage pRequest) where R : IResponseMessage {
+			return await Task.Run<R>(() => {
+				ManualResetEvent objBlock = new ManualResetEvent(false);
+				IResponseMessage objResponse = null;
+				Request<R>(pRequest, r => {
+					objResponse = r;
+					objBlock.Set();
+				});
+				objBlock.WaitOne();
+				return (R)objResponse;
+			});
 		}
+
+		/// <summary>
+		/// Makes a synchronious request
+		/// 
+		/// Note that this block the application run
+		/// It is recommended to use Request<R>(IRequestMessage, Action<R>) instead
+		/// </summary>
+		/// <typeparam name="R"></typeparam>
+		/// <param name="pRequest"></param>
+		/// <returns></returns>
+		public R Request<R>(IRequestMessage pRequest) where R : IResponseMessage {
+			var objTask = RequestAsync<R>(pRequest);
+			objTask.Wait();
+			return objTask.Result;
+		}
+		#endregion
 
 		#region Connection Queue implementation (IConnection traffic)
 		public event IQueue.DataHandler Rx;

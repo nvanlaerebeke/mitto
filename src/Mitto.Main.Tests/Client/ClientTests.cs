@@ -1,12 +1,8 @@
 ﻿using Mitto.IConnection;
 using NSubstitute;
 using NUnit.Framework;
-using Mitto;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Mitto.Main.Tests.Client {
 	[TestFixture]
@@ -297,7 +293,7 @@ namespace Mitto.Main.Tests.Client {
 
 			//Act
 			var obj = new Mitto.Client();
-			obj.Request<IMessaging.IResponseMessage>(objRequestMessage, objAction);
+			obj.Request(objRequestMessage, objAction);
 
 			//Assert
 			objProcessor.Received(1).Request(Arg.Is(obj), Arg.Is(objRequestMessage), Arg.Is(objAction));

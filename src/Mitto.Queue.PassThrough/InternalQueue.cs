@@ -2,6 +2,7 @@
 using Mitto.IQueue;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Mitto.Queue.PassThrough {
 	internal class InternalQueue : IQueue.IQueue {
@@ -21,7 +22,7 @@ namespace Mitto.Queue.PassThrough {
 		/// </summary>
 		/// <param name="pMessage"></param>
 		public void Receive(byte[] pData) {
-			ThreadPool.QueueUserWorkItem((s) => {
+			Task.Run(() => {
 				MessagingFactory.Processor.Process(this, pData);
 			});
 		}

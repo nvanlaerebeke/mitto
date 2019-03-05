@@ -188,8 +188,6 @@ namespace Mitto.Messaging.Tests {
 		/// Tests the GetStatus method where a Busy state is expected
 		/// This means that a RunAction is done, and then the GetStatus is called
 		/// It's expected that the Status would be busy
-		/// 
-		/// ToDo: do something about the threading, causes test to fail sometimes
 		/// </summary>
 		[Test]
 		public void GetStatusBusyTest() {
@@ -206,7 +204,7 @@ namespace Mitto.Messaging.Tests {
 
 			objProvider.GetByteArray(Arg.Is(objResponse)).Returns(new byte[] { 1, 2, 3, 4, 5 });
 			objAction.Start().Returns(objResponse);
-			objAction.When(a => a.Start()).Do(a => Thread.Sleep(50) );
+			objAction.When(a => a.Start()).Do(a => Thread.Sleep(50));
 
 			Config.Initialize(new Config.ConfigParams() {
 				MessageProvider = objProvider
@@ -214,7 +212,7 @@ namespace Mitto.Messaging.Tests {
 
 			//Act
 			var obj = new ActionManager();
-			ThreadPool.QueueUserWorkItem(s => {
+			Task.Run(() => {
 				//Run the action on a different thread so the status can be gotten while it's busy
 				obj.RunAction(objClient, objMessage, objAction);
 			});

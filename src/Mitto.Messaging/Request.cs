@@ -2,6 +2,7 @@
 using Mitto.Utilities;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Mitto.Messaging {
 	public class Request<T> : IRequest where T : IResponseMessage {
@@ -59,7 +60,7 @@ namespace Mitto.Messaging {
 			_objKeepAliveMonitor.TimeOut -= _objKeepAliveMonitor_TimeOut;
 			_objKeepAliveMonitor.UnResponsive -= _objKeepAliveMonitor_UnResponsive;
 
-			ThreadPool.QueueUserWorkItem(s => {
+			Task.Run(() => {
 				_objAction.DynamicInvoke(pResponse);
 			});
 		}
