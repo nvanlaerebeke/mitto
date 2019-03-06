@@ -94,11 +94,9 @@ namespace Mitto.Messaging.Tests {
 		public void GetResponseMessageTest() {
 			//Arrange
 			var objMessage = new Request.EchoRequest("MyMessage"); // Substitute.For<Request.Echo>();
-			//objMessage.ID.Returns("MyID");
-			//objMessage.Name.Returns("Echo");
 			
 			//Act
-			var objReturnMessage = new MessageProvider().GetResponseMessage(objMessage, ResponseState.TimeOut);
+			var objReturnMessage = new MessageProvider().GetResponseMessage(objMessage, new ResponseStatus(ResponseState.TimeOut));
 
 			//Assert
 			Assert.NotNull(objReturnMessage);

@@ -26,7 +26,7 @@ namespace ChatSampleClient {
 
 			//Establish a connection and subscribe to the "MyChannel"
 			_objClient = new Client();
-			_objClient.Connected += delegate (Client pClient) {
+			_objClient.Connected += delegate (object sender, Client pClient) {
 				Console.WriteLine("Client Connected");
 				_objClient.Request<ACKResponse>(
 					new ChatSample.Messaging.Subscribe.ChatSubscribe("MyChannel"), (r => {

@@ -24,7 +24,7 @@ namespace Quickstart.Client {
 
 			//Establish a connection and subscribe to the "MyChannel"
 			_objClient = new Mitto.Client();
-			_objClient.Connected += delegate (Mitto.Client pClient) {
+			_objClient.Connected += delegate (object sender, Mitto.Client pClient) {
 				Console.WriteLine("Client Connected");
 				_objClient.Request<ACKResponse>(
 					new ChannelSubscribe("MyChannel"), r => {

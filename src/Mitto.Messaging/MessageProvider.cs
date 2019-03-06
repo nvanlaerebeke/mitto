@@ -311,14 +311,14 @@ namespace Mitto.Messaging {
 		/// <param name="pMessage"></param>
 		/// <param name="pCode"></param>
 		/// <returns></returns>
-		public IResponseMessage GetResponseMessage(IRequestMessage pMessage, ResponseState pCode) {
-			Type objResponseType = typeof(Response.ACKResponse); // -- default
+		public IResponseMessage GetResponseMessage(IRequestMessage pMessage, ResponseStatus pStatus) {
+			Type objResponseType = typeof(ACKResponse); // -- default
 			if (
 				ResponseMessageTranslation.ContainsKey(pMessage.Name)
 			) {
 				objResponseType = ResponseMessageTranslation[pMessage.Name];
 			}
-			return Activator.CreateInstance(objResponseType, pMessage, new ResponseStatus(pCode)) as IResponseMessage;
+			return Activator.CreateInstance(objResponseType, pMessage, pStatus) as IResponseMessage;
 		}
 
 		/// <summary>

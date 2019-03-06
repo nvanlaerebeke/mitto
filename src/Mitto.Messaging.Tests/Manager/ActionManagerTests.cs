@@ -58,7 +58,7 @@ namespace Mitto.Messaging.Tests {
 				objAction = Substitute.For<INotificationAction>();
 				objAction.When(a => ((INotificationAction)a).Start()).Do(a => throw new Exception("Some Exception"));
 			}
-			objProvider.GetResponseMessage(Arg.Is(objMessage), Arg.Is(ResponseState.Error)).Returns(objResponse);
+			objProvider.GetResponseMessage(Arg.Is(objMessage), Arg.Is<ResponseStatus>(r => r.State == ResponseState.Error)).Returns(objResponse);
 			objProvider.GetByteArray(Arg.Is(objResponse)).Returns(new byte[] { 1, 2, 3, 4, 5 });
 
 			Config.Initialize(new Config.ConfigParams() {
@@ -73,7 +73,7 @@ namespace Mitto.Messaging.Tests {
 			//Assert
 			if (pTransmitExpected) {
 				((IRequestAction<IResponseMessage>)objAction).Received(1).Start();
-				objProvider.Received(1).GetResponseMessage(Arg.Any<IRequestMessage>(), ResponseState.Error);
+				objProvider.Received(1).GetResponseMessage(Arg.Any<IRequestMessage>(), Arg.Is<ResponseStatus>(r => r.State == ResponseState.Error));
 				objClient.Received(1).Transmit(Arg.Is(objResponse));
 			} else {
 				((INotificationAction)objAction).Received(1).Start();
@@ -105,7 +105,7 @@ namespace Mitto.Messaging.Tests {
 			objMessage.Type.Returns(MessageType.Request);
 			objAction.When(a => a.Start()).Do(a => throw new MessagingException(new ResponseStatus(ResponseState.Cancelled)));
 
-			objProvider.GetResponseMessage(Arg.Any<IRequestMessage>(), Arg.Any<ResponseState>()).Returns(objResponse);
+			objProvider.GetResponseMessage(Arg.Any<IRequestMessage>(), Arg.Any<ResponseStatus>()).Returns(objResponse);
 			objProvider.GetByteArray(Arg.Any<IMessage>()).Returns(new byte[] { 1, 2, 3, 4, 5 });
 
 			//Act
@@ -115,7 +115,7 @@ namespace Mitto.Messaging.Tests {
 
 			//Assert
 			objAction.Received(1).Start();
-			objProvider.Received(1).GetResponseMessage(Arg.Is(objMessage), ResponseState.Cancelled);
+			objProvider.Received(1).GetResponseMessage(Arg.Is(objMessage), Arg.Is<ResponseStatus>(r => r.State == ResponseState.Cancelled));
 			objClient.Received(1).Transmit(Arg.Is(objResponse));
 		}
 

@@ -43,7 +43,7 @@ namespace Mitto.Messaging {
 		}
 
 		private void RequestTimedOut(object sender, IRequest e) {
-			SetResponse(MessagingFactory.Provider.GetResponseMessage(e.Message, ResponseState.TimeOut));
+			SetResponse(MessagingFactory.Provider.GetResponseMessage(e.Message, new ResponseStatus(ResponseState.TimeOut)));
 		}
 	}
 }
