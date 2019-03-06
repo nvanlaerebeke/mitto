@@ -1978,6 +1978,7 @@ namespace WebSocketSharp
     {
       try {
         _stream.Write (bytes, 0, bytes.Length);
+        BandwidthLimiter.UploadAddAndWait(bytes.Length);
       }
       catch (Exception ex) {
         _logger.Error (ex.Message);

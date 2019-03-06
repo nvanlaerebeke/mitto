@@ -778,6 +778,7 @@ namespace WebSocketSharp
 
       try {
         stream.BeginRead (buff, offset, length, callback, null);
+        BandwidthLimiter.DownloadAddAndWait(length);
       }
       catch (Exception ex) {
         if (error != null)

@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2015
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BandwidthLimiting.Client", "BandwidthLimiting.Client\BandwidthLimiting.Client.csproj", "{116F617E-3D77-4C0B-9AC8-D2A7F3D38D49}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BandwidthLimiting.Messaging", "..\BandwidthLimiting\BandwidthLimiting.Messaging\BandwidthLimiting.Messaging.csproj", "{84B0457C-ACC7-4839-B982-D4C915AE4153}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{116F617E-3D77-4C0B-9AC8-D2A7F3D38D49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{116F617E-3D77-4C0B-9AC8-D2A7F3D38D49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{116F617E-3D77-4C0B-9AC8-D2A7F3D38D49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{116F617E-3D77-4C0B-9AC8-D2A7F3D38D49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84B0457C-ACC7-4839-B982-D4C915AE4153}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84B0457C-ACC7-4839-B982-D4C915AE4153}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84B0457C-ACC7-4839-B982-D4C915AE4153}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84B0457C-ACC7-4839-B982-D4C915AE4153}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F84BE0EA-4941-4579-A83A-8D93346BCC4A}
+	EndGlobalSection
+EndGlobal

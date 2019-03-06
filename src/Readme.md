@@ -4,8 +4,9 @@ ToDo's before v1:
 - Fix rabbitmq + write tests for it
 
 - Add logging
-  - Add bandwidth limiting & monitoring to WebSocketSharp
-  - add timetstamps to requests & responses
+- Add bandwidth limiting & monitoring to WebSocketSharp
+- Make max frame size configurable, default 1kb, should be able to grow to 500kb
+- add timetstamps to requests & responses
 
 After v1:
 
