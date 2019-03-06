@@ -41,9 +41,10 @@ namespace ChatSampleClient {
 			_objClient.ConnectAsync(new ClientParams() {
 				Hostname = "localhost",
 				Port = 8080,
-				Secure = false }
-			);
-
+				Secure = false,
+                
+                
+            });
 			Console.CancelKeyPress += delegate (object sender, ConsoleCancelEventArgs e) {
 				_quit.Set();
 			};
@@ -51,7 +52,7 @@ namespace ChatSampleClient {
 		}
 
 		/// <summary>
-		/// Reads the Console for new lines on a separte thread
+		/// Reads the Console for new lines on a separate thread
 		/// </summary>
 		static void Start() {
 			ThreadPool.QueueUserWorkItem(s => {

@@ -14,7 +14,7 @@ namespace Mitto.Connection.Websocket {
 
 		WebSocketState ReadyState { get; }
 
-		void ConnectAsync(string pUrl);
+		void ConnectAsync(ClientParams pParams);
 		void Close();
 		void Send(byte[] pData);
 

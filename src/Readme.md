@@ -1,15 +1,7 @@
 ToDo's before v1:
 
-- MessagingException error code stuff should be sent to the client
 
 - Fix rabbitmq + write tests for it
-
-- Go over the public interface and make as much as possible private/internal 
-    This is to make it easier for the user - only leave assemblies available that are needed to create new plugins and 
-	those that are needed to interact with Mitto - Also see if a few additional classes can't be made to make interaction
-	easier, example Mitto.Client.Get() instead of Mitto.IConnection.ConnectionFactory().CreateClient();
-
-- Proxy support for web based connections 
 
 - Add logging
   - Add bandwidth limiting & monitoring to WebSocketSharp

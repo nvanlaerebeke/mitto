@@ -37,12 +37,17 @@ namespace Mitto.Connection.Websocket {
 		/// Connects to the websocket server in an asynchonious way 
 		/// </summary>
 		/// <param name="pUrl"></param>
-		public void ConnectAsync(string pUrl) {
-			_objWebSocket = new WebSocket(pUrl) {
+		public void ConnectAsync(ClientParams pParams) {
+            _objWebSocket = new WebSocket(String.Format(((pParams.Secure) ? "wss" : "ws") + "://{0}:{1}/", pParams.Hostname, pParams.Port)) { 
 				WaitTime = new TimeSpan(0, 0, ConnectionTimeoutSeconds),
-				EmitOnPing = true
+				EmitOnPing = true,
+                EnableRedirection = true
 			};
-			_objWebSocket.OnOpen += _objWebSocket_OnOpen;
+            if (!String.IsNullOrEmpty(pParams.Proxy.URL)) {
+                _objWebSocket.SetProxy(pParams.Proxy.URL, pParams.Proxy.UserName, pParams.Proxy.Password);
+            }
+               
+            _objWebSocket.OnOpen += _objWebSocket_OnOpen;
 			_objWebSocket.OnClose += _objWebSocket_OnClose;
 			_objWebSocket.OnError += _objWebSocket_OnError;
 			_objWebSocket.OnMessage += _objWebSocket_OnMessage;

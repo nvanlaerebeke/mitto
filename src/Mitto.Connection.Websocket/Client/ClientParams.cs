@@ -20,5 +20,14 @@
 		/// default: false
 		/// </summary>
 		public bool Secure { get; set; } = false;
+
+        public ProxySettings Proxy { get; set; } = new ProxySettings();
+
+        public class ProxySettings {
+            public string URL { get; set; } = "";
+            public string UserName { get; set; } = "";
+            public string Password { get; set; } = "";
+            public ProxySettings() { }
+        }
 	}
 }

@@ -9,7 +9,7 @@ using WebSocketSharp;
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 /// <summary>
 /// Class that represents the Websocket Client in Mitto
-/// Provides functionallity to communicate with a websocket server
+/// Provides functionality to communicate with a websocket server
 /// </summary>
 namespace Mitto.Connection.Websocket.Client {
 	public class WebsocketClient : IClient {
@@ -34,6 +34,7 @@ namespace Mitto.Connection.Websocket.Client {
 			if (!(pParams is ClientParams objParams)) {
 				throw new Exception("Incorrect parameters for Websocket client");
 			}
+
 			_objWebSocketClient.ConnectionTimeoutSeconds = objParams.ConnectionTimeoutSeconds;
 			_objKeepAliveMonitor.SetInterval(objParams.ConnectionTimeoutSeconds);
 
@@ -42,7 +43,7 @@ namespace Mitto.Connection.Websocket.Client {
 			_objWebSocketClient.OnError += Connection_OnError;
 			_objWebSocketClient.OnMessage += Connection_OnMessage;
 
-			_objWebSocketClient.ConnectAsync(String.Format(((objParams.Secure) ? "wss" : "ws") + "://{0}:{1}/", objParams.Hostname, objParams.Port));
+			_objWebSocketClient.ConnectAsync(objParams);
 		}
 
 		private void Close() {
