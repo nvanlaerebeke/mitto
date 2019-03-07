@@ -114,7 +114,7 @@ namespace WebSocketSharp
     private int                            _retryCountForConnect;
     private bool                           _secure;
     private ClientSslConfiguration         _sslConfig;
-    private Stream                         _stream;
+    private ThrottledStream                         _stream;
     private TcpClient                      _tcpClient;
     private Uri                            _uri;
     private const string                   _version = "13";
@@ -174,10 +174,10 @@ namespace WebSocketSharp
       _logger = context.Log;
       _message = messages;
       _secure = context.IsSecureConnection;
-      _stream = context.Stream;
+      _stream = new ThrottledStream(context.Stream);
       _waitTime = TimeSpan.FromSeconds (1);
 
-      init ();
+	   init ();
     }
 
     // As server
@@ -190,7 +190,7 @@ namespace WebSocketSharp
       _logger = context.Log;
       _message = messages;
       _secure = context.IsSecureConnection;
-      _stream = context.Stream;
+      _stream = new ThrottledStream(context.Stream);
       _waitTime = TimeSpan.FromSeconds (1);
 
       init ();
@@ -805,6 +805,7 @@ namespace WebSocketSharp
     // As server
     private bool accept ()
     {
+
       if (_readyState == WebSocketState.Open) {
         var msg = "The handshake request has already been accepted.";
         _logger.Warn (msg);
@@ -1978,7 +1979,6 @@ namespace WebSocketSharp
     {
       try {
         _stream.Write (bytes, 0, bytes.Length);
-        BandwidthLimiter.UploadAddAndWait(bytes.Length);
       }
       catch (Exception ex) {
         _logger.Error (ex.Message);
@@ -2095,7 +2095,7 @@ namespace WebSocketSharp
           if (res.HasConnectionClose) {
             releaseClientResources ();
             _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
-            _stream = _tcpClient.GetStream ();
+            _stream = new ThrottledStream(_tcpClient.GetStream ());
           }
 
           var authRes = new AuthenticationResponse (authChal, _proxyCredentials, 0);
@@ -2117,12 +2117,12 @@ namespace WebSocketSharp
     {
       if (_proxyUri != null) {
         _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
-        _stream = _tcpClient.GetStream ();
+        _stream = new ThrottledStream(_tcpClient.GetStream ());
         sendProxyConnectRequest ();
       }
       else {
         _tcpClient = new TcpClient (_uri.DnsSafeHost, _uri.Port);
-        _stream = _tcpClient.GetStream ();
+        _stream = new ThrottledStream(_tcpClient.GetStream ());
       }
 
       if (_secure) {
@@ -2145,7 +2145,7 @@ namespace WebSocketSharp
             conf.EnabledSslProtocols,
             conf.CheckCertificateRevocation);
 
-          _stream = sslStream;
+          _stream = new ThrottledStream(sslStream);
         }
         catch (Exception ex) {
           throw new WebSocketException (CloseStatusCode.TlsHandshakeFailure, ex);
