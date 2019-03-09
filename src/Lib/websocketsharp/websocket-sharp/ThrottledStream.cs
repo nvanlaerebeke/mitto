@@ -4,7 +4,8 @@ using System.Threading;
 
 namespace WebSocketSharp {
 
-	public class BandwithLimitedStream : Stream {
+	public class ThrottledStream : Stream {
+
 		/// <summary>
 		/// Actual base stream the data is passed to
 		/// </summary>
@@ -28,17 +29,17 @@ namespace WebSocketSharp {
 
 		#region Constructors
 		/// <summary>
-		/// Creates the stream without any bandwidth limitations
+		/// Creates the stream without any bandwidth throttling
 		/// </summary>
 		/// <param name="pStream"></param>
-		public BandwithLimitedStream(Stream pStream) : this(pStream, 0) { }
+		public ThrottledStream(Stream pStream) : this(pStream, 0) { }
 
 		/// <summary>
 		/// Creates the stream with the given maximum bytes per second
 		/// </summary>
 		/// <param name="pStream"></param>
 		/// <param name="pBytesPerSecond"></param>
-		public BandwithLimitedStream(Stream pStream, long pBytesPerSecond) {
+		public ThrottledStream(Stream pStream, long pBytesPerSecond) {
 			_objStream = pStream;
 			_lngMaxBytesPerSecond = pBytesPerSecond;
 			_lngByteCount = 0;
@@ -47,6 +48,9 @@ namespace WebSocketSharp {
 		#endregion
 
 		#region Public Properties
+		/// <summary>
+		/// Maximum number of bytes per second allowed to be sent
+		/// </summary>
 		public long MaxBytesPerSecond {
 			get { return _lngMaxBytesPerSecond; }
 			set {
@@ -56,8 +60,11 @@ namespace WebSocketSharp {
 			}
 		}
 
+		/// <summary>
+		/// Current bytes per second being sent over the stream
+		/// </summary>
 		public long CurrentBytesPerSecond {
-			get { return 0; }
+			get { return (_lngByteCount * 1000L) / (Environment.TickCount - _lngStartTime); }
 		}
 		#endregion
 
@@ -90,6 +97,10 @@ namespace WebSocketSharp {
 		}
 		#endregion
 
+		/// <summary>
+		/// Slows down sending the bytes if needed
+		/// </summary>
+		/// <param name="pByteCount"></param>
 		private void WaitIfNeeded(int pByteCount) {
 			if(_lngMaxBytesPerSecond == 0) { return; } // -- no limit
 			if (pByteCount == 0) { return; } // -- nothing to write, so no waiting
@@ -112,6 +123,9 @@ namespace WebSocketSharp {
 			}
 		}
 
+		/// <summary>
+		/// Reset the timer being used to throttle the speed
+		/// </summary>
 		protected void Reset() {
 			//To better shape the stream, keep 10 second history
 			if ((Environment.TickCount - _lngStartTime) > 10000) {

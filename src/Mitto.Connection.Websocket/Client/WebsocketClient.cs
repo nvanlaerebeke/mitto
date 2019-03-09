@@ -22,6 +22,7 @@ namespace Mitto.Connection.Websocket.Client {
 		}
 
 		public string ID { get; private set; } = Guid.NewGuid().ToString();
+		public long CurrentBytesPerSecond { get { return _objWebSocketClient.CurrentBytesPerSecond; } }
 
 		public event EventHandler<IClient> Connected;
 		public event EventHandler Disconnected;

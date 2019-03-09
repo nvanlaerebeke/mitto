@@ -21,6 +21,7 @@ namespace Mitto {
 		public event EventHandler<Client> Disconnected;
 
 		public string ID { get { return Connection.ID; } }
+		public long CurrentBytesPerSecond {  get { return Connection.CurrentBytesPerSecond; } }
 
 		#region IConnection stuff
 		private IConnection.IClient Connection { get; set; }

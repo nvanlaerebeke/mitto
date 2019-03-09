@@ -11,13 +11,11 @@ namespace Mitto.Connection.Websocket {
 		event EventHandler<IMessageEventArgs> OnMessage;
 
 		int ConnectionTimeoutSeconds { get; set; }
-
+		long CurrentBytesPerSecond { get; }
 		WebSocketState ReadyState { get; }
-
 		void ConnectAsync(ClientParams pParams);
 		void Close();
 		void Send(byte[] pData);
-
 		bool Ping();
 	}
 }

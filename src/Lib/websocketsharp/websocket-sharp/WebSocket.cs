@@ -114,7 +114,7 @@ namespace WebSocketSharp
     private int                            _retryCountForConnect;
     private bool                           _secure;
     private ClientSslConfiguration         _sslConfig;
-    private BandwithLimitedStream          _stream;
+    private ThrottledStream          _stream;
     private TcpClient                      _tcpClient;
     private Uri                            _uri;
     private const string                   _version = "13";
@@ -174,7 +174,7 @@ namespace WebSocketSharp
       _logger = context.Log;
       _message = messages;
       _secure = context.IsSecureConnection;
-      _stream = new BandwithLimitedStream(context.Stream, MaxBytesPerSecond);
+      _stream = new ThrottledStream(context.Stream, MaxBytesPerSecond);
       _waitTime = TimeSpan.FromSeconds (1);
 
 	   init ();
@@ -190,7 +190,7 @@ namespace WebSocketSharp
       _logger = context.Log;
       _message = messages;
       _secure = context.IsSecureConnection;
-      _stream = new BandwithLimitedStream(context.Stream, MaxBytesPerSecond);
+      _stream = new ThrottledStream(context.Stream, MaxBytesPerSecond);
       _waitTime = TimeSpan.FromSeconds (1);
 
       init ();
@@ -782,6 +782,15 @@ namespace WebSocketSharp
 	/// 0 or lower is infinite
 	/// </value>
 	public long MaxBytesPerSecond { get; set; } = 0;
+
+	public long CurrentBytesPerSecond {
+		get {
+			if (_stream != null) {
+					return _stream.CurrentBytesPerSecond;
+			}
+			return 0;
+		}
+	}
 
     #endregion
 
@@ -2104,7 +2113,7 @@ namespace WebSocketSharp
           if (res.HasConnectionClose) {
             releaseClientResources ();
             _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
-            _stream = new BandwithLimitedStream(_tcpClient.GetStream (), MaxBytesPerSecond);
+            _stream = new ThrottledStream(_tcpClient.GetStream (), MaxBytesPerSecond);
           }
 
           var authRes = new AuthenticationResponse (authChal, _proxyCredentials, 0);
@@ -2126,12 +2135,12 @@ namespace WebSocketSharp
     {
       if (_proxyUri != null) {
         _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
-        _stream = new BandwithLimitedStream(_tcpClient.GetStream (), MaxBytesPerSecond);
+        _stream = new ThrottledStream(_tcpClient.GetStream (), MaxBytesPerSecond);
         sendProxyConnectRequest ();
       }
       else {
         _tcpClient = new TcpClient (_uri.DnsSafeHost, _uri.Port);
-        _stream = new BandwithLimitedStream(_tcpClient.GetStream (), MaxBytesPerSecond);
+        _stream = new ThrottledStream(_tcpClient.GetStream (), MaxBytesPerSecond);
       }
 
       if (_secure) {
@@ -2154,7 +2163,7 @@ namespace WebSocketSharp
             conf.EnabledSslProtocols,
             conf.CheckCertificateRevocation);
 
-          _stream = new BandwithLimitedStream(sslStream, MaxBytesPerSecond);
+          _stream = new ThrottledStream(sslStream, MaxBytesPerSecond);
         }
         catch (Exception ex) {
           throw new WebSocketException (CloseStatusCode.TlsHandshakeFailure, ex);

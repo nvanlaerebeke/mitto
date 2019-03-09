@@ -9,6 +9,7 @@ namespace Mitto.Connection.Websocket {
 		public WebSocketState ReadyState => _objWebSocket.ReadyState;
 
 		public int ConnectionTimeoutSeconds { get; set; } = 30;
+		public long CurrentBytesPerSecond { get { return _objWebSocket.CurrentBytesPerSecond; } }
 
 		public event EventHandler OnOpen;
 		public event EventHandler<ICloseEventArgs> OnClose;
