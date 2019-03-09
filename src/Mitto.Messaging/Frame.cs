@@ -1,4 +1,5 @@
 ﻿using Mitto.IMessaging;
+using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -47,7 +48,23 @@ namespace Mitto.Messaging {
 
 		public byte[] Data {
 			get {
-				return _arrByteArray.Skip(2 + _arrByteArray.ElementAt(1)).Take(_arrByteArray.Length - (2 + _arrByteArray.ElementAt(1))).ToArray();
+				//Don't do this as it's slower
+				/*return _arrByteArray.Skip(
+					2 + _arrByteArray.ElementAt(1)
+				).Take(
+					_arrByteArray.Length - (2 + _arrByteArray.ElementAt(1))
+				).ToArray();*/
+
+				//-- this is faster
+				var newArray = new byte[_arrByteArray.Length - (2 + _arrByteArray.ElementAt(1))];
+				Array.Copy(
+					_arrByteArray, // -- source array
+					_arrByteArray.Length - newArray.Length,  // -- start index in the source
+					newArray, // -- destination array
+					0, // -- start index on the destination array
+					newArray.Length // -- # bytes that needs to be read
+				);
+				return newArray;
 			}
 		}
 

@@ -16,6 +16,11 @@ namespace Mitto.Connection.Websocket.Client {
 		private IWebSocketClient _objWebSocketClient;
 		private IKeepAliveMonitor _objKeepAliveMonitor;
 
+		public static int FragmentLength {
+			get { return WebSocket.FragmentLength; }
+			set { WebSocket.FragmentLength = value; }
+		}
+
 		public string ID { get; private set; } = Guid.NewGuid().ToString();
 
 		public event EventHandler<IClient> Connected;

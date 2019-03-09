@@ -1,4 +1,12 @@
-﻿namespace Mitto {
+﻿using Mitto.Connection.Websocket;
+using Mitto.IConnection;
+using Mitto.IMessaging;
+using Mitto.IQueue;
+using Mitto.Messaging;
+using Mitto.Messaging.Json;
+using Mitto.Queue.PassThrough;
+
+namespace Mitto {
 	public static class Config {
 		/// <summary>
 		/// Initialize Mitto with the default configuration
@@ -10,9 +18,9 @@
 		/// </summary>
 		/// <param name="pConfig"></param>
 		public static void Initialize(ConfigParams pConfig) {
-			IQueue.QueueFactory.Initialize(pConfig.QueueProvider);
-			IConnection.ConnectionFactory.Initialize(pConfig.ConnectionProvider);
-			IMessaging.MessagingFactory.Initialize(pConfig.MessageProvider, pConfig.MessageConverter, pConfig.MessageProcessor);
+			QueueFactory.Initialize(pConfig.QueueProvider);
+			ConnectionFactory.Initialize(pConfig.ConnectionProvider);
+			MessagingFactory.Initialize(pConfig.MessageProvider, pConfig.MessageConverter, pConfig.MessageProcessor);
 		}
 
 		/// <summary>
@@ -25,11 +33,11 @@
 		/// - Standard way of processing messages
 		/// </summary>
 		public class ConfigParams {
-			public IQueue.IQueueProvider QueueProvider { get; set; } = new Queue.PassThrough.QueueProvider();
-			public IConnection.IConnectionProvider ConnectionProvider { get; set; } = new Connection.Websocket.ConnectionProvider();
-			public IMessaging.IMessageConverter MessageConverter { get; set; } = new Messaging.Json.MessageConverter();
-			public IMessaging.IMessageProvider MessageProvider { get; set; } = new Messaging.MessageProvider();
-			public IMessaging.IMessageProcessor MessageProcessor { get; set; } = new Messaging.MessageProcessor();
+			public IQueueProvider QueueProvider { get; set; } = new QueueProvider();
+			public IConnectionProvider ConnectionProvider { get; set; } = new WebSocketConnectionProvider();
+			public IMessageConverter MessageConverter { get; set; } = new MessageConverter();
+			public IMessageProvider MessageProvider { get; set; } = new MessageProvider();
+			public IMessageProcessor MessageProcessor { get; set; } = new MessageProcessor();
 		}
 	}
 }
