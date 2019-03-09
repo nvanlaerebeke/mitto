@@ -38,6 +38,7 @@
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Action\Request\MessageStatusRequestAction.cs" />
+    <Compile Include="Action\Request\ReceiveBinaryDataRequestAction.cs" />
     <Compile Include="Action\Request\ReceiveOnChannelRequestAction.cs" />
     <Compile Include="Action\Request\SendToChannelRequestAction.cs" />
     <Compile Include="Action\Subscribe\ChannelSubscribeAction.cs" />
@@ -47,6 +48,7 @@
     <Compile Include="Request\Interfaces\IEchoRequest.cs" />
     <Compile Include="Request\Interfaces\IMessageStatusRequest.cs" />
     <Compile Include="Request\Interfaces\ISendToChannelRequest.cs" />
+    <Compile Include="Request\ReceiveBinaryDataRequest.cs" />
     <Compile Include="Request\ReceiveOnChannelRequest.cs" />
     <Compile Include="Request\SendToChannelRequest.cs" />
     <Compile Include="Subscribe\ChannelSubscribe.cs" />

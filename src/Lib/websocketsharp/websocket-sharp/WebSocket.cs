@@ -114,7 +114,7 @@ namespace WebSocketSharp
     private int                            _retryCountForConnect;
     private bool                           _secure;
     private ClientSslConfiguration         _sslConfig;
-    private Stream                         _stream;
+    private BandwithLimitedStream          _stream;
     private TcpClient                      _tcpClient;
     private Uri                            _uri;
     private const string                   _version = "13";
@@ -141,7 +141,7 @@ namespace WebSocketSharp
     ///   <c>Int32.MaxValue - 14</c> inclusive.
     ///   </para>
     /// </remarks>
-    internal static readonly int FragmentLength;
+    public static int FragmentLength { get; set; }
 
     /// <summary>
     /// Represents the random number generator used internally.
@@ -174,10 +174,10 @@ namespace WebSocketSharp
       _logger = context.Log;
       _message = messages;
       _secure = context.IsSecureConnection;
-      _stream = context.Stream;
+      _stream = new BandwithLimitedStream(context.Stream, MaxBytesPerSecond);
       _waitTime = TimeSpan.FromSeconds (1);
 
-      init ();
+	   init ();
     }
 
     // As server
@@ -190,7 +190,7 @@ namespace WebSocketSharp
       _logger = context.Log;
       _message = messages;
       _secure = context.IsSecureConnection;
-      _stream = context.Stream;
+      _stream = new BandwithLimitedStream(context.Stream, MaxBytesPerSecond);
       _waitTime = TimeSpan.FromSeconds (1);
 
       init ();
@@ -774,6 +774,15 @@ namespace WebSocketSharp
       }
     }
 
+	/// <summary>
+	/// Gets or sets the maxiumum bytes per second
+	/// </summary>
+	/// <value>
+	/// long representing the maximum number of bytes/second
+	/// 0 or lower is infinite
+	/// </value>
+	public long MaxBytesPerSecond { get; set; } = 0;
+
     #endregion
 
     #region Public Events
@@ -805,6 +814,7 @@ namespace WebSocketSharp
     // As server
     private bool accept ()
     {
+
       if (_readyState == WebSocketState.Open) {
         var msg = "The handshake request has already been accepted.";
         _logger.Warn (msg);
@@ -1978,7 +1988,6 @@ namespace WebSocketSharp
     {
       try {
         _stream.Write (bytes, 0, bytes.Length);
-        BandwidthLimiter.UploadAddAndWait(bytes.Length);
       }
       catch (Exception ex) {
         _logger.Error (ex.Message);
@@ -2095,7 +2104,7 @@ namespace WebSocketSharp
           if (res.HasConnectionClose) {
             releaseClientResources ();
             _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
-            _stream = _tcpClient.GetStream ();
+            _stream = new BandwithLimitedStream(_tcpClient.GetStream (), MaxBytesPerSecond);
           }
 
           var authRes = new AuthenticationResponse (authChal, _proxyCredentials, 0);
@@ -2117,12 +2126,12 @@ namespace WebSocketSharp
     {
       if (_proxyUri != null) {
         _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
-        _stream = _tcpClient.GetStream ();
+        _stream = new BandwithLimitedStream(_tcpClient.GetStream (), MaxBytesPerSecond);
         sendProxyConnectRequest ();
       }
       else {
         _tcpClient = new TcpClient (_uri.DnsSafeHost, _uri.Port);
-        _stream = _tcpClient.GetStream ();
+        _stream = new BandwithLimitedStream(_tcpClient.GetStream (), MaxBytesPerSecond);
       }
 
       if (_secure) {
@@ -2145,7 +2154,7 @@ namespace WebSocketSharp
             conf.EnabledSslProtocols,
             conf.CheckCertificateRevocation);
 
-          _stream = sslStream;
+          _stream = new BandwithLimitedStream(sslStream, MaxBytesPerSecond);
         }
         catch (Exception ex) {
           throw new WebSocketException (CloseStatusCode.TlsHandshakeFailure, ex);

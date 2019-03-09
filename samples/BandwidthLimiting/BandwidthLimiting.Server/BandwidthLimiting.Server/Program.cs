@@ -1,15 +1,12 @@
 ﻿using Mitto.Connection.Websocket;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Mitto;
 
 namespace BandwidthLimiting.Server {
-    class Program {
+	class Program {
         static ManualResetEvent _quit = new ManualResetEvent(false);
         static Mitto.Server _objServer;
         static List<ClientConnection> _lstClients = new List<ClientConnection>();

@@ -7,6 +7,7 @@ ToDo's before v1:
 - Add bandwidth limiting & monitoring to WebSocketSharp
 - Make max frame size configurable, default 1kb, should be able to grow to 500kb
 - add timetstamps to requests & responses
+- better performance for data transfers
 
 After v1:
 
@@ -46,3 +47,6 @@ Testing:
 	  - Think about how functional tests can be realized
     - Message names where the text in byte[] > 255, should cause an exception
       For UTF-32 this will be quite a bit faster than UTF-8 or even 16
+	- Data transfer speeds:
+		- with jumbo frames
+		- with different communication media and messaging

@@ -41,7 +41,8 @@ namespace Mitto.Connection.Websocket {
             _objWebSocket = new WebSocket(String.Format(((pParams.Secure) ? "wss" : "ws") + "://{0}:{1}/", pParams.Hostname, pParams.Port)) { 
 				WaitTime = new TimeSpan(0, 0, ConnectionTimeoutSeconds),
 				EmitOnPing = true,
-                EnableRedirection = true
+                EnableRedirection = true,
+				MaxBytesPerSecond = pParams.MaxBytePerSecond
 			};
             if (!String.IsNullOrEmpty(pParams.Proxy.URL)) {
                 _objWebSocket.SetProxy(pParams.Proxy.URL, pParams.Proxy.UserName, pParams.Proxy.Password);

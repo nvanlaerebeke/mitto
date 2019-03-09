@@ -1,24 +1,25 @@
 ﻿using BandwidthLimiting.Messaging.Request;
 using Mitto.Connection.Websocket;
+using Mitto.IMessaging;
+using Mitto.Messaging.Request;
 using Mitto.Messaging.Response;
+using Mitto.Messaging.Subscribe;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace BandwidthLimiting.Client {
-    class Program {
+	class Program {
         static ManualResetEvent _quit = new ManualResetEvent(false);
-        static Mitto.Client _objClient = new Mitto.Client();
+        static Mitto.Client _objClient;
 
         static void Main(string[] args) {
-
             Mitto.Config.Initialize(new Mitto.Config.ConfigParams() {
                 MessageProvider = new Mitto.Messaging.MessageProvider("BandwidthLimiting.Messaging")
             });
 
+
+			_objClient = new Mitto.Client();
             _objClient.Connected += delegate (object sender, Mitto.Client e) {
                 Console.WriteLine("Client Connected");
                 Start();
@@ -29,17 +30,22 @@ namespace BandwidthLimiting.Client {
                 Secure = false
             });
 
-            Console.CancelKeyPress += delegate (object sender, ConsoleCancelEventArgs e) {
-                _quit.Set();
-            };
             _quit.WaitOne();
         }
 
         static void Start() {
-            Parallel.For(0, 2, (i) => {
+			Parallel.For(0, 2, (i) => {
                 Send();
             });
-        }
+			/*_objClient.Request<ACKResponse>(new ChannelSubscribe("MyChannel"), r => {
+				if (r.Status.State == ResponseState.Success) {
+					_objClient.Request<EchoResponse>(new EchoRequest("ABC"), e => {
+						Console.WriteLine(e.Message);
+					});
+					Start();
+				}
+			});*/
+		}
 
         static void Send() {
             Console.WriteLine("Sending Data");

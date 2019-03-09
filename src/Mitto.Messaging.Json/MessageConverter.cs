@@ -43,12 +43,26 @@ namespace Mitto.Messaging.Json {
 		/// <param name="pMessage"></param>
 		/// <returns>byte[]</returns>
 		public byte[] GetByteArray(IMessage pMessage) {
-			return new Frame(
-				MessageFormat.Json,
-				Encoding.UTF32.GetBytes(
-					JsonConvert.SerializeObject(pMessage)
-				)
-			).GetByteArray();
+			if (true) {
+				return new Frame(
+					MessageFormat.Json,
+					Encoding.UTF32.GetBytes(
+						JsonConvert.SerializeObject(pMessage)
+					)
+				).GetByteArray();
+			} else {
+				byte[] arrData;
+				using (MemoryStream stream = new MemoryStream()) {
+					using (BsonWriter writer = new BsonWriter(stream)) {
+						new JsonSerializer().Serialize(writer, pMessage);
+						arrData = stream.ToArray();
+					}
+				}
+				return new Frame(
+					MessageFormat.Bson,
+					arrData
+				).GetByteArray();
+			}
 		}
 	}
 }
