@@ -41,7 +41,7 @@
     <Compile Include="Params.cs" />
     <Compile Include="Server\ServerParams.cs" />
     <Compile Include="Client\ClientParams.cs" />
-    <Compile Include="ConnectionProvider.cs" />
+    <Compile Include="WebSocketConnectionProvider.cs" />
     <Compile Include="WebSocketSharpWrappers\Interfaces\IMessageEventArgs.cs" />
     <Compile Include="WebSocketSharpWrappers\Implementation\MessageEventArgWrapper.cs" />
     <Compile Include="WebSocketSharpWrappers\Implementation\ErrorEventArgWrapper.cs" />
