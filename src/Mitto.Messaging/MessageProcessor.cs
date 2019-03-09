@@ -1,4 +1,5 @@
-﻿using Mitto.IMessaging;
+﻿using Mitto.ILogging;
+using Mitto.IMessaging;
 using System;
 using System.Runtime.CompilerServices;
 
@@ -8,6 +9,9 @@ namespace Mitto.Messaging {
 	/// Provides handling of an incomming message and making requests
 	/// </summary>
 	public class MessageProcessor : IMessageProcessor {
+		private ILog Log {
+			get { return LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType); }
+		}
 
 		/// <summary>
 		/// Create a MessageProcessor with a custom IRequestManager and IActionManager
@@ -18,7 +22,6 @@ namespace Mitto.Messaging {
 			RequestManager = pRequestManager;
 			ActionManager = pActionManager;
 		}
-
 
 		/// <summary>
 		/// Creates the MessageProcessor
@@ -52,7 +55,10 @@ namespace Mitto.Messaging {
 			IMessage objMessage = MessagingFactory.Provider.GetMessage(pData);
 
 			// --- don't know what we're receiving, so skip it
-			if (objMessage == null) { return; }
+			if (objMessage == null) {
+				Log.Error($"Received unknown/corrupt message on {pClient.ID}");
+				return;
+			}
 
 			//Message is a response on an action, so no action needs to run
 			//set the response and return

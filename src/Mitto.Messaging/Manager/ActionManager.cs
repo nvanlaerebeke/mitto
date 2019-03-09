@@ -1,15 +1,22 @@
-﻿using Mitto.IMessaging;
+﻿using Mitto.ILogging;
+using Mitto.IMessaging;
 using System;
 using System.Collections.Concurrent;
 using System.Reflection;
 
 namespace Mitto.Messaging {
 	internal class ActionManager : IActionManager {
+		private ILog Log {
+			get { return LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType); }
+		}
 		private ConcurrentDictionary<string, IAction> Actions = new ConcurrentDictionary<string, IAction>();
 
 		public void RunAction(IClient pClient, IRequestMessage pMessage, IAction pAction) {
-			if (pAction == null) { return; } // -- nothing to do
-
+			if (pAction == null) { // -- nothing to do
+				Log.Error($"Unable to create action for {pMessage.Name}");
+				return;
+			}
+			Log.Info($"Starting action for {pMessage.Type.ToString()} {pAction.GetType().ToString()}");
 			if (Actions.TryAdd(pMessage.ID, pAction)) {
 				switch (pMessage.Type) {
 					case MessageType.Notification:

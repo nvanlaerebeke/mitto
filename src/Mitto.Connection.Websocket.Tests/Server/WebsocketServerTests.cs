@@ -10,6 +10,10 @@ using System.Security.Cryptography.X509Certificates;
 namespace Mitto.Connection.Websocket.Tests.Server {
 	[TestFixture]
 	public class WebsocketServerTests {
+		[SetUp]
+		public void SetUp() {
+			Config.Initialize();
+		}
 
 		/// <summary>
 		/// Tests starting an insecure WebsocketServer 

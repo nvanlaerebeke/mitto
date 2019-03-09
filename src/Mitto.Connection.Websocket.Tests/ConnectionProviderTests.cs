@@ -6,11 +6,13 @@ namespace Mitto.Connection.Websocket.Tests {
 	public class ConnectionProviderTests {
 		[Test]
 		public void CreateClient() {
+			Config.Initialize();
 			Assert.IsInstanceOf<IClient>(new WebSocketConnectionProvider().CreateClient());
 		}
 
 		[Test]
 		public void CreateServer() {
+			Config.Initialize();
 			Assert.IsInstanceOf<IServer>(new WebSocketConnectionProvider().CreateServer());
 		}
 	}

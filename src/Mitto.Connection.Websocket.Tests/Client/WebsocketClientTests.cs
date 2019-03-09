@@ -11,6 +11,10 @@ using WebSocketSharp;
 namespace Mitto.Connection.Websocket.Tests.Client {
 	[TestFixture]
 	public class WebsocketClientTests {
+		[SetUp]
+		public void SetUp() {
+			Config.Initialize();
+		}
 
 		/// <summary>
 		/// Tests the timeout event for the kepalive monitor

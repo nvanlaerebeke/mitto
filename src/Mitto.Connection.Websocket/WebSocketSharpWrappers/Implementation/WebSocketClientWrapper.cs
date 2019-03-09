@@ -45,6 +45,8 @@ namespace Mitto.Connection.Websocket {
                 EnableRedirection = true,
 				MaxBytesPerSecond = pParams.MaxBytePerSecond
 			};
+			_objWebSocket.Log.Level = LogLevel.Fatal;
+
             if (!String.IsNullOrEmpty(pParams.Proxy.URL)) {
                 _objWebSocket.SetProxy(pParams.Proxy.URL, pParams.Proxy.UserName, pParams.Proxy.Password);
             }

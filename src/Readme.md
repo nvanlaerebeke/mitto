@@ -1,20 +1,13 @@
 ToDo's before v1:
 
-
 - Fix rabbitmq + write tests for it
-
 - Add logging
-- Add bandwidth limiting & monitoring to WebSocketSharp
-- Make max frame size configurable, default 1kb, should be able to grow to 500kb
 - add timetstamps to requests & responses
-- better performance for data transfers
 
 After v1:
 
 Improvements:
 - Autoscale ThreadPool.MinThreads so the application ThreadPool autoscales in time
-- WebSocketSharp - autoscale the message size within boundaries
-- Create a pull request for the autoscale message sizes and bandwidth limiting/monitoring
 - don't allow  names where the byte[] for the strings > 255, this will cause exceptions
 
 Benchmarking:

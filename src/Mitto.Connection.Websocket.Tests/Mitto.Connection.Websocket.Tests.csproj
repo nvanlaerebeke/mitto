@@ -63,6 +63,10 @@
       <Project>{aaf65eba-e48d-491a-ad2e-525bde11ec6f}</Project>
       <Name>Mitto.IConnection</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Mitto.Config\Mitto.Config.csproj">
+      <Project>{e3e0d40d-99ac-4ed4-9e64-19cdc10813b0}</Project>
+      <Name>Mitto.Config</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Mitto.Utilities\Mitto.Utilities.csproj">
       <Project>{d184bf09-fd6d-4f36-bc6e-bf05e763e3ac}</Project>
       <Name>Mitto.Utilities</Name>

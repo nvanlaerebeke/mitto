@@ -3,12 +3,14 @@ using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Mitto.IConnection;
+using Mitto.ILogging;
 using Mitto.Utilities;
 
 [assembly: InternalsVisibleTo("Mitto.Connection.Websocket.Tests")]
 namespace Mitto.Connection.Websocket.Server {
 
 	internal class Client : IClientConnection {
+		private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		private IWebSocketBehavior _objClient;
 		private IKeepAliveMonitor _objKeepAliveMonitor; 
 
@@ -34,20 +36,26 @@ namespace Mitto.Connection.Websocket.Server {
 			_objClient.OnMessageReceived += _objClient_OnMessageReceived;
 
 			_objKeepAliveMonitor.Start();
+
+			Log.Info($"Client {ID} connected");
 		}
 
 		private void _objKeepAliveMonitor_UnResponsive(object sender, EventArgs e) {
+			Log.Debug($"Client {ID} unresponsive, closing...");
 			this.Disconnect();
 		}
 
 		private void _objKeepAliveMonitor_TimeOut(object sender, EventArgs e) {
+			Log.Debug($"Client {ID} timeout, pinging...");
 			_objKeepAliveMonitor.StartCountDown();
 			if (_objClient.Ping()) {
 				_objKeepAliveMonitor.Reset();
+				Log.Debug($"Client {ID} pong received");
 			}
 		}
 
 		private void _objClient_OnMessageReceived(object sender, IMessageEventArgs e) {
+			Log.Debug($"Data received on {ID}");
 			_objKeepAliveMonitor.Reset();
 			if (e.IsText) {
 				var data = System.Text.Encoding.UTF32.GetBytes(e.Data);
@@ -59,6 +67,7 @@ namespace Mitto.Connection.Websocket.Server {
 		}
 
 		private void _objClient_OnErrorReceived(object sender, IErrorEventArgs e) {
+			Log.Debug($"Error on {ID}: {e.Message}, closing...");
 			Disconnect();
 		}
 
@@ -67,6 +76,8 @@ namespace Mitto.Connection.Websocket.Server {
 		}
 
         public void Disconnect() {
+			Log.Debug($"Closing {ID}");
+
 			_objKeepAliveMonitor.TimeOut -= _objKeepAliveMonitor_TimeOut;
 			_objKeepAliveMonitor.UnResponsive -= _objKeepAliveMonitor_UnResponsive;
 
@@ -85,9 +96,6 @@ namespace Mitto.Connection.Websocket.Server {
 			_colQueue.Add(pData);
 		}
 
-		/// <summary>
-		/// ToDo: test vs SendAsync
-		/// </summary>
 		private void StartTransmitQueue() {
             _colQueue = new BlockingCollection<byte[]>();
             _objCancelationToken = _objCancelationSource.Token;
@@ -99,9 +107,10 @@ namespace Mitto.Connection.Websocket.Server {
                 while (!_objCancelationSource.IsCancellationRequested) {
                     try {
 						var arrData = _colQueue.Take(_objCancelationToken);
+						Log.Error("Sending data on {ID}");
 						_objClient.Send(arrData);
                     } catch (Exception ex) {
-                        //Log.Error("Failed sending data, closing connection: " + ex.Message);
+                        Log.Error("Failed sending data, closing connection: " + ex.Message);
                     }
                 }
 				_colQueue.Dispose(); // -- thread is exiting, clean up the collection

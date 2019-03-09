@@ -1,4 +1,5 @@
 ﻿using Mitto.IConnection;
+using Mitto.ILogging;
 using Mitto.Utilities;
 using System;
 using System.Collections.Concurrent;
@@ -13,6 +14,7 @@ using WebSocketSharp;
 /// </summary>
 namespace Mitto.Connection.Websocket.Client {
 	public class WebsocketClient : IClient {
+		private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		private IWebSocketClient _objWebSocketClient;
 		private IKeepAliveMonitor _objKeepAliveMonitor;
 
@@ -38,8 +40,10 @@ namespace Mitto.Connection.Websocket.Client {
 		#region Constructor & Connecting
 		public void ConnectAsync(IClientParams pParams) {
 			if (!(pParams is ClientParams objParams)) {
+				Log.Error("Incorrect parameters for Websocket client");
 				throw new Exception("Incorrect parameters for Websocket client");
 			}
+			Log.Info($"Connecting {ID} to {objParams.Hostname}:{objParams.Port}");
 
 			_objWebSocketClient.ConnectionTimeoutSeconds = objParams.ConnectionTimeoutSeconds;
 			_objKeepAliveMonitor.SetInterval(objParams.ConnectionTimeoutSeconds);
@@ -53,6 +57,7 @@ namespace Mitto.Connection.Websocket.Client {
 		}
 
 		private void Close() {
+			Log.Info($"Closing connection: {ID}");
 			_objKeepAliveMonitor.TimeOut -= _objKeepAliveMonitor_TimeOut;
 			_objKeepAliveMonitor.UnResponsive -= _objKeepAliveMonitor_UnResponsive;
 
@@ -69,19 +74,24 @@ namespace Mitto.Connection.Websocket.Client {
 		}
 
 		private void _objKeepAliveMonitor_TimeOut(object sender, EventArgs e) {
+			Log.Debug($"Connection timeout: {ID}, pinging...");
 			_objKeepAliveMonitor.StartCountDown();
 			if (_objWebSocketClient.Ping()) {
 				_objKeepAliveMonitor.Reset();
+				Log.Debug($"pong received: {ID}");
 			}
 		}
 
 		private void _objKeepAliveMonitor_UnResponsive(object sender, EventArgs e) {
+			Log.Info($"Connection {ID} lost, closing...");
 			this.Disconnect();
 		}
 		#endregion
 
 		#region Websocket Event Handlers
 		private void Connection_OnOpen(object sender, EventArgs e) {
+			Log.Info($"Connection {ID} connected");
+
 			//Start the sending queue before we raise the event
 			//The thread must be running before we say the client is 'connected(ready)'
 			StartTransmitQueue();
@@ -90,16 +100,19 @@ namespace Mitto.Connection.Websocket.Client {
 		}
 
 		private void Connection_OnError(object sender, IErrorEventArgs e) {
+			Log.Error($"Connection error for {ID}: {e.Message}");
 			this.Close();
 			Disconnected?.Invoke(this, new EventArgs());
 		}
 
 		private void Connection_OnClose(object sender, ICloseEventArgs e) {
+			Log.Info($"Connection {ID} closed");
 			this.Close();
 			Disconnected?.Invoke(this, new EventArgs());
 		}
 
 		private void Connection_OnMessage(object sender, IMessageEventArgs e) {
+			Log.Debug($"Data received on {ID}");
 			_objKeepAliveMonitor.Reset();
 			if (e.IsText) {
 				var data = System.Text.Encoding.UTF32.GetBytes(e.Data);
@@ -139,9 +152,10 @@ namespace Mitto.Connection.Websocket.Client {
 				while (!_objCancelationSource.IsCancellationRequested) {
 					try {
 						var arrData = _colQueue.Take(_objCancelationToken);
+						Log.Debug($"Sending Data on {ID}");
 						_objWebSocketClient.Send(arrData);
-					} catch (Exception) {
-						//Log.Error("Failed sending data, closing connection: " + ex.Message);
+					} catch (Exception ex) {
+						Log.Error($"Failed sending data, closing connection: {ex.Message}");
 					}
 				}
 			}) {

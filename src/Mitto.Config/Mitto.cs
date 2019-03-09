@@ -1,7 +1,9 @@
 ﻿using Mitto.Connection.Websocket;
 using Mitto.IConnection;
+using Mitto.ILogging;
 using Mitto.IMessaging;
 using Mitto.IQueue;
+using Mitto.Logging;
 using Mitto.Messaging;
 using Mitto.Messaging.Json;
 using Mitto.Queue.PassThrough;
@@ -18,6 +20,7 @@ namespace Mitto {
 		/// </summary>
 		/// <param name="pConfig"></param>
 		public static void Initialize(ConfigParams pConfig) {
+			LogFactory.Initialize(pConfig.LogProvider);
 			QueueFactory.Initialize(pConfig.QueueProvider);
 			ConnectionFactory.Initialize(pConfig.ConnectionProvider);
 			MessagingFactory.Initialize(pConfig.MessageProvider, pConfig.MessageConverter, pConfig.MessageProcessor);
@@ -33,6 +36,7 @@ namespace Mitto {
 		/// - Standard way of processing messages
 		/// </summary>
 		public class ConfigParams {
+			public ILogProvider LogProvider { get; set; } = new LogProvider();
 			public IQueueProvider QueueProvider { get; set; } = new QueueProvider();
 			public IConnectionProvider ConnectionProvider { get; set; } = new WebSocketConnectionProvider();
 			public IMessageConverter MessageConverter { get; set; } = new MessageConverter();

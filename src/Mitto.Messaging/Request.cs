@@ -1,10 +1,13 @@
-﻿using Mitto.IMessaging;
+﻿using Mitto.ILogging;
+using Mitto.IMessaging;
 using Mitto.Utilities;
 using System;
 using System.Threading.Tasks;
 
 namespace Mitto.Messaging {
 	internal class Request<T> : IRequest where T : IResponseMessage {
+		private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
 		private Delegate _objAction;
 		private IClient _objClient;
 		private IKeepAliveMonitor _objKeepAliveMonitor;
@@ -13,15 +16,9 @@ namespace Mitto.Messaging {
 
 		public IRequestMessage Message { get; private set; }
 
+		public Request(IClient pClient, IRequestMessage pMessage, Action<T> pCallback) : this(pClient, pMessage, pCallback, new KeepAliveMonitor(30)) { }
+
 		public Request(IClient pClient, IRequestMessage pMessage, Action<T> pCallback, IKeepAliveMonitor pKeepAliveMonitor) {
-			init(pClient, pMessage, pCallback, pKeepAliveMonitor);
-		}
-
-		public Request(IClient pClient, IRequestMessage pMessage, Action<T> pCallback) {
-			init(pClient, pMessage, pCallback, new KeepAliveMonitor(30));
-		}
-
-		private void init(IClient pClient, IRequestMessage pMessage, Action<T> pCallback, IKeepAliveMonitor pKeepAliveMonitor) {
 			_objClient = pClient;
 			Message = pMessage;
 			_objAction = pCallback;
@@ -29,14 +26,18 @@ namespace Mitto.Messaging {
 
 			_objKeepAliveMonitor.TimeOut += _objKeepAliveMonitor_TimeOut;
 			_objKeepAliveMonitor.UnResponsive += _objKeepAliveMonitor_UnResponsive;
+
+			Log.Info($"Creating new request: {Message.ID}({Message.Name})");
 		}
 
 		private void _objKeepAliveMonitor_UnResponsive(object sender, EventArgs e) {
 			_objKeepAliveMonitor.Stop();
 			RequestTimedOut?.Invoke(sender, this);
+			Log.Info($"Request {Message.ID}({Message.Name}) unresponsive, cleaning up...");
 		}
 
 		private void _objKeepAliveMonitor_TimeOut(object sender, EventArgs e) {
+			Log.Info($"Request {Message.ID}({Message.Name}) timed out, checking status...");
 			_objKeepAliveMonitor.StartCountDown();
 
 			_objClient.Request<Response.MessageStatusResponse>(new Request.MessageStatusRequest(Message.ID), (r => {
@@ -45,11 +46,13 @@ namespace Mitto.Messaging {
 					r.RequestStatus == MessageStatusType.Queued
 				) {
 					_objKeepAliveMonitor.Reset();
+					Log.Info($"Request {Message.ID}({Message.Name}) still alive, resetting timer");
 				}
 			}));
 		}
 
 		public void Transmit() {
+			Log.Info($"Sending request {Message.ID}({Message.Name}) still alive, resetting timer");
 			_objClient.Transmit(Message);
 			_objKeepAliveMonitor.Start();
 
@@ -60,6 +63,7 @@ namespace Mitto.Messaging {
 			_objKeepAliveMonitor.UnResponsive -= _objKeepAliveMonitor_UnResponsive;
 
 			Task.Run(() => {
+				Log.Info($"Response received for {Message.ID}({Message.Name})");
 				_objAction.DynamicInvoke(pResponse);
 			});
 		}

@@ -9,6 +9,11 @@ using System.Linq;
 namespace Mitto.Connection.Websocket.Tests.Server {
 	[TestFixture]
 	public class ClientTests {
+		[SetUp]
+		public void SetUp() {
+			Config.Initialize();
+		}
+
 		/// <summary>
 		/// Tests the timeout event for the kepalive monitor
 		/// This means that when the TimeOut event is called from the IKeepAliveMonitor class

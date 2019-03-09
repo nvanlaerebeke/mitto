@@ -1,4 +1,5 @@
-﻿using Mitto.IMessaging;
+﻿using Mitto.ILogging;
+using Mitto.IMessaging;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 
@@ -16,7 +17,7 @@ namespace Mitto.Messaging {
 	/// For message types where we do not care about waiting for a response we return right away
 	///</summary>
 	internal class RequestManager : IRequestManager {
-        ConcurrentDictionary<string, IRequest> Requests = new ConcurrentDictionary<string, IRequest>();
+		private ConcurrentDictionary<string, IRequest> Requests = new ConcurrentDictionary<string, IRequest>();
 
 		public void Request<T>(IRequest pRequest) where T : IResponseMessage {
 			if (Requests.TryAdd(pRequest.Message.ID, pRequest)) {

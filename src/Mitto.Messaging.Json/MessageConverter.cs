@@ -1,4 +1,5 @@
-﻿using Mitto.IMessaging;
+﻿using Mitto.ILogging;
+using Mitto.IMessaging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
 using System;

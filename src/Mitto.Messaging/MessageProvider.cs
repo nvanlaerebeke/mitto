@@ -1,4 +1,5 @@
-﻿using Mitto.IMessaging;
+﻿using Mitto.ILogging;
+using Mitto.IMessaging;
 using Mitto.Messaging.Response;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,9 @@ namespace Mitto.Messaging {
 	///     
 	/// </summary>
 	public class MessageProvider : IMessageProvider {
+		private ILog Log {
+			get { return LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType); }
+		}
 
 		/// <summary>
 		/// The available IMessage classes
@@ -150,6 +154,7 @@ namespace Mitto.Messaging {
 			if (pType.IsAbstract || !pType.GetInterfaces().Contains(typeof(IMessage))) { return; }
 
 			var strName = pType.Name;
+			//Log.Info($"Detected message {pMessageType.ToString()} '{strName}'");
 			if (!Types.ContainsKey(pMessageType)) {
 				Types.Add(pMessageType, new Dictionary<string, Type> { { strName, pType } });
 			} else {
@@ -197,14 +202,17 @@ namespace Mitto.Messaging {
 				Type objResponseType = (tmpType.GenericTypeArguments.Length > 1) ? tmpType.GenericTypeArguments[1] : null;
 
 				if (objResponseType != null) {
+					//Log.Info($"Detected response message '{objRequestType.Name}'");
 					ResponseMessageTranslation.Add(objRequestType.Name, objResponseType);
 				}
 
 				if (objRequestType.IsInterface || objRequestType.IsAbstract) {
+					//Log.Error($"Unsupported request type {objRequestType.FullName}, must be a class that an be instantiated");
 					throw new Exception($"Unsupported request type {objRequestType.FullName}, must be a class that an be instantiated");
 				}
 
 				//Add the Action to the list for easy access when receiving Request X and needing the Action Y
+				//Log.Info($"Detected action type {pMessageType.ToString()} '{objRequestType.Name}'");
 				if (!Actions.ContainsKey(pMessageType)) {
 					Actions.Add(pMessageType, new Dictionary<string, Type> { { objRequestType.Name, pType } });
 				} else {
@@ -220,8 +228,6 @@ namespace Mitto.Messaging {
 		/// <summary>
 		/// Adds a subscription handler of type pType to the provider list
 		/// Overwrites any existing type present for that name
-		/// 
-		/// ToDo: add an interface like IAction 
 		/// </summary>
 		/// <param name="pName"></param>
 		/// <param name="pType"></param>

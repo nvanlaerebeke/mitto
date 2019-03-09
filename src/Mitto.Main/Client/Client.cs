@@ -17,6 +17,7 @@ namespace Mitto {
 	/// 
 	/// </summary>
 	public class Client : IQueue.IQueue {
+
 		public event EventHandler<Client> Connected;
 		public event EventHandler<Client> Disconnected;
 
