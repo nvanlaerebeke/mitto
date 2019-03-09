@@ -1,11 +1,8 @@
 ﻿using Mitto.IMessaging;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Security.Cryptography;
 
 namespace Mitto.Messaging {
-    public abstract class Message : IMessage{
+	public abstract class Message : IMessage{
         public MessageType Type { get; private set; }
 
         #region Constructors

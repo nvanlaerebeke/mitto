@@ -1,8 +1,6 @@
 ToDo's before v1:
 
 - Fix rabbitmq + write tests for it
-- Add logging
-- add timetstamps to requests & responses
 
 After v1:
 

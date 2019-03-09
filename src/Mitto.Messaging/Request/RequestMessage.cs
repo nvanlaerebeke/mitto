@@ -3,7 +3,8 @@ using System;
 
 namespace Mitto.Messaging {
 	public abstract class RequestMessage : Message, IRequestMessage {
-		public RequestMessage() : base(MessageType.Request, Guid.NewGuid().ToString()) { }
+		public DateTime StartTime { get; set; } = DateTime.Now;
+		public RequestMessage() : this(MessageType.Request) { }
 		public RequestMessage(MessageType pType) : base(pType, Guid.NewGuid().ToString()) { }
 	}
 }

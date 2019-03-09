@@ -63,7 +63,20 @@ namespace Mitto.Messaging {
 			_objKeepAliveMonitor.UnResponsive -= _objKeepAliveMonitor_UnResponsive;
 
 			Task.Run(() => {
-				Log.Info($"Response received for {Message.ID}({Message.Name})");
+				var objSpan = (pResponse.EndTime - pResponse.StartTime);
+
+				Log.Info(
+					String.Format("Response received for {0} took {1}",
+						$"{Message.ID}({Message.Name})",
+						String.Format(
+							"{0}:{1}:{2}.{3}",
+							$"{objSpan.Hours.ToString().PadLeft(2, '0')}",
+							$"{objSpan.Minutes.ToString().PadLeft(2, '0')}",
+							$"{objSpan.Seconds.ToString().PadLeft(2, '0')}",
+							$"{objSpan.Milliseconds.ToString().PadLeft(4, '0')}"
+						)
+					)
+				);
 				_objAction.DynamicInvoke(pResponse);
 			});
 		}
