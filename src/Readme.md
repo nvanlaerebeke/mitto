@@ -1,29 +1,20 @@
-ToDo's before v1:
-
-- Add the ability to call connectasync on a disconnected client, now a new client is required
-
-- Improve IQueue name, rename it to 
-	- Mitto.IRouting
-	- Mitto.Routing.PassThrough
-	- Mitto.Routing.RabbitMQ.Publisher
-	- Mitto.Routing.RabbitMQ.Consumer
-	
-- go over tests and create missing tests
-
-- Fix rabbitmq + write tests for it
-
-- go over the comments in the code - add/improve/fix them where needed
-
-- create basic documentation about how to use Mitto
-	How to use each component and how to create a custom one
-	
-- create detailed internal documentation how the Mitto internals work
-
-After v1:
+Minimum ToDo's:
+	- Fix rabbitmq + write tests for it
+	- Add the ability to call connectasync on a disconnected client, now a new client is required
+	- Make router a generic class of IRouter<F> where F is the Frame type that implements IFrame
+	  This is for defining how the data is represented internally, example when using RabbitMQ vs PassThrough vs ...
+	  The frame type will be used in the Transmit method, where the parameter is the frame instead of the byte[]
+	  Reason for this is that sometimes more information is needed then just the byte[], example for rabbitmq the 
+	  Queue to put the data on.
 
 Improvements:
-- Autoscale ThreadPool.MinThreads so the application ThreadPool autoscales in time
-- don't allow  names where the byte[] for the strings > 255, this will cause exceptions
+	- Autoscale ThreadPool.MinThreads so the application ThreadPool autoscales in time
+	- don't allow  names where the byte[] for the strings > 255, this will cause exceptions
+
+Documentation:
+	- go over the comments in the code - add/improve/fix them where needed
+	- create basic documentation about how to use Mitto, how to use each component and how to create a custom one
+	- create detailed internal documentation how the Mitto internals work
 
 Benchmarking:
     For each benchmark this means memory, cpu and time so it can be easily graphed
@@ -49,6 +40,7 @@ Features:
   - Kafka?
 
 Testing:
+	- go over tests and create missing tests
 	- Unicode/UTF-32 tests for parts where were interact with text
 	- Json messages
 		- Message names

@@ -34,6 +34,7 @@ namespace Mitto.Main.Tests.Server {
 
 			//Assert
 			objConnection.Received(1).Disconnected -= Arg.Any<EventHandler>();
+			objRouter.Received(1).Close();
 			objHandler.Received(1).Invoke(Arg.Is(obj), Arg.Is(obj));
 		}
 

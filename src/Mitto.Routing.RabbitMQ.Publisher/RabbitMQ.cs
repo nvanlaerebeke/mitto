@@ -1,49 +1,52 @@
-﻿using System;
+﻿using Mitto.IMessaging;
+using Mitto.IRouting;
+using System.Linq;
 
 namespace Mitto.Routing.RabbitMQ.Publisher {
 	/// <summary>
-	/// RabbitMQ Message Handler
-	/// Used for handling the messages by a separate process by using RabbitMQ
+	/// RabbitMQ Router
+	/// Used for publishing byte[] on a queue so a publisher can handle the processing of the data
 	/// 
-	/// Ideal for enterprice deployments where scalability and high availability is key
+	/// Ideal for deployments where scalability and high availability is key
 	/// 
-	/// Messages passed over the connection are put on the main MittoMain queue
+	/// Data received from the IConnection is put on the main queue while
+	/// the Queue will listen on the IConnection.ID queue for any data 
+	/// that needs to be forwarded to the IConnection
 	/// </summary>
-	public class RabbitMQ : RabbitMQBase {
+	public class RabbitMQ : IRouter {
+		private RequestManager RequestManager;
+		private IConnection.IClient Connection { get; set; }
+		private Queue Queue { get; set; }
 
-		/// <summary>
-		/// Publisher Queue that's a layer between the Client connection and internal message handler
-		/// Writes to the main Rabbit queue and reads from a queue specific for this queue
-		/// Reason for making sure the reader queue is specific is because client connections
-		/// are not known by the other Publishers
-		/// </summary>
-		public RabbitMQ() : base(Guid.NewGuid().ToString()) { }
+		public RabbitMQ(IConnection.IClient pConnection) {
+			RequestManager = new RequestManager();
 
-		/// <summary>
-		/// Triggered when Receiving a new byte[] message from the Consumer 
-		/// This is data gotten from the Consumers in the form of a RabbitMQDataMessage that contains:
-		///     - Sender Queue: the worker name
-		///     - ClientID: client connection we need to send the response to
-		///     - Data: byte[] that represents the response
-		///     
-		/// </summary>
-		/// <param name="pMessage">The Message received here is from the Consumers, the byte array is a RabbitMQDataMessage packet</param>
-		public override void Receive(byte[] pData) {
-			RabbitMQDataMessage objMessage = new RabbitMQDataMessage(pData);
+			Connection = pConnection;
+			Connection.Rx += Connection_Rx;
+
+			Queue = new Queue("MittoMain", Connection.ID);
+			Queue.Rx += Queue_Rx;
 		}
 
-		/// <summary>
-		/// Here we put any data we received from the connection on the queue to be 
-		/// handled by a Consumer
-		/// </summary>
-		/// <param name="pMessage"></param>
-		public override void Transmit(byte[] data) {
-			//Repack the byte array as a rabbitmqdata message so we know the client id in the consumer.
-			//RabbitMQDataMessage objMessage = new RabbitMQDataMessage(this.ReadQueue, pMessage.ClientID, pMessage.Data);
+		private void Queue_Rx(object sender, Frame e) {
+			Transmit(e.Data);
+		}
 
-			//Send the byte array to the MittoMain queue - this is the main processing queue for the application
-			//all workers read from this queue and know to what queue to respond because it's part of the RabbitMQDataMessage
-			//AddToTxQueue(new Message(Config.MainQueue, objMessage.GetBytes()));
+		private void Connection_Rx(object sender, byte[] e) {
+			if(((MessageType)e.ElementAt(0)) == MessageType.Response) {
+				RequestManager.SetResponse(MessagingFactory.Provider.GetMessage(e) as IResponseMessage);
+			} else {
+				Queue.Transmit(new Frame(e));
+			}
+		}
+
+		public void Transmit(byte[] pData) {
+			Connection.Transmit(pData);
+		}
+
+		public void Close() {
+			Queue.Close();
+			Connection.Rx -= Connection_Rx;
 		}
 	}
 }

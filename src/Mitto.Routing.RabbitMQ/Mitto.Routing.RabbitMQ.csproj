@@ -38,9 +38,8 @@
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Config.cs" />
-    <Compile Include="RabbitMQBase.cs" />
-    <Compile Include="RabbitMQDataMessage.cs" />
-    <Compile Include="RabbitMQMessage.cs" />
+    <Compile Include="Frame.cs" />
+    <Compile Include="Queue.cs" />
     <Compile Include="RabbitMQMessageFormat.cs" />
   </ItemGroup>
   <ItemGroup>

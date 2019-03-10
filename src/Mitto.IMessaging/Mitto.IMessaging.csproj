@@ -37,8 +37,10 @@
     <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Frame.cs" />
     <Compile Include="IAction.cs" />
     <Compile Include="IClient.cs" />
+    <Compile Include="IFrame.cs" />
     <Compile Include="IRequestMessage.cs" />
     <Compile Include="IMessage.cs" />
     <Compile Include="IMessageProcessor.cs" />

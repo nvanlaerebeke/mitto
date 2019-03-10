@@ -24,6 +24,7 @@ namespace Mitto {
 
 		private void Connection_Disconnected(object sender, EventArgs e) {
 			Connection.Disconnected -= Connection_Disconnected;
+			Router.Close();
 			Disconnected?.Invoke(this, this);
 		}
 	}

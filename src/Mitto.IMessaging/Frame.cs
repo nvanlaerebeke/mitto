@@ -1,10 +1,7 @@
-﻿using Mitto.IMessaging;
-using System;
+﻿using System;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Mitto.Messaging.Json.Tests")]
-namespace Mitto.Messaging {
+namespace Mitto.IMessaging {
 	/// <summary>
 	/// Encapsulates and provides information about the data being transmitted
 	/// 
@@ -15,7 +12,7 @@ namespace Mitto.Messaging {
 	/// ----------------------------------------------------------------------------------------
 	/// 
 	/// </summary>
-	internal class Frame : IFrame {
+	public class Frame : IFrame {
 		private byte[] _arrByteArray;
 		public Frame(byte[] pData) {
 			_arrByteArray = pData;
