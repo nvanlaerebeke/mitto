@@ -97,9 +97,9 @@
       <Project>{3bb1c211-9006-4fee-9f40-7556717431b0}</Project>
       <Name>Mitto.IMessaging</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mitto.IQueue\Mitto.IQueue.csproj">
+    <ProjectReference Include="..\Mitto.IRouting\Mitto.IRouting.csproj">
       <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
-      <Name>Mitto.IQueue</Name>
+      <Name>Mitto.IRouting</Name>
     </ProjectReference>
     <ProjectReference Include="..\Mitto.Messaging\Mitto.Messaging.csproj">
       <Project>{c29037e3-9c2f-4996-8434-36600735d465}</Project>

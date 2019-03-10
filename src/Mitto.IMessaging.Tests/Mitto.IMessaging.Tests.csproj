@@ -40,9 +40,9 @@
     <Compile Include="MessagingFactoryTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Mitto.IQueue\Mitto.IQueue.csproj">
+    <ProjectReference Include="..\Mitto.IRouting\Mitto.IRouting.csproj">
       <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
-      <Name>Mitto.IQueue</Name>
+      <Name>Mitto.IRouting</Name>
     </ProjectReference>
     <ProjectReference Include="..\Mitto.IMessaging\Mitto.IMessaging.csproj">
       <Project>{3bb1c211-9006-4fee-9f40-7556717431b0}</Project>

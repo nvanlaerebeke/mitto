@@ -152,7 +152,6 @@ namespace Mitto.Connection.Websocket.Client {
 				while (!_objCancelationSource.IsCancellationRequested) {
 					try {
 						var arrData = _colQueue.Take(_objCancelationToken);
-						Log.Debug($"Sending Data on {ID}");
 						_objWebSocketClient.Send(arrData);
 					} catch (Exception ex) {
 						Log.Error($"Failed sending data, closing connection: {ex.Message}");

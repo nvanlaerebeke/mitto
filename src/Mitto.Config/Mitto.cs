@@ -2,11 +2,11 @@
 using Mitto.IConnection;
 using Mitto.ILogging;
 using Mitto.IMessaging;
-using Mitto.IQueue;
+using Mitto.IRouting;
 using Mitto.Logging;
 using Mitto.Messaging;
 using Mitto.Messaging.Json;
-using Mitto.Queue.PassThrough;
+using Mitto.Routing.PassThrough;
 
 namespace Mitto {
 	public static class Config {
@@ -21,7 +21,7 @@ namespace Mitto {
 		/// <param name="pConfig"></param>
 		public static void Initialize(ConfigParams pConfig) {
 			LogFactory.Initialize(pConfig.LogProvider);
-			QueueFactory.Initialize(pConfig.QueueProvider);
+			RouterFactory.Initialize(pConfig.RouterProvider);
 			ConnectionFactory.Initialize(pConfig.ConnectionProvider);
 			MessagingFactory.Initialize(pConfig.MessageProvider, pConfig.MessageConverter, pConfig.MessageProcessor);
 		}
@@ -37,7 +37,7 @@ namespace Mitto {
 		/// </summary>
 		public class ConfigParams {
 			public ILogProvider LogProvider { get; set; } = new LogProvider();
-			public IQueueProvider QueueProvider { get; set; } = new QueueProvider();
+			public IRouterProvider RouterProvider { get; set; } = new RouterProvider();
 			public IConnectionProvider ConnectionProvider { get; set; } = new WebSocketConnectionProvider();
 			public IMessageConverter MessageConverter { get; set; } = new MessageConverter();
 			public IMessageProvider MessageProvider { get; set; } = new MessageProvider();

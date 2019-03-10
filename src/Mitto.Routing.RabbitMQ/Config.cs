@@ -1,4 +1,4 @@
-﻿namespace Mitto.Queue.RabbitMQ {
+﻿namespace Mitto.Routing.RabbitMQ {
 	public class Config {
 		public string Host { get; set; } = "localhost";
 		public string MainQueue { get; set; } = "MittoMain";

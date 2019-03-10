@@ -53,11 +53,10 @@
     <Compile Include="ResponseStatus.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Mitto.IQueue\Mitto.IQueue.csproj">
+    <ProjectReference Include="..\Mitto.IRouting\Mitto.IRouting.csproj">
       <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
-      <Name>Mitto.IQueue</Name>
+      <Name>Mitto.IRouting</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

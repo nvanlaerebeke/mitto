@@ -1,13 +1,17 @@
-﻿using Mitto.IQueue;
+﻿using Mitto.ILogging;
+using Mitto.IRouting;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace Mitto.Queue.RabbitMQ {
-	public abstract class RabbitMQBase : IQueue.IQueue {
-		public abstract void Receive(Message pMessage);
+namespace Mitto.Routing.RabbitMQ {
+	public abstract class RabbitMQBase : IRouter {
+		protected readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+		public abstract void Transmit(byte[] pMessage);
+		public abstract void Receive(byte[] pMessage);
 
 		private BlockingCollection<Message> _colRxQueue = new BlockingCollection<Message>();
 		private BlockingCollection<Message> _colTxQueue = new BlockingCollection<Message>();
@@ -16,6 +20,8 @@ namespace Mitto.Queue.RabbitMQ {
 		private CancellationToken _objCancelationToken;
 
 		protected string ReadQueue { get; set; }
+
+		public string ID { get; } = Guid.NewGuid().ToString();
 
 		public RabbitMQBase(string pReadQueue) {
 			ReadQueue = pReadQueue;
@@ -26,16 +32,19 @@ namespace Mitto.Queue.RabbitMQ {
 			StartRxQueue();
 		}
 
-
 		#region Configuration
 		protected static Config Config;
+
+		public event EventHandler<byte[]> Rx;
+
 		public static void SetConfig(Config pConfig) {
 			Config = pConfig;
 		}
 		#endregion
 
+
 		#region Rx
-		public abstract event DataHandler Rx;
+		
 		private void StartRxQueue() {
 			new Thread(() => {
 				var factory = new ConnectionFactory() { HostName = Config.Host };
@@ -48,7 +57,7 @@ namespace Mitto.Queue.RabbitMQ {
 				var consumer = new EventingBasicConsumer(channel);
 				consumer.Received += (model, ea) => {
 					var obj = new Message(ReadQueue, ea.Body);
-					Receive(obj);
+					Receive(obj.Data);
 				};
 				channel.BasicConsume(queue: ReadQueue, autoAck: true, consumer: consumer);
 			}).Start();
@@ -56,11 +65,7 @@ namespace Mitto.Queue.RabbitMQ {
 		#endregion
 
 		#region Tx
-		/// <summary>
-		/// Transmit data from Client -> Message Handler (Tx)
-		/// </summary>
-		/// <param name="pMessage"></param>
-		public abstract void Transmit(Message pMessage);
+
 
 		protected void AddToTxQueue(Message pMessage) {
 			_colTxQueue.Add(pMessage);
@@ -83,7 +88,7 @@ namespace Mitto.Queue.RabbitMQ {
 									body: objMessage.Data
 								);
 							} catch (Exception ex) {
-								//Log.Error("Failed sending data, closing connection: " + ex.Message);
+								Log.Error($"Failed sending data, closing connection: {ex.Message}");
 							}
 						}
 					}
@@ -91,6 +96,10 @@ namespace Mitto.Queue.RabbitMQ {
 			}) {
 				IsBackground = true
 			}.Start();
+		}
+
+		public void Close() {
+			throw new NotImplementedException();
 		}
 		#endregion
 	}

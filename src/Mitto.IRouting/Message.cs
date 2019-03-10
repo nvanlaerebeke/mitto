@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace Mitto.IQueue {
+namespace Mitto.IRouting {
 	public class Message : System.IEquatable<Message> {
 		/// <summary>
 		/// Represends where the data is being sent to

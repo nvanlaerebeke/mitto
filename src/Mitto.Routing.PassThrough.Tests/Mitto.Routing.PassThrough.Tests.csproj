@@ -7,8 +7,8 @@
     <ProjectGuid>{8EDF4429-251A-416D-BB68-93F227191BCF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Mitto.Queue.PassThrough.Tests</RootNamespace>
-    <AssemblyName>Mitto.Queue.PassThrough.Tests</AssemblyName>
+    <RootNamespace>Mitto.Routing.PassThrough.Tests</RootNamespace>
+    <AssemblyName>Mitto.Routing.PassThrough.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -37,25 +37,28 @@
     <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="InternalQueueTests.cs" />
-    <Compile Include="PassthroughTests.cs" />
+    <Compile Include="PassthroughRouterTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mitto.Config\Mitto.Config.csproj">
       <Project>{e3e0d40d-99ac-4ed4-9e64-19cdc10813b0}</Project>
       <Name>Mitto.Config</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Mitto.IConnection\Mitto.IConnection.csproj">
+      <Project>{aaf65eba-e48d-491a-ad2e-525bde11ec6f}</Project>
+      <Name>Mitto.IConnection</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Mitto.IMessaging\Mitto.IMessaging.csproj">
       <Project>{3bb1c211-9006-4fee-9f40-7556717431b0}</Project>
       <Name>Mitto.IMessaging</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mitto.IQueue\Mitto.IQueue.csproj">
+    <ProjectReference Include="..\Mitto.IRouting\Mitto.IRouting.csproj">
       <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
-      <Name>Mitto.IQueue</Name>
+      <Name>Mitto.IRouting</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mitto.Queue.PassThrough\Mitto.Queue.PassThrough.csproj">
+    <ProjectReference Include="..\Mitto.Routing.PassThrough\Mitto.Routing.PassThrough.csproj">
       <Project>{ce5f0847-f8b5-4b95-8e86-e007fcdc92a3}</Project>
-      <Name>Mitto.Queue.PassThrough</Name>
+      <Name>Mitto.Routing.PassThrough</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,6 @@
-﻿using Mitto.IQueue;
-using System;
+﻿using System;
 
-namespace Mitto.Queue.RabbitMQ.Publisher {
+namespace Mitto.Routing.RabbitMQ.Publisher {
 	/// <summary>
 	/// RabbitMQ Message Handler
 	/// Used for handling the messages by a separate process by using RabbitMQ
@@ -11,7 +10,6 @@ namespace Mitto.Queue.RabbitMQ.Publisher {
 	/// Messages passed over the connection are put on the main MittoMain queue
 	/// </summary>
 	public class RabbitMQ : RabbitMQBase {
-		public override event DataHandler Rx;
 
 		/// <summary>
 		/// Publisher Queue that's a layer between the Client connection and internal message handler
@@ -30,9 +28,8 @@ namespace Mitto.Queue.RabbitMQ.Publisher {
 		///     
 		/// </summary>
 		/// <param name="pMessage">The Message received here is from the Consumers, the byte array is a RabbitMQDataMessage packet</param>
-		public override void Receive(Message pMessage) {
-			RabbitMQDataMessage objMessage = new RabbitMQDataMessage(pMessage.Data);
-			Rx?.Invoke(new Message(objMessage.ClientID, objMessage.Data)); // -- in the packet we can find the client id 
+		public override void Receive(byte[] pData) {
+			RabbitMQDataMessage objMessage = new RabbitMQDataMessage(pData);
 		}
 
 		/// <summary>
@@ -40,13 +37,13 @@ namespace Mitto.Queue.RabbitMQ.Publisher {
 		/// handled by a Consumer
 		/// </summary>
 		/// <param name="pMessage"></param>
-		public override void Transmit(Message pMessage) {
+		public override void Transmit(byte[] data) {
 			//Repack the byte array as a rabbitmqdata message so we know the client id in the consumer.
-			RabbitMQDataMessage objMessage = new RabbitMQDataMessage(this.ReadQueue, pMessage.ClientID, pMessage.Data);
+			//RabbitMQDataMessage objMessage = new RabbitMQDataMessage(this.ReadQueue, pMessage.ClientID, pMessage.Data);
 
 			//Send the byte array to the MittoMain queue - this is the main processing queue for the application
 			//all workers read from this queue and know to what queue to respond because it's part of the RabbitMQDataMessage
-			AddToTxQueue(new Message(Config.MainQueue, objMessage.GetBytes()));
+			//AddToTxQueue(new Message(Config.MainQueue, objMessage.GetBytes()));
 		}
 	}
 }

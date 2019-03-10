@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D4558880-23EF-40E4-8E13-402D8A61A1E7}</ProjectGuid>
+    <ProjectGuid>{3CB0E6C9-133E-49D7-A393-4FCC9DDEB72B}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Mitto.Queue.RabbitMQ.Publisher</RootNamespace>
-    <AssemblyName>Mitto.Queue.RabbitMQ.Publisher</AssemblyName>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Mitto.Routing.RabbitMQ</RootNamespace>
+    <AssemblyName>Mitto.Routing.RabbitMQ</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,16 +22,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -42,16 +37,20 @@
     <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="RabbitMQ.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="RabbitMQBase.cs" />
+    <Compile Include="RabbitMQDataMessage.cs" />
+    <Compile Include="RabbitMQMessage.cs" />
+    <Compile Include="RabbitMQMessageFormat.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Mitto.IQueue\Mitto.IQueue.csproj">
-      <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
-      <Name>Mitto.IQueue</Name>
+    <ProjectReference Include="..\Mitto.ILogging\Mitto.ILogging.csproj">
+      <Project>{30f11e8a-a8d2-48c7-9d86-d5d007a47609}</Project>
+      <Name>Mitto.ILogging</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mitto.Queue.RabbitMQ\Mitto.Queue.RabbitMQ.csproj">
-      <Project>{3cb0e6c9-133e-49d7-a393-4fcc9ddeb72b}</Project>
-      <Name>Mitto.Queue.RabbitMQ</Name>
+    <ProjectReference Include="..\Mitto.IRouting\Mitto.IRouting.csproj">
+      <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
+      <Name>Mitto.IRouting</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

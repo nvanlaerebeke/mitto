@@ -1,5 +1,6 @@
 ﻿using Mitto.ILogging;
 using Mitto.IMessaging;
+using Mitto.IRouting;
 using System;
 using System.Runtime.CompilerServices;
 
@@ -51,12 +52,12 @@ namespace Mitto.Messaging {
 		/// </summary>
 		/// <param name="pClient"></param>
 		/// <param name="pData"></param>
-		public void Process(IQueue.IQueue pClient, byte[] pData) {
+		public void Process(IRouter pClient, byte[] pData) {
 			IMessage objMessage = MessagingFactory.Provider.GetMessage(pData);
 
 			// --- don't know what we're receiving, so skip it
 			if (objMessage == null) {
-				Log.Error($"Received unknown/corrupt message on {pClient.ID}");
+				Log.Error($"Received unknown/corrupt message");
 				return;
 			}
 
@@ -82,7 +83,7 @@ namespace Mitto.Messaging {
 		/// <param name="pClient"></param>
 		/// <param name="pMessage"></param>
 		/// <param name="pCallback"></param>
-		public void Request<T>(IQueue.IQueue pClient, IRequestMessage pMessage, Action<T> pAction) where T : IResponseMessage {
+		public void Request<T>(IRouter pClient, IRequestMessage pMessage, Action<T> pAction) where T : IResponseMessage {
 			RequestManager.Request<T>(new Request<T>(new Client(pClient, RequestManager), pMessage, pAction));
 		}
 

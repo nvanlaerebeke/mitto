@@ -1,4 +1,5 @@
 ﻿using Mitto.IMessaging;
+using Mitto.IRouting;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,12 +9,12 @@ namespace Mitto.Messaging {
 	/// Represents an easy to use interface to communicate with the IQueue.IQueue
 	/// </summary>
 	internal class Client : IClient, IEquatable<Client> {
-		public string ID { get { return Queue.ID; } } 
+		public string ID => Guid.NewGuid().ToString();
 		private IRequestManager RequestManager { get; set; }
-		private IQueue.IQueue Queue { get; set; }
+		private IRouter Router { get; set; }
 
-		public Client(IQueue.IQueue pClient, IRequestManager pRequestManager) {
-			Queue = pClient;
+		public Client(IRouter pClient, IRequestManager pRequestManager) {
+			Router = pClient;
 			RequestManager = pRequestManager;
 		}
 
@@ -75,7 +76,7 @@ namespace Mitto.Messaging {
 		/// </summary>
 		/// <param name="pMessage"></param>
 		public void Transmit(IMessage pMessage) {
-			Queue.Transmit(new Frame(
+			Router.Transmit(new Frame(
 				pMessage.Type, 
 				pMessage.Name, 
 				MessagingFactory.Converter.GetByteArray(pMessage)

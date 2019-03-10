@@ -1,16 +1,16 @@
 ﻿using NUnit.Framework;
 using NSubstitute;
 using System.Linq;
-using Mitto.IQueue;
 using Mitto.IConnection;
 using Mitto.IMessaging;
+using Mitto.IRouting;
 
 namespace Mitto.Tests {
     [TestFixture]
     public class ConfigTests {
         /// <summary>
-        /// Tests setting the QueueProvider
-        /// This means that when the Create method is called on the QueueFactory
+        /// Tests setting the RouterProvider
+        /// This means that when the Create method is called on the RouterFactory
         /// the methods will be call on the mocked provider that was passed in 
         /// the configuration
         /// 
@@ -19,17 +19,18 @@ namespace Mitto.Tests {
         [Test]
         public void ConfigQueueTest() {
             //Arrange
-            var objProvider = Substitute.For<IQueueProvider>();
+            var objProvider = Substitute.For<IRouterProvider>();
+			var objConnection = Substitute.For<IClientConnection>();
             Config.Initialize(new Config.ConfigParams() {
-                QueueProvider = objProvider
+                RouterProvider = objProvider
             });
 
             //Act
-            var objQueue = QueueFactory.Create();
+            var objRouter = RouterFactory.Create(objConnection);
 
             //Assert
-            Assert.IsInstanceOf<IQueue.IQueue>(objQueue);
-            objProvider.Received(1).Create();
+            Assert.IsInstanceOf<IRouter>(objRouter);
+            objProvider.Received(1).Create(Arg.Is(objConnection));
         }
 
         /// <summary>
@@ -99,10 +100,10 @@ namespace Mitto.Tests {
                 MessageProcessor = objProvider
             });
             //Act
-            MessagingFactory.Processor.Process(Substitute.For<IQueue.IQueue>(), new byte[] { 1, 2, 3, 4 });
+            MessagingFactory.Processor.Process(Substitute.For<IRouter>(), new byte[] { 1, 2, 3, 4 });
 
             //Assert
-            objProvider.Received(1).Process(Arg.Any<IQueue.IQueue>(), Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
+            objProvider.Received(1).Process(Arg.Any<IRouter>(), Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
         }
 
         /// <summary>

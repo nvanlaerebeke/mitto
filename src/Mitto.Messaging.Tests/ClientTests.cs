@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using NSubstitute;
 using Mitto.IMessaging;
+using Mitto.IRouting;
 
 namespace Mitto.Messaging.Tests {
 	[TestFixture]
@@ -14,7 +15,7 @@ namespace Mitto.Messaging.Tests {
 		public void RequestTest() {
 			//Arrange
 			var objRequestManager = Substitute.For<IRequestManager>();
-			var objQueue = Substitute.For<IQueue.IQueue>();
+			var objQueue = Substitute.For<IRouter>();
 			var objMessage = Substitute.For<IRequestMessage>();
 			Action<Response.ACKResponse> objAction = r => { };
 
@@ -37,7 +38,7 @@ namespace Mitto.Messaging.Tests {
 			//Arrange
 			var objConverter = Substitute.For<IMessageConverter>();
 			var objRequestManager = Substitute.For<IRequestManager>();
-			var objQueue = Substitute.For<IQueue.IQueue>();
+			var objQueue = Substitute.For<IRouter>();
 			var objMessage = Substitute.For<IMessage>();
 
 			objConverter.GetByteArray(Arg.Is(objMessage)).Returns(new byte[] { 1, 2, 3, 4, 5 });

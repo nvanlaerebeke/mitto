@@ -1,4 +1,5 @@
 ﻿using Mitto.IMessaging;
+using Mitto.IRouting;
 using NSubstitute;
 using NUnit.Framework;
 using System;
@@ -18,7 +19,7 @@ namespace Mitto.Messaging.Tests {
 			[Values(true, true, false)] bool pHasAction
 		) {
 			//Arrange
-			var objClient = Substitute.For<IQueue.IQueue>();
+			var objClient = Substitute.For<IRouter>();
 			var objProvider = Substitute.For<IMessageProvider>();
 			var objRequestManager = Substitute.For<IRequestManager>();
 			var objActionManager = Substitute.For<IActionManager>();
@@ -58,7 +59,7 @@ namespace Mitto.Messaging.Tests {
 			var objProvider = Substitute.For<IMessageProvider>();
 			var objRequestManager = Substitute.For<IRequestManager>();
 			var objActionManager = Substitute.For<IActionManager>();
-			var objClient = Substitute.For<IQueue.IQueue>();
+			var objClient = Substitute.For<IRouter>();
 			var objMessage = Substitute.For<IMessage>();
 
 			objProvider.GetMessage(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 }))).Returns(m => null);
@@ -84,7 +85,7 @@ namespace Mitto.Messaging.Tests {
 		[Test]
 		public void ProcessResponseMessageTest() {
 			//Arrange
-			var objClient = Substitute.For<IQueue.IQueue>();
+			var objClient = Substitute.For<IRouter>();
 			var objProvider = Substitute.For<IMessageProvider>();
 			var objRequestManager = Substitute.For<IRequestManager>();
 			var objActionManager = Substitute.For<IActionManager>();
@@ -113,7 +114,7 @@ namespace Mitto.Messaging.Tests {
 		[Test]
 		public void RequestTest() {
 			//Arrange
-			var objClient = Substitute.For<IQueue.IQueue>();
+			var objClient = Substitute.For<IRouter>();
 			var objMessage = Substitute.For<IRequestMessage>();
 			var objAction = Substitute.For<Action<IResponseMessage>>();
 

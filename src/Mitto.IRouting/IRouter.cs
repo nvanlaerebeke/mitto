@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Mitto.IQueue {
+namespace Mitto.IRouting {
 	/// <summary>
 	/// 
 	/// The IQueue interface represents the boundery between the receiving/sending messages
@@ -17,18 +17,9 @@ namespace Mitto.IQueue {
 	/// are reading from, and sending a message is done by reading from that IQueue and 
 	/// sending it back over the IConnection (Websocket) in the correct format
 	/// 
-	/// 
-	/// ToDo: better name for IQueue
-	/// Is it really a queue? - for using rabbit we'll be using queues 
-	/// but that's an implementation detail and not a  description of 
-	/// how messages are passed from byte arrays on the transport layer 
-	/// to the 'processor' that knows the binary data represents
-	/// 
 	/// </summary>
-	public interface IQueue {
-		string ID { get; }
-		event EventHandler<byte[]> Rx;
+	public interface IRouter {
 		void Transmit(byte[] pMessage);
-		void Receive(byte[] pMessage);
+		void Close();
 	}
 }

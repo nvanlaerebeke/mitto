@@ -1,8 +1,8 @@
 ﻿using Mitto.IConnection;
+using Mitto.IRouting;
 using NSubstitute;
 using NUnit.Framework;
 using System;
-using System.Linq;
 
 namespace Mitto.Main.Tests.Client {
 	[TestFixture]
@@ -38,73 +38,39 @@ namespace Mitto.Main.Tests.Client {
 			;
 		}
 
-
 		/// <summary>
-		/// Tests the IConnection.IClient data received event
-		/// This means that the InternalQueue.Transmit is called with the 
-		/// passed byte[]
-		/// </summary>
-		[Test]
-		public void ClientDataReceivedTest() {
-			//Arrange
-			var objProvider = Substitute.For<IConnectionProvider>();
-			var objQueueProvider = Substitute.For<IQueue.IQueueProvider>();
-
-			var objConnection = Substitute.For<IClient>();
-			var objQueue = Substitute.For<IQueue.IQueue>();
-
-			objProvider.CreateClient().Returns(objConnection);
-			objQueueProvider.Create().Returns(objQueue);
-
-			Config.Initialize(new Config.ConfigParams() {
-				ConnectionProvider = objProvider,
-				QueueProvider = objQueueProvider
-
-			});
-
-			//Act
-			var obj = new Mitto.Client();
-			objConnection.Rx += Raise.Event<EventHandler<byte[]>>(Substitute.For<IConnection.IConnection>(), new byte[] { 1, 2, 3, 4, 5 });
-
-			//Assert
-			objQueue.Received(1).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
-		}
-
-
-		/// <summary>
-		/// Tests the IConnection.IClient disconnect event
-		/// This means that the Connection subscription handlers are removed
-		/// and that the Disconnected event is called
+		/// Tests the handling of the IConnection.IClient disconnect event
+		/// 
+		/// This means that the Connection subscription handlers are removed,
+		/// the router is cleaned up and that the Disconnected event is called
 		/// </summary>
 		[Test]
 		public void ClientDisconnectedTest() {
 			//Arrange
-			var objProvider = Substitute.For<IConnectionProvider>();
-			var objQueueProvider = Substitute.For<IQueue.IQueueProvider>();
+			var objConnectionProvider = Substitute.For<IConnectionProvider>();
+			var objRouterProvider = Substitute.For<IRouterProvider>();
 
 			var objConnection = Substitute.For<IClient>();
+			var objRouter = Substitute.For<IRouter>();
 			var objHandler = Substitute.For<EventHandler<Mitto.Client>>();
-			var objEventConnection = Substitute.For<IConnection.IConnection>();
-			var objQueue = Substitute.For<IQueue.IQueue>();
 
-			objProvider.CreateClient().Returns(objConnection);
-			objQueueProvider.Create().Returns(objQueue);
+			objConnectionProvider.CreateClient().Returns(objConnection);
+			objRouterProvider.Create(Arg.Is(objConnection)).Returns(objRouter);
 
 			Config.Initialize(new Config.ConfigParams() {
-				ConnectionProvider = objProvider,
-				QueueProvider = objQueueProvider
+				ConnectionProvider = objConnectionProvider,
+				RouterProvider = objRouterProvider
 			});
 
 			//Act
 			var obj = new Mitto.Client();
 			obj.Disconnected += objHandler;
-			objConnection.Disconnected += Raise.Event<EventHandler>(objEventConnection, new EventArgs());
+			objConnection.Disconnected += Raise.Event<EventHandler>(objConnection, new EventArgs());
 
 			//Assert
-			objConnection.Received(1).Rx -= Arg.Any<EventHandler<byte[]>>();
 			objConnection.Received(1).Connected -= Arg.Any<EventHandler<IClient>>();
 			objConnection.Received(1).Disconnected -= Arg.Any<EventHandler>();
-			objQueue.Received(1).Rx -= Arg.Any<EventHandler<byte[]>>();
+			objRouter.Received(1).Close();
 
 			objHandler
 				.Received(1)
@@ -118,7 +84,7 @@ namespace Mitto.Main.Tests.Client {
 		/// the Connection returned from the ConnectionProvider
 		/// </summary>
 		[Test]
-		public void ConnectAsyncText() {
+		public void ConnectAsyncTest() {
 			//Arrange
 			var objProvider = Substitute.For<IConnectionProvider>();
 			var objConnection = Substitute.For<IClient>();
@@ -146,30 +112,29 @@ namespace Mitto.Main.Tests.Client {
 		[Test]
 		public void CreateTest() {
 			//Arrange
-			var objProvider = Substitute.For<IConnectionProvider>();
-			var objQueueProvider = Substitute.For<IQueue.IQueueProvider>();
-			var objConnection = Substitute.For<IClient>();
-			var objQueue = Substitute.For<IQueue.IQueue>();
+			var objConnectionProvider = Substitute.For<IConnectionProvider>();
+			var objRouterProvider = Substitute.For<IRouterProvider>();
 
-			objProvider.CreateClient().Returns(objConnection);
-			objQueueProvider.Create().Returns(objQueue);
+			var objConnection = Substitute.For<IClient>();
+			var objRouter = Substitute.For<IRouter>();
+
+			objConnectionProvider.CreateClient().Returns(objConnection);
+			objRouterProvider.Create(objConnection).Returns(objRouter);
 
 			Config.Initialize(new Config.ConfigParams() {
-				ConnectionProvider = objProvider,
-				QueueProvider = objQueueProvider
+				ConnectionProvider = objConnectionProvider,
+				RouterProvider = objRouterProvider
 			});
 
 			//Act
 			var obj = new Mitto.Client();
 
 			//Assert
-			objProvider.Received(1).CreateClient();
-			objQueueProvider.Received(1).Create();
+			objConnectionProvider.Received(1).CreateClient();
+			objRouterProvider.Received(1).Create(objConnection);
 
-			objConnection.Received(1).Rx += Arg.Any<EventHandler<byte[]>>();
 			objConnection.Received(1).Connected += Arg.Any<EventHandler<IClient>>();
 			objConnection.Received(1).Disconnected += Arg.Any<EventHandler>();
-			objQueue.Received(1).Rx += Arg.Any<EventHandler<byte[]>>();
 		}
 
 		/// <summary>
@@ -180,19 +145,19 @@ namespace Mitto.Main.Tests.Client {
 		[Test]
 		public void DisconnectTest() {
 			//Arrange
-			var objProvider = Substitute.For<IConnectionProvider>();
-			var objQueueProvider = Substitute.For<IQueue.IQueueProvider>();
+			var objConnectionProvider = Substitute.For<IConnectionProvider>();
+			var objRouterProvider = Substitute.For<IRouterProvider>();
 
 			var objConnection = Substitute.For<IClient>();
 			var objHandler = Substitute.For<EventHandler<Mitto.Client>>();
-			var objQueue = Substitute.For<IQueue.IQueue>();
+			var objRouter = Substitute.For<IRouter>();
 
-			objProvider.CreateClient().Returns(objConnection);
-			objQueueProvider.Create().Returns(objQueue);
+			objConnectionProvider.CreateClient().Returns(objConnection);
+			objRouterProvider.Create(objConnection).Returns(objRouter);
 
 			Config.Initialize(new Config.ConfigParams() {
-				ConnectionProvider = objProvider,
-				QueueProvider = objQueueProvider
+				ConnectionProvider = objConnectionProvider,
+				RouterProvider = objRouterProvider
 			});
 
 			//Act
@@ -201,80 +166,16 @@ namespace Mitto.Main.Tests.Client {
 			obj.Disconnect();
 
 			//Assert
-			objConnection.Received(1).Rx -= Arg.Any<EventHandler<byte[]>>();
 			objConnection.Received(1).Connected -= Arg.Any<EventHandler<IClient>>();
 			objConnection.Received(1).Disconnected -= Arg.Any<EventHandler>();
-			objQueue.Received(1).Rx -= Arg.Any<EventHandler<byte[]>>();
-
+			objConnection.Received(1).Disconnect();
+			objRouter.Received(1).Close();
 			objHandler
 				.Received(1)
 				.Invoke(
 					Arg.Is(obj),
 					Arg.Is(obj)
 				)
-			;
-		}
-
-		/// <summary>
-		/// Tests the data received event from the internal queue
-		/// This means that the transmit method is called on the Client itself
-		/// </summary>
-		[Test]
-		public void InternalDataReceived() {
-			//Arrange
-			var objProvider = Substitute.For<IConnectionProvider>();
-			var objQueueProvider = Substitute.For<IQueue.IQueueProvider>();
-
-			var objConnection = Substitute.For<IClient>();
-			var objHandler = Substitute.For<EventHandler<byte[]>>();
-			var objQueue = Substitute.For<IQueue.IQueue>();
-
-			objProvider.CreateClient().Returns(objConnection);
-			objQueueProvider.Create().Returns(objQueue);
-
-			Config.Initialize(new Config.ConfigParams() {
-				ConnectionProvider = objProvider,
-				QueueProvider = objQueueProvider
-			});
-
-			//Act
-			var obj = new Mitto.Client();
-			obj.Rx += objHandler;
-			objQueue.Rx += Raise.Event<EventHandler<byte[]>>(objQueue, new byte[] { 1, 2, 3, 4, 5 });
-
-			//Assert
-			objConnection.Received(1).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
-			objHandler
-				.Received(1)
-				.Invoke(obj, Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
-			;
-		}
-
-		/// <summary>
-		/// Tests the Receive method
-		/// This means that when the Client receives data, the Rx event is called with that data
-		/// </summary>
-		[Test]
-		public void ReceiveTest() {
-			//Arrange
-			var objProvider = Substitute.For<IConnectionProvider>();
-			var objQueueProvider = Substitute.For<IQueue.IQueueProvider>();
-			var objHandler = Substitute.For<EventHandler<byte[]>>();
-
-			Config.Initialize(new Config.ConfigParams() {
-				ConnectionProvider = objProvider,
-				QueueProvider = objQueueProvider
-			});
-
-			//Act
-			var obj = new Mitto.Client();
-			obj.Rx += objHandler;
-			obj.Receive(new byte[] { 1, 2, 3, 4, 5 });
-
-			//Assert
-			objHandler
-				.Received(1)
-				.Invoke(Arg.Is(obj), Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
 			;
 		}
 
@@ -286,86 +187,30 @@ namespace Mitto.Main.Tests.Client {
 		public void RequestTest() {
 			//Arrange
 			var objProvider = Substitute.For<IConnectionProvider>();
-			var objQueueProvider = Substitute.For<IQueue.IQueueProvider>();
+			var objRouterProvider = Substitute.For<IRouterProvider>();
 			var objProcessor = Substitute.For<IMessaging.IMessageProcessor>();
+
+			var objConnection = Substitute.For<IClient>();
+			var objRouter = Substitute.For<IRouter>();
+			var objRequestMessage = Substitute.For<IMessaging.IRequestMessage>();
+			var objAction = Substitute.For<Action<IMessaging.IResponseMessage>>();
+
+			objProvider.CreateClient().Returns(objConnection);
+			objRouterProvider.Create(objConnection).Returns(objRouter);
 
 			Config.Initialize(new Config.ConfigParams() {
 				ConnectionProvider = objProvider,
-				QueueProvider = objQueueProvider,
+				RouterProvider = objRouterProvider,
 				MessageProcessor = objProcessor
 			});
 
-			var objRequestMessage = Substitute.For<IMessaging.IRequestMessage>();
-			var objAction = Substitute.For<Action<IMessaging.IResponseMessage>>();
 
 			//Act
 			var obj = new Mitto.Client();
 			obj.Request(objRequestMessage, objAction);
 
 			//Assert
-			objProcessor.Received(1).Request(Arg.Is(obj), Arg.Is(objRequestMessage), Arg.Is(objAction));
-		}
-
-		/// <summary>
-		/// Tests the Respond method
-		/// This means that the byte[] is passed onto the 
-		/// Transmit method from the internal Queue
-		/// </summary>
-		[Test]
-		public void RespondTest() {
-			//Arrange
-			var objProvider = Substitute.For<IConnectionProvider>();
-			var objQueueProvider = Substitute.For<IQueue.IQueueProvider>();
-			var objQueue = Substitute.For<IQueue.IQueue>();
-
-			objQueueProvider.Create().Returns(objQueue);
-
-			Config.Initialize(new Config.ConfigParams() {
-				ConnectionProvider = objProvider,
-				QueueProvider = objQueueProvider,
-			});
-
-			//Act
-			var obj = new Mitto.Client();
-			obj.Respond(new byte[] { 1, 2, 3, 4, 5 });
-
-			//Assert
-			objQueue.Received(1).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
-		}
-
-		/// <summary>
-		/// Tests the transmit method
-		/// This means that the IConnection.Transmit is called with the byte[] 
-		/// and that the Rx event is triggered
-		/// </summary>
-		[Test]
-		public void TransmitTest() {
-			//Arrange
-			var objProvider = Substitute.For<IConnectionProvider>();
-			var objQueueProvider = Substitute.For<IQueue.IQueueProvider>();
-			var objHandler = Substitute.For<EventHandler<byte[]>>();
-
-			//var objQueue = Substitute.For<IQueue.IQueue>();
-			//objQueueProvider.Create().Returns(objQueue);
-			var objConnection = Substitute.For<IClient>();
-			objProvider.CreateClient().Returns(objConnection);
-
-			Config.Initialize(new Config.ConfigParams() {
-				ConnectionProvider = objProvider,
-				QueueProvider = objQueueProvider
-			});
-
-			//Act
-			var obj = new Mitto.Client();
-			obj.Rx += objHandler;
-			obj.Transmit(new byte[] { 1, 2, 3, 4, 5 });
-
-			//Assert
-			objConnection.Received(1).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
-			objHandler
-				.Received(1)
-				.Invoke(Arg.Is(obj), Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4, 5 })));
-			;
+			objProcessor.Received(1).Request(Arg.Is(objRouter), Arg.Is(objRequestMessage), Arg.Is(objAction));
 		}
 	}
 }

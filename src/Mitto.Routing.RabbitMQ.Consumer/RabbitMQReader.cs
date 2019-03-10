@@ -1,10 +1,12 @@
-﻿namespace Mitto.Queue.RabbitMQ.Consumer {
+﻿using Mitto.IRouting;
+
+namespace Mitto.Routing.RabbitMQ.Consumer {
 	public static class RabbitMQReader {
-		private static IQueue.IQueue Queue { get; set; }
+		private static IRouter Router { get; set; }
 
 		public static void Start() {
-			Queue = new RabbitMQ();
-			Queue.Rx += Queue_Rx;
+			Router = new RabbitMQ();
+			//Router.Rx += Queue_Rx;
 		}
 		/// <summary>
 		/// ToDo: MessageProcessor should be comming from IMessaging not the Mitto.Messaging.Base
@@ -12,9 +14,9 @@
 		/// interface will also make it easier to test
 		/// </summary>
 		/// <param name="pMessage"></param>
-		private static void Queue_Rx(byte[] pMessage) {
-			RabbitMQDataMessage objMsg = new RabbitMQDataMessage(pMessage.Data);
-			IMessaging.MessagingFactory.Processor.Process(Queue, objMsg.Data);
+		private static void Queue_Rx(object sender, byte[] data) {
+			RabbitMQDataMessage objMsg = new RabbitMQDataMessage(data);
+			IMessaging.MessagingFactory.Processor.Process(Router, objMsg.Data);
 		}
 	}
 }
