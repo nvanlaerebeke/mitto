@@ -21,7 +21,7 @@ namespace Mitto.Connection.Websocket.Server {
         private CancellationTokenSource _objCancelationSource = new CancellationTokenSource();
         private CancellationToken _objCancelationToken;
 
-		public string ID => _objClient.ID;
+		public string ID => Guid.NewGuid().ToString();
 
 		public Client(IWebSocketBehavior pClient, IKeepAliveMonitor pKeepAliveMonitor) {
 			_objClient = pClient;
@@ -105,11 +105,12 @@ namespace Mitto.Connection.Websocket.Server {
             new Thread(() => {
                 Thread.CurrentThread.Name = "SenderQueue";
                 while (!_objCancelationSource.IsCancellationRequested) {
-                    try {
+					try {
 						var arrData = _colQueue.Take(_objCancelationToken);
 						Log.Error("Sending data on {ID}");
 						_objClient.Send(arrData);
-                    } catch (Exception ex) {
+					} catch(OperationCanceledException) { 
+					} catch (Exception ex) {
                         Log.Error("Failed sending data, closing connection: " + ex.Message);
                     }
                 }

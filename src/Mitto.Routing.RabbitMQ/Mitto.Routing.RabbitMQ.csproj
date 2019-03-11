@@ -39,13 +39,18 @@
     </Compile>
     <Compile Include="Config.cs" />
     <Compile Include="Frame.cs" />
-    <Compile Include="Queue.cs" />
+    <Compile Include="ReaderQueue.cs" />
+    <Compile Include="SenderQueue.cs" />
     <Compile Include="RabbitMQMessageFormat.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mitto.ILogging\Mitto.ILogging.csproj">
       <Project>{30f11e8a-a8d2-48c7-9d86-d5d007a47609}</Project>
       <Name>Mitto.ILogging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.IMessaging\Mitto.IMessaging.csproj">
+      <Project>{3bb1c211-9006-4fee-9f40-7556717431b0}</Project>
+      <Name>Mitto.IMessaging</Name>
     </ProjectReference>
     <ProjectReference Include="..\Mitto.IRouting\Mitto.IRouting.csproj">
       <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>

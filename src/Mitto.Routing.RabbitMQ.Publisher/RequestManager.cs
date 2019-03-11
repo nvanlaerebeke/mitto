@@ -1,41 +1,45 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
 using Mitto.IMessaging;
 
 namespace Mitto.Routing.RabbitMQ.Publisher {
+	/// <summary>
+	/// ToDo: add a keepalive for the Queues
+	///       kept alive due to not having to create new 
+	///       threads and SenderQueue objects as those are 
+	///       more expensive to create
+	///       
+	/// ToDo: make the Queues static/shared between all IClientConnections
+	///       request will be spread to all Consumers so it's a good idea 
+	///       to not always create a new SenderQueue for each IClientConnection 
+	///       but just share them.
+	///       Example: 
+	///         - without sharing: with 500 clients and 5 workers there are 2500 SenderQueues
+	///         - with sharing: with 500 clients and 5 workers, there are 5 SenderQueues
+	/// </summary>
 	internal class RequestManager {
-		private ConcurrentDictionary<string, IRequest> Requests = new ConcurrentDictionary<string, IRequest>();
+		private ConcurrentDictionary<string, string> Requests = new ConcurrentDictionary<string, string>();
+		private ConcurrentDictionary<string, SenderQueue> Queues = new ConcurrentDictionary<string, SenderQueue>();
 
-		public void Request<T>(IRequest pRequest) where T : IResponseMessage {
-			if (Requests.TryAdd(pRequest.Message.ID, pRequest)) {
-				pRequest.RequestTimedOut += RequestTimedOut;
-				pRequest.Transmit();
+		public void AddRequest(Frame pFrame) {
+			if (!Queues.ContainsKey(pFrame.QueueID)) {
+				if (!Queues.TryAdd(pFrame.QueueID, new SenderQueue(pFrame.QueueID))) {
+					//ToDo: error handling
+				}
+			}
+			if(!Requests.TryAdd(pFrame.MessageID, pFrame.QueueID)) {
+				//ToDo: error handling
 			}
 		}
 
-		public void SetResponse(IResponseMessage pMessage) {
+		public void SetResponse(Frame pFrame) {
 			if (
-				Requests.ContainsKey(pMessage.ID) &&
-				Requests.TryRemove(pMessage.ID, out IRequest objRequest)
+				Requests.ContainsKey(pFrame.MessageID) &&
+				Requests.TryRemove(pFrame.MessageID, out string strQueueID)
 			) {
-				objRequest.RequestTimedOut -= RequestTimedOut;
-				objRequest.SetResponse(pMessage);
+				Queues[strQueueID].Transmit(pFrame);
+			} else {
+				//ToDo: Error handling
 			}
-		}
-
-		public MessageStatusType GetStatus(string pRequestID) {
-			if (Requests.ContainsKey(pRequestID)) {
-				return MessageStatusType.Queued;
-			}
-			return MessageStatusType.UnKnown;
-		}
-
-		private void RequestTimedOut(object sender, IRequest e) {
-			SetResponse(MessagingFactory.Provider.GetResponseMessage(e.Message, new ResponseStatus(ResponseState.TimeOut)));
 		}
 	}
 }

@@ -6,6 +6,9 @@ Minimum ToDo's:
 	  The frame type will be used in the Transmit method, where the parameter is the frame instead of the byte[]
 	  Reason for this is that sometimes more information is needed then just the byte[], example for rabbitmq the 
 	  Queue to put the data on.
+	- IConnection.Disconnected => needs to be EventHandler<IClientConnection> instead of just EventHandler
+	- Hide more classes, make them only available from Mitto.xxx, example the factories like ConnectionFactory
+	  This is to prevent missuse
 
 Improvements:
 	- Autoscale ThreadPool.MinThreads so the application ThreadPool autoscales in time
@@ -24,6 +27,8 @@ Benchmarking:
 	  - test overhead for converting between json/objects (both directions)
 	  - Websockets vs TcpSocket
 	  - Websocket TransmitQueue/Thread vs SendAsync
+	  - Message names in UTF-32, see what encoding class names can actually be, can't it
+	    be switched to asni?, it's much smaller in overhead
 
 Features:
   - Create a connection type for IPC (WCF) - what can can be used on linux & osx?
@@ -38,6 +43,8 @@ Features:
     This is to compare what overhead json gives vs a simple byte API
 
   - Kafka?
+
+  - Mitto as a REST API?
 
 Testing:
 	- go over tests and create missing tests

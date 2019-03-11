@@ -37,7 +37,7 @@ namespace Mitto.Connection.Websocket.Server {
 		}
 
 		public bool Ping() {
-			return base.Context.WebSocket.Ping();
+			return (Context != null) ? Context.WebSocket.Ping() : false;
 		}
 	}
 }
