@@ -13,6 +13,17 @@ Minimum ToDo's:
 Improvements:
 	- Autoscale ThreadPool.MinThreads so the application ThreadPool autoscales in time
 	- don't allow  names where the byte[] for the strings > 255, this will cause exceptions
+	- RabbitMQ: 
+	    - Stop converting the message byte[] => Message, this means modifying our byte[] a bit 
+		  and include the request id in the frame.
+		- Add GetMessageStatus support so that "KeepAlives" for message actions work
+		  We can do this by switching GetMessageStatus to a message type like "Control"/"Management"
+		  The best way to do this is move it away from the general json message and just use
+		  a constructed frame of <type><connectionid><requestid><control message frame?>
+		  where the last part is custom, the first 3 parts should be part of every message(WIP)
+
+		- Add cleanup service that makes sure all queues are still in use and cleans up 
+		  those that are not relevant anymore
 
 Documentation:
 	- go over the comments in the code - add/improve/fix them where needed

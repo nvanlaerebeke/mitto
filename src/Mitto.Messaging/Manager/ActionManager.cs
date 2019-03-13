@@ -7,16 +7,16 @@ using System.Reflection;
 namespace Mitto.Messaging {
 	internal class ActionManager : IActionManager {
 		private ILog Log {
-			get { return LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType); }
+			get { return LogFactory.GetLogger(MethodBase.GetCurrentMethod().DeclaringType); }
 		}
 		private ConcurrentDictionary<string, IAction> Actions = new ConcurrentDictionary<string, IAction>();
 
 		public void RunAction(IClient pClient, IRequestMessage pMessage, IAction pAction) {
 			if (pAction == null) { // -- nothing to do
-				Log.Error($"Unable to create action for {pMessage.Name}");
+				Log.Error($"Unable to create action for {pMessage.Name} for {pClient.ID}");
 				return;
 			}
-			Log.Info($"Starting action for {pMessage.Type.ToString()} {pAction.GetType().ToString()}");
+			Log.Info($"Starting action {pAction.GetType().Name} for {pClient.ID}");
 			if (Actions.TryAdd(pMessage.ID, pAction)) {
 				switch (pMessage.Type) {
 					case MessageType.Notification:

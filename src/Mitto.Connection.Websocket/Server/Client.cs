@@ -55,19 +55,21 @@ namespace Mitto.Connection.Websocket.Server {
 		}
 
 		private void _objClient_OnMessageReceived(object sender, IMessageEventArgs e) {
-			Log.Debug($"Data received on {ID}");
 			_objKeepAliveMonitor.Reset();
 			if (e.IsText) {
+				Log.Debug($"Text received on {ID}");
 				var data = System.Text.Encoding.UTF32.GetBytes(e.Data);
 				Rx?.Invoke(this, data);
 			} else if (e.IsPing) {
+				Log.Debug($"Ping received on {ID}");
 			} else if (e.IsBinary) {
+				Log.Debug($"Data received on {ID}");
 				Rx?.Invoke(this, e.RawData);
 			}
 		}
 
 		private void _objClient_OnErrorReceived(object sender, IErrorEventArgs e) {
-			Log.Debug($"Error on {ID}: {e.Message}, closing...");
+			Log.Error($"Error on {ID}: {e.Message}, closing...");
 			Disconnect();
 		}
 
@@ -76,7 +78,7 @@ namespace Mitto.Connection.Websocket.Server {
 		}
 
         public void Disconnect() {
-			Log.Debug($"Closing {ID}");
+			Log.Info($"Closing {ID}");
 
 			_objKeepAliveMonitor.TimeOut -= _objKeepAliveMonitor_TimeOut;
 			_objKeepAliveMonitor.UnResponsive -= _objKeepAliveMonitor_UnResponsive;
@@ -107,11 +109,11 @@ namespace Mitto.Connection.Websocket.Server {
                 while (!_objCancelationSource.IsCancellationRequested) {
 					try {
 						var arrData = _colQueue.Take(_objCancelationToken);
-						Log.Error("Sending data on {ID}");
+						Log.Trace($"Sending data on {ID}");
 						_objClient.Send(arrData);
 					} catch(OperationCanceledException) { 
 					} catch (Exception ex) {
-                        Log.Error("Failed sending data, closing connection: " + ex.Message);
+                        Log.Error($"Failed sending data on {ID}: {ex.Message}, closing connection");
                     }
                 }
 				_colQueue.Dispose(); // -- thread is exiting, clean up the collection

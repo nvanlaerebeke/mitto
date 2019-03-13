@@ -268,8 +268,15 @@ namespace Mitto.Messaging {
 				var ass in AppDomain.CurrentDomain.GetAssemblies()
 			) {
 				try {
+					if (
+						new string[] {
+							"Mitto.Connection.Websocket"
+						}.Any(ass.FullName.Contains)
+					) {
+						continue;
+					}
 					//foreach loaded assembly, get all it's types that match the given namespace
-					var arrTypes = (from t in ass.GetTypes() where t.IsClass && t.Namespace == pNamespace select t);
+						var arrTypes = (from t in ass.GetTypes() where t.IsClass && t.Namespace == pNamespace select t);
 					foreach (
 						var objType in arrTypes
 					) {

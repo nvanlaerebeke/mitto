@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace Mitto.Routing.RabbitMQ {
 	public class SenderQueue {
-		private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private ILog Log => LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		private BlockingCollection<Frame> _lstTransmitQueue = new BlockingCollection<Frame>();
 
@@ -24,13 +24,14 @@ namespace Mitto.Routing.RabbitMQ {
 		/// </summary>
 		private void StartSending(string pName) {
 			new Thread(() => {
+				Thread.CurrentThread.Name = "MittoMain Publisher";
 				var objFactory = new ConnectionFactory() { HostName = "test.crazyzone.be" };
 				using (var objConn = objFactory.CreateConnection()) {
 					using (var objChannel = objConn.CreateModel()) {
+						objChannel.QueueDeclare(queue: pName, durable: false, exclusive: false, autoDelete: false, arguments: null);
 						while (!_objCancelationSource.IsCancellationRequested) {
 							try {
 								var objFrame = _lstTransmitQueue.Take(_objCancelationToken);
-								objChannel.QueueDeclare(queue: pName, durable: false, exclusive: false, autoDelete: false, arguments: null);
 								objChannel.BasicPublish(
 									exchange: "",
 									routingKey: pName,
@@ -38,12 +39,12 @@ namespace Mitto.Routing.RabbitMQ {
 									body: objFrame.GetBytes()
 								);
 							} catch (Exception ex) {
-								Log.Error($"Failed sending data, closing connection: {ex.Message}");
+								Log.Error($"Failed sending data on {pName}: {ex.Message}, closing connection");
 							}
 						}
 					}
 				}
-			}).Start();
+			}) { IsBackground = true }.Start();
 		}
 
 		public void Transmit(Frame pFrame) {

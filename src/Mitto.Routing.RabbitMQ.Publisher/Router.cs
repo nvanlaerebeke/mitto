@@ -21,16 +21,21 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 	///       but created RabbitMQ queues for each connection is overkill, a single queue per 
 	///       consumer plus the main queue is plenty.
 	/// </summary>
-	public class RabbitMQ : IRouter {
+	public class Router : IRouter {
+		/// <summary>
+		/// Unique identifier for this publisher
+		/// </summary>
+		private readonly string PublisherID;
+
 		/// <summary>
 		/// Class that manages all the requests
 		/// </summary>
-		private RequestManager RequestManager;
+		private readonly RequestManager RequestManager;
 
 		/// <summary>
 		/// Client connection
 		/// </summary>
-		private IClientConnection Connection { get; set; }
+		private readonly IClientConnection Connection;
 
 		/// <summary>
 		/// Queue that this Consumer sends data to 
@@ -44,7 +49,7 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 		/// 
 		/// This data then gets forwarded back to the IClientConnection
 		/// </summary>
-		private readonly ReaderQueue ConnectionQueue;
+		private readonly ReaderQueue PublisherQueue;
 
 		/// <summary>
 		/// Creates a router for the IClientConnection
@@ -56,15 +61,17 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 		/// </summary>
 		/// <param name="pParams"></param>
 		/// <param name="pConnection"></param>
-		public RabbitMQ(RabbitMQParams pParams, IClientConnection pConnection) {
+		public Router(SenderQueue pMainQueue, string pPublisherID, IClientConnection pConnection) {
 			RequestManager = new RequestManager();
+
+			PublisherID = pPublisherID;
 
 			Connection = pConnection;
 			Connection.Rx += Connection_Rx;
-
-			MainQueue = new SenderQueue("MittoMain");
-			ConnectionQueue = new ReaderQueue(Connection.ID);
-			ConnectionQueue.Rx += ConnectionQueue_Rx;
+			
+			MainQueue = pMainQueue;
+			PublisherQueue = new ReaderQueue(PublisherID);
+			PublisherQueue.Rx += ConnectionQueue_Rx;
 		}
 
 		/// <summary>
@@ -93,10 +100,7 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 		/// <param name="e"></param>
 		private void Connection_Rx(object sender, byte[] e) {
 			var objMessage = MessagingFactory.Provider.GetMessage(e);
-			var objFrame = new Frame(Connection.ID, objMessage.ID, e);
-			Console.WriteLine(objFrame.QueueID);
-			Console.WriteLine(objFrame.MessageID);
-			Console.WriteLine(objFrame.Data);
+			var objFrame = new Frame(PublisherID, objMessage.ID, e);
 			if (
 				objFrame.MessageType == MessageType.Response
 			) {
@@ -121,7 +125,7 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 			MainQueue.Close();
 
 			Connection.Rx -= Connection_Rx;
-			ConnectionQueue.Rx -= ConnectionQueue_Rx;
+			PublisherQueue.Rx -= ConnectionQueue_Rx;
 		}
 	}
 }

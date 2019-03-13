@@ -25,7 +25,7 @@ namespace Mitto.Routing.RabbitMQ {
 			var channel = connection.CreateModel();
 			channel.QueueDeclare(queue: pName, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
-			Log.Debug($"RabbitMQ Publisher start listening on {pName}");
+			Log.Debug($"Listening on RabbitMQ queue {pName}");
 
 			var consumer = new EventingBasicConsumer(channel);
 			consumer.Received += (model, ea) => {

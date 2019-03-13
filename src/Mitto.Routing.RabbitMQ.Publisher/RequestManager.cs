@@ -36,7 +36,7 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 				Requests.ContainsKey(pFrame.MessageID) &&
 				Requests.TryRemove(pFrame.MessageID, out string strQueueID)
 			) {
-				Queues[strQueueID].Transmit(pFrame);
+				//Queues[strQueueID].Transmit(pFrame);
 			} else {
 				//ToDo: Error handling
 			}

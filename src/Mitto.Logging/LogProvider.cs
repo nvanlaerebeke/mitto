@@ -13,7 +13,7 @@ namespace Mitto.Logging {
 		public LogProvider(Log4NetParams pParams) {
 			//Configure log4net
 			var patternLayout = new PatternLayout() {
-				ConversionPattern = "%date [%thread] %-5level %logger - %message%newline"
+				ConversionPattern = "%date [%thread] %-5level %logger{1} - %message%newline"
 			};
 			patternLayout.ActivateOptions();
 

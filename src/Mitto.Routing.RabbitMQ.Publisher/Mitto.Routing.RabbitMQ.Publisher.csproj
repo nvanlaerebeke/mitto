@@ -42,7 +42,7 @@
     <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="RabbitMQ.cs" />
+    <Compile Include="Router.cs" />
     <Compile Include="RabbitMQParams.cs" />
     <Compile Include="RabbitMQProvider.cs" />
     <Compile Include="RequestManager.cs" />

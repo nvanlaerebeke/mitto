@@ -112,13 +112,16 @@ namespace Mitto.Connection.Websocket.Client {
 		}
 
 		private void Connection_OnMessage(object sender, IMessageEventArgs e) {
-			Log.Debug($"Data received on {ID}");
+			
 			_objKeepAliveMonitor.Reset();
 			if (e.IsText) {
+				Log.Debug($"Text received on {ID}");
 				var data = System.Text.Encoding.UTF32.GetBytes(e.Data);
 				Rx?.Invoke(this, data);
 			} else if (e.IsPing) { // -- do nothing, keepalive is handled in this class
+				Log.Debug($"Ping received on {ID}");
 			} else if (e.IsBinary) {
+				Log.Debug($"Data received on {ID}");
 				Rx?.Invoke(this, e.RawData);
 			}
 		}
@@ -152,9 +155,10 @@ namespace Mitto.Connection.Websocket.Client {
 				while (!_objCancelationSource.IsCancellationRequested) {
 					try {
 						var arrData = _colQueue.Take(_objCancelationToken);
+						Log.Trace($"Sending data on {ID}");
 						_objWebSocketClient.Send(arrData);
 					} catch (Exception ex) {
-						Log.Error($"Failed sending data, closing connection: {ex.Message}");
+						Log.Error($"Failed sending data on {ID}: {ex.Message}, closing connection");
 					}
 				}
 			}) {
