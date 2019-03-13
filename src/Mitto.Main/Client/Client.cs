@@ -58,13 +58,8 @@ namespace Mitto {
 		/// </summary>
 		public Client() {
 			Connection = ConnectionFactory.CreateClient();
-			Connection.Connected += ObjClient_Connected;
-			Connection.Disconnected += ObjClient_Disconnected;
-
-			// Data handling inside the client:
-			//   - Receiving data: deliver the information to the Queue to be processed
-			//   - Sending data: put the binary data on the connection
-			Router = RouterFactory.Create(Connection);
+			
+			
 		}
 
 		/// <summary>
@@ -72,6 +67,13 @@ namespace Mitto {
 		/// </summary>
 		/// <param name="pParams"></param>
 		public void ConnectAsync(IClientParams pParams) {
+			// Data handling inside the client:
+			//   - Receiving data: deliver the information to the Queue to be processed
+			//   - Sending data: put the binary data on the connection
+			Router = RouterFactory.Create(Connection);
+
+			Connection.Connected += ObjClient_Connected;
+			Connection.Disconnected += ObjClient_Disconnected;
 			Connection.ConnectAsync(pParams);
 		}
 
@@ -113,7 +115,10 @@ namespace Mitto {
 		private void Close() {
 			Connection.Connected -= ObjClient_Connected;
 			Connection.Disconnected -= ObjClient_Disconnected;
-			Router.Close();
+			if (Router != null) {
+				Router.Close();
+				Router = null;
+			}
 			Disconnected?.Invoke(this, this);
 		}
 

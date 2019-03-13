@@ -9,7 +9,7 @@ namespace Mitto.Connection.Websocket {
 		public WebSocketState ReadyState => _objWebSocket.ReadyState;
 
 		public int ConnectionTimeoutSeconds { get; set; } = 30;
-		public long CurrentBytesPerSecond { get { return _objWebSocket.CurrentBytesPerSecond; } }
+		public long CurrentBytesPerSecond { get { return (_objWebSocket == null) ? 0 : _objWebSocket.CurrentBytesPerSecond; } }
 
 		public event EventHandler OnOpen;
 		public event EventHandler<ICloseEventArgs> OnClose;
@@ -19,18 +19,21 @@ namespace Mitto.Connection.Websocket {
 		public WebSocketClientWrapper() { }
 
 		public void Close() {
-			_objWebSocket.OnOpen -= _objWebSocket_OnOpen;
-			_objWebSocket.OnClose -= _objWebSocket_OnClose;
-			_objWebSocket.OnError -= _objWebSocket_OnError;
-			_objWebSocket.OnMessage -= _objWebSocket_OnMessage;
+			if (_objWebSocket != null) {
+				_objWebSocket.OnOpen -= _objWebSocket_OnOpen;
+				_objWebSocket.OnClose -= _objWebSocket_OnClose;
+				_objWebSocket.OnError -= _objWebSocket_OnError;
+				_objWebSocket.OnMessage -= _objWebSocket_OnMessage;
 
-			if (
-				_objWebSocket.ReadyState == WebSocketState.Open ||
-				_objWebSocket.ReadyState == WebSocketState.Connecting
-			) {
-				try {
-					_objWebSocket.Close();
-				} catch { }
+				if (
+					_objWebSocket.ReadyState == WebSocketState.Open ||
+					_objWebSocket.ReadyState == WebSocketState.Connecting
+				) {
+					try {
+						_objWebSocket.Close();
+					} catch { }
+				}
+				_objWebSocket = null;
 			}
 		}
 

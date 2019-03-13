@@ -33,8 +33,6 @@ namespace Mitto.Connection.Websocket.Client {
 		internal WebsocketClient(IWebSocketClient pWebSocket, IKeepAliveMonitor pKeepAliveMonitor) {
 			_objWebSocketClient = pWebSocket;
 			_objKeepAliveMonitor = pKeepAliveMonitor;
-			_objKeepAliveMonitor.TimeOut += _objKeepAliveMonitor_TimeOut;
-			_objKeepAliveMonitor.UnResponsive += _objKeepAliveMonitor_UnResponsive;
 		}
 
 		#region Constructor & Connecting
@@ -45,8 +43,11 @@ namespace Mitto.Connection.Websocket.Client {
 			}
 			Log.Info($"Connecting {ID} to {objParams.Hostname}:{objParams.Port}");
 
-			_objWebSocketClient.ConnectionTimeoutSeconds = objParams.ConnectionTimeoutSeconds;
+			_objKeepAliveMonitor.TimeOut += _objKeepAliveMonitor_TimeOut;
+			_objKeepAliveMonitor.UnResponsive += _objKeepAliveMonitor_UnResponsive;
 			_objKeepAliveMonitor.SetInterval(objParams.ConnectionTimeoutSeconds);
+
+			_objWebSocketClient.ConnectionTimeoutSeconds = objParams.ConnectionTimeoutSeconds;
 
 			_objWebSocketClient.OnOpen += Connection_OnOpen;
 			_objWebSocketClient.OnClose += Connection_OnClose;
