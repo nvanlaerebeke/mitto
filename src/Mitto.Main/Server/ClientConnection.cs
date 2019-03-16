@@ -22,7 +22,7 @@ namespace Mitto {
 			Connection.Disconnected += Connection_Disconnected;
 		}
 
-		private void Connection_Disconnected(object sender, EventArgs e) {
+		private void Connection_Disconnected(object sender, IConnection.IConnection e) {
 			Connection.Disconnected -= Connection_Disconnected;
 			Router.Close();
 			Disconnected?.Invoke(this, this);

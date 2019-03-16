@@ -95,7 +95,7 @@ namespace Mitto {
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void ObjClient_Disconnected(object sender, EventArgs e) {
+		private void ObjClient_Disconnected(object sender, IConnection.IConnection connection) {
 			Close();
 		}
 

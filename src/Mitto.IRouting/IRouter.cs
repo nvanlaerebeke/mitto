@@ -19,7 +19,7 @@ namespace Mitto.IRouting {
 	/// 
 	/// </summary>
 	public interface IRouter {
-		string ID { get; }
+		string ConnectionID { get; }
 		void Transmit(byte[] pMessage);
 		void Close();
 	}

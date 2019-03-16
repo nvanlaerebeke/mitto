@@ -9,7 +9,7 @@ namespace Mitto.Messaging {
 	/// Represents an easy to use interface to communicate with the IQueue.IQueue
 	/// </summary>
 	internal class Client : IClient, IEquatable<Client> {
-		public string ID { get { return Router.ID; } }
+		public string ID { get { return Router.ConnectionID; } }
 		private IRequestManager RequestManager { get; set; }
 		private IRouter Router { get; set; }
 

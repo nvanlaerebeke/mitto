@@ -1,5 +1,4 @@
 Minimum ToDo's:
-	- Fix rabbitmq + write tests for it
 	- Add the ability to call connectasync on a disconnected client, now a new client is required
 	- Make router a generic class of IRouter<F> where F is the Frame type that implements IFrame
 	  This is for defining how the data is represented internally, example when using RabbitMQ vs PassThrough vs ...
@@ -11,6 +10,9 @@ Minimum ToDo's:
 	  This is to prevent missuse
 
 Improvements:
+	- Add a version to the Frame's being sent - can be useful for backwards compatibility when making changes 
+	  to the way data is being encapsulated, can be taken from the AssemblyVersion
+
 	- Autoscale ThreadPool.MinThreads so the application ThreadPool autoscales in time
 
 	- don't allow  names where the byte[] for the strings > 255, this will cause exceptions

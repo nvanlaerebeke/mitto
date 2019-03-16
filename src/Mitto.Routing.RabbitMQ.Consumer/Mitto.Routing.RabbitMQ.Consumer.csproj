@@ -43,7 +43,7 @@
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="MessageRouter.cs" />
-    <Compile Include="RabbitMQ.cs" />
+    <Compile Include="Consumer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mitto.ILogging\Mitto.ILogging.csproj">

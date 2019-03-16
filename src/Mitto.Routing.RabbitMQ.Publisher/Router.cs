@@ -15,20 +15,12 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 	/// the Queue will listen on the IConnection.ID queue for any data 
 	/// that needs to be forwarded to the IConnection
 	/// 
-	/// ToDo: Convert to one IRouter for the entire consumer
-	///       Currently a router is created for every client connection, there really is no
-	///       need to do this, there is a need for something that wraps the IClientConnection
-	///       but created RabbitMQ queues for each connection is overkill, a single queue per 
-	///       consumer plus the main queue is plenty.
 	/// </summary>
-	public class Router : IRouter {
+	internal class Router : IRouter {
 
-		public string ID { get { return Connection.ID; } }
+		public string ConnectionID { get { return Connection.ID; } }
 
-		/// <summary>
-		/// Unique identifier for this publisher
-		/// </summary>
-		private readonly string PublisherID;
+		public event EventHandler<Router> Disconnected;
 
 		/// <summary>
 		/// Class that manages all the requests
@@ -47,14 +39,6 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 		private readonly SenderQueue MainQueue;
 
 		/// <summary>
-		/// Queue that the Consumer listends on to 
-		/// get data specific for this connection 
-		/// 
-		/// This data then gets forwarded back to the IClientConnection
-		/// </summary>
-		private readonly ReaderQueue PublisherQueue;
-
-		/// <summary>
 		/// Creates a router for the IClientConnection
 		/// Will listen on MittoMain queue and send data on the queue with 
 		/// as name the same as the connection id
@@ -64,34 +48,40 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 		/// </summary>
 		/// <param name="pParams"></param>
 		/// <param name="pConnection"></param>
-		public Router(SenderQueue pMainQueue, string pPublisherID, IClientConnection pConnection) {
-			RequestManager = new RequestManager();
-
-			PublisherID = pPublisherID;
+		public Router(SenderQueue pMainQueue, RequestManager pRequestManager, IClientConnection pConnection) {
+			RequestManager = pRequestManager;
 
 			Connection = pConnection;
 			Connection.Rx += Connection_Rx;
 			
 			MainQueue = pMainQueue;
-			PublisherQueue = new ReaderQueue(PublisherID);
-			PublisherQueue.Rx += ConnectionQueue_Rx;
 		}
 
 		/// <summary>
-		/// Triggered when data is received on the Queue for this connection
+		/// Called when a frame needs to be processed for this connection
 		/// Data is forwared back to the IClientConnection and in case a 
 		/// response is expected the request is added to the RequestManager
+		/// that will wait for until the respose is received
+		///
+		/// ToDo: Add KeepAlive so that the Request doesn't infinitely stays in
+		/// memory when something goes wrong
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void ConnectionQueue_Rx(object sender, Frame e) {
-			if(
-				e.MessageType != MessageType.Response &&
-				e.MessageType != MessageType.Notification
+		public void Process(SenderQueue pOrigin, Frame objFrame) {
+			if (
+				objFrame.MessageType != IMessaging.MessageType.Response &&
+				objFrame.MessageType != IMessaging.MessageType.Notification
 			) {
-				RequestManager.AddRequest(e);
+				RequestManager.AddRequest(
+					new Request(
+						objFrame.ConnectionID,
+						objFrame.MessageID,
+						pOrigin
+					)
+				);
 			}
-			Transmit(e.Data);
+			Transmit(objFrame.Data);
 		}
 
 		/// <summary>
@@ -102,7 +92,7 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void Connection_Rx(object sender, byte[] e) {
-			var objFrame = new Frame(PublisherID, ID, e);
+			var objFrame = new Frame(RouterProvider.ID, ConnectionID, e);
 			if (
 				objFrame.MessageType == MessageType.Response
 			) {
@@ -124,10 +114,8 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 		/// Shuts down the current router
 		/// </summary>
 		public void Close() {
-			MainQueue.Close();
-
 			Connection.Rx -= Connection_Rx;
-			PublisherQueue.Rx -= ConnectionQueue_Rx;
+			Disconnected?.Invoke(this, this);
 		}
 	}
 }

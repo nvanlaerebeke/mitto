@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Mitto.Routing.RabbitMQ {
 	public class ReaderQueue {
-		private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private ILog Log {
+			get {
+				return LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+			}
+		}
 
 		public event EventHandler<Frame> Rx;
 
@@ -24,8 +28,6 @@ namespace Mitto.Routing.RabbitMQ {
 			var connection = factory.CreateConnection();
 			var channel = connection.CreateModel();
 			channel.QueueDeclare(queue: pName, durable: false, exclusive: false, autoDelete: false, arguments: null);
-
-			Log.Debug($"Listening on RabbitMQ queue {pName}");
 
 			var consumer = new EventingBasicConsumer(channel);
 			consumer.Received += (model, ea) => {

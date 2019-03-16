@@ -30,10 +30,10 @@ namespace Mitto.Main.Tests.Server {
 			//Act
 			var obj = new ClientConnection(objConnection);
 			obj.Disconnected += objHandler;
-			objConnection.Disconnected += Raise.Event<EventHandler>(objConnection, new EventArgs());
+			objConnection.Disconnected += Raise.Event<EventHandler<IConnection.IConnection>>(objConnection, objConnection);
 
 			//Assert
-			objConnection.Received(1).Disconnected -= Arg.Any<EventHandler>();
+			objConnection.Received(1).Disconnected -= Arg.Any<EventHandler<IConnection.IConnection>>();
 			objRouter.Received(1).Close();
 			objHandler.Received(1).Invoke(Arg.Is(obj), Arg.Is(obj));
 		}
@@ -58,7 +58,7 @@ namespace Mitto.Main.Tests.Server {
 
 			//Assert
 			objRouterProvider.Received(1).Create(Arg.Is(objConnection));
-			objConnection.Received(1).Disconnected += Arg.Any<EventHandler>();
+			objConnection.Received(1).Disconnected += Arg.Any<EventHandler<IConnection.IConnection>>();
 		}
 	}
 }

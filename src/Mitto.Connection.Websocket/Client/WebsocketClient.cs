@@ -15,20 +15,21 @@ using WebSocketSharp;
 namespace Mitto.Connection.Websocket.Client {
 	public class WebsocketClient : IClient {
 		private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+		public string ID { get; private set; } = Guid.NewGuid().ToString();
+
 		private IWebSocketClient _objWebSocketClient;
 		private IKeepAliveMonitor _objKeepAliveMonitor;
+		public long CurrentBytesPerSecond { get { return _objWebSocketClient.CurrentBytesPerSecond; } }
+
+		public event EventHandler<IClient> Connected;
+		public event EventHandler<IConnection.IConnection> Disconnected;
+		public event EventHandler<byte[]> Rx;
 
 		public static int FragmentLength {
 			get { return WebSocket.FragmentLength; }
 			set { WebSocket.FragmentLength = value; }
 		}
-
-		public string ID { get; private set; } = Guid.NewGuid().ToString();
-		public long CurrentBytesPerSecond { get { return _objWebSocketClient.CurrentBytesPerSecond; } }
-
-		public event EventHandler<IClient> Connected;
-		public event EventHandler Disconnected;
-		public event EventHandler<byte[]> Rx;
 
 		internal WebsocketClient(IWebSocketClient pWebSocket, IKeepAliveMonitor pKeepAliveMonitor) {
 			_objWebSocketClient = pWebSocket;
@@ -102,13 +103,13 @@ namespace Mitto.Connection.Websocket.Client {
 		private void Connection_OnError(object sender, IErrorEventArgs e) {
 			Log.Error($"Connection error for {ID}: {e.Message}");
 			this.Close();
-			Disconnected?.Invoke(this, new EventArgs());
+			Disconnected?.Invoke(this, this);
 		}
 
 		private void Connection_OnClose(object sender, ICloseEventArgs e) {
 			Log.Info($"Connection {ID} closed");
 			this.Close();
-			Disconnected?.Invoke(this, new EventArgs());
+			Disconnected?.Invoke(this, this);
 		}
 
 		private void Connection_OnMessage(object sender, IMessageEventArgs e) {
@@ -130,7 +131,7 @@ namespace Mitto.Connection.Websocket.Client {
 		#region Client Methods
 		public void Disconnect() {
 			this.Close();
-			Disconnected?.Invoke(this, new EventArgs());
+			Disconnected?.Invoke(this, this);
 		}
 
 		private BlockingCollection<byte[]> _colQueue;

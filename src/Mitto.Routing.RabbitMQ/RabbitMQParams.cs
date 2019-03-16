@@ -1,4 +1,4 @@
-﻿namespace Mitto.Routing.RabbitMQ.Publisher {
+﻿namespace Mitto.Routing.RabbitMQ { 
 	public class RabbitMQParams {
 		public string Hostname { get; set; }
 	}

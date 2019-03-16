@@ -2,7 +2,7 @@
 
 namespace Mitto.IConnection {
 	public interface IConnection {
-		event EventHandler Disconnected;
+		event EventHandler<IConnection> Disconnected;
 		event EventHandler<byte[]> Rx;
 		string ID { get; }
 

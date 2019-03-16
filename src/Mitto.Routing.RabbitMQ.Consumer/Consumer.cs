@@ -15,12 +15,12 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
 	///       
 	/// ToDo: Add an application shutdown handler to close/clean up the queue's
 	/// </summary>
-	public class RabbitMQ : IRouter {
+	public class Consumer {
 		/// <summary>
 		/// Unique identifier for this Queue
 		/// Will be used for communication to this specific Consumer/Worker
 		/// </summary>
-		public string ID { get; } = "Mitto.Consumer." + Guid.NewGuid().ToString();
+		public static readonly string ID = "Mitto.Consumer." + Guid.NewGuid().ToString();
 		
 		/// <summary>
 		/// Listening Queue for the main Mitto queue
@@ -32,6 +32,8 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
 		/// </summary>
 		private ReaderQueue ConsumerQueue;
 
+		private QueueProvider QueueProvider;
+
 		/// <summary>
 		/// Constructor for the RabbitMQ Consumer Queue
 		/// 
@@ -39,10 +41,13 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
 		/// 
 		/// ToDo: Make the sender Queue optional when creating a queue
 		/// </summary>
-		public RabbitMQ() {
-			MainQueue = new ReaderQueue("Mitto.Main");
+		public Consumer(RabbitMQParams pParams) {
+			QueueProvider = new QueueProvider(pParams);
+
+			MainQueue = QueueProvider.GetReaderQueue("Mitto.Main");
 			MainQueue.Rx += MainQueue_Rx;
-			ConsumerQueue = new ReaderQueue(ID);
+
+			ConsumerQueue = QueueProvider.GetReaderQueue(ID);
 			ConsumerQueue.Rx += ConsumerQueue_Rx;
 		}
 
@@ -52,7 +57,7 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void MainQueue_Rx(object sender, Frame e) {
-			new MessageRouter(ID, e).Start();
+			new MessageRouter(ID, QueueProvider.GetSenderQueue(e.QueueID), e).Start();
 		}
 
 		/// <summary>
@@ -64,7 +69,7 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void ConsumerQueue_Rx(object sender, Frame e) {
-			new MessageRouter(ID, e).Start();
+			new MessageRouter(ID, QueueProvider.GetSenderQueue(e.QueueID), e).Start();
 		}
 
 		/// <summary>

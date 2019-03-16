@@ -37,8 +37,9 @@
     <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Config.cs" />
     <Compile Include="Frame.cs" />
+    <Compile Include="QueueProvider.cs" />
+    <Compile Include="RabbitMQParams.cs" />
     <Compile Include="ReaderQueue.cs" />
     <Compile Include="SenderQueue.cs" />
     <Compile Include="RabbitMQMessageFormat.cs" />

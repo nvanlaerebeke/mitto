@@ -14,6 +14,7 @@ namespace Mitto.Routing.RabbitMQ {
 		private CancellationToken _objCancelationToken;
 
 		public SenderQueue(string pQueueName) {
+			_objCancelationToken = _objCancelationSource.Token;
 			StartSending(pQueueName);
 		}
 
@@ -24,7 +25,7 @@ namespace Mitto.Routing.RabbitMQ {
 		/// </summary>
 		private void StartSending(string pName) {
 			new Thread(() => {
-				Thread.CurrentThread.Name = "MittoMain Publisher";
+				Thread.CurrentThread.Name = $"{pName} Publisher";
 				var objFactory = new ConnectionFactory() { HostName = "test.crazyzone.be" };
 				using (var objConn = objFactory.CreateConnection()) {
 					using (var objChannel = objConn.CreateModel()) {

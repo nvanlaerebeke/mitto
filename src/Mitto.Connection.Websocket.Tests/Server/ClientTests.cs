@@ -90,7 +90,7 @@ namespace Mitto.Connection.Websocket.Tests.Server {
 			var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
 			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
 			var objClient = new Websocket.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
-			var objHandler = Substitute.For<EventHandler>();
+			var objHandler = Substitute.For<EventHandler<IConnection.IConnection>>();
 			objClient.Disconnected += objHandler;
 
 			//Act
@@ -109,7 +109,7 @@ namespace Mitto.Connection.Websocket.Tests.Server {
 				.Received(1)
 				.Invoke(
 					Arg.Is<IConnection.IConnection>(c => c.Equals(objClient)),
-					Arg.Any<EventArgs>()
+					Arg.Is(objClient)
 				)
 			;
 		}
@@ -151,7 +151,7 @@ namespace Mitto.Connection.Websocket.Tests.Server {
 			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
 			var objClient = new Websocket.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
 			var objEventArgs = Substitute.For<ICloseEventArgs>();
-			var objHandler = Substitute.For<EventHandler>();
+			var objHandler = Substitute.For<EventHandler<IConnection.IConnection>>();
 			objClient.Disconnected += objHandler;
 
 			//Act
@@ -166,7 +166,7 @@ namespace Mitto.Connection.Websocket.Tests.Server {
 				.Received(1)
 				.Invoke(
 					Arg.Is<IConnection.IConnection>(c => c.Equals(objClient)),
-					Arg.Any<EventArgs>()
+					Arg.Is(objClient)
 				)
 			;
 
@@ -183,7 +183,7 @@ namespace Mitto.Connection.Websocket.Tests.Server {
 			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
 			var objClient = new Websocket.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
 			var objEventArgs = Substitute.For<IErrorEventArgs>();
-			var objHandler = Substitute.For<EventHandler>();
+			var objHandler = Substitute.For<EventHandler<IConnection.IConnection>>();
 			objClient.Disconnected += objHandler;
 
 			//Act
@@ -196,7 +196,7 @@ namespace Mitto.Connection.Websocket.Tests.Server {
 
 			objHandler
 				.Received(1)
-				.Invoke(Arg.Is(objClient), Arg.Any<EventArgs>());
+				.Invoke(Arg.Is(objClient), Arg.Is(objClient));
 		}
 
 		/// <summary>
