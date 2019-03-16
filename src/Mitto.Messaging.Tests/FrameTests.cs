@@ -17,10 +17,13 @@ namespace Mitto.Messaging.Tests {
 		public void CreateWithByteArrayTest() {
 			//Arrange
 			byte bytMessageType = (byte)MessageType.Request;
+			byte[] arrID = Encoding.UTF32.GetBytes("MyID");
 			byte[] arrName = Encoding.UTF32.GetBytes("MyCustomName");
 			byte[] arrData = new byte[] { 1, 2, 3, 4, 5 };
 			var lstFrame = new List<byte>();
 			lstFrame.Add(bytMessageType);
+			lstFrame.Add((byte)arrID.Length);
+			lstFrame.AddRange(arrID);
 			lstFrame.Add((byte)arrName.Length);
 			lstFrame.AddRange(arrName);
 			lstFrame.AddRange(arrData);
@@ -29,9 +32,11 @@ namespace Mitto.Messaging.Tests {
 			var objFrame = new Frame(lstFrame.ToArray());
 
 			//Assert
-			Assert.AreEqual(objFrame.Name, "MyCustomName");
-			Assert.AreEqual(objFrame.Type, MessageType.Request);
+			Assert.AreEqual("MyID", objFrame.ID);
+			Assert.AreEqual("MyCustomName", objFrame.Name);
+			Assert.AreEqual(MessageType.Request, objFrame.Type);
 			Assert.IsTrue(objFrame.Data.SequenceEqual(arrData));
+			Assert.IsTrue(objFrame.GetByteArray().SequenceEqual(lstFrame.ToArray()));
 		}
 
 
@@ -42,22 +47,27 @@ namespace Mitto.Messaging.Tests {
 		public void CreateWithParametersTest() {
 			//Arrange
 			byte bytMessageType = (byte)MessageType.Request;
+			byte[] arrID = Encoding.UTF32.GetBytes("MyID");
 			byte[] arrName = Encoding.UTF32.GetBytes("MyCustomName");
 			byte[] arrData = new byte[] { 1, 2, 3, 4, 5 };
 
 			var lstFrame = new List<byte>();
 			lstFrame.Add(bytMessageType);
+			lstFrame.Add((byte)arrID.Length);
+			lstFrame.AddRange(arrID);
 			lstFrame.Add((byte)arrName.Length);
 			lstFrame.AddRange(arrName);
 			lstFrame.AddRange(arrData);
 
 			//Act
-			var objFrame = new Frame(MessageType.Request, "MyCustomName", arrData);
+			var objFrame = new Frame(MessageType.Request, "MyID", "MyCustomName", arrData);
 
 			//Assert
-			Assert.AreEqual(objFrame.Type, MessageType.Request);
-			Assert.AreEqual(objFrame.Name, "MyCustomName");
-			Assert.IsTrue(lstFrame.ToArray().SequenceEqual(objFrame.GetByteArray()));
+			Assert.AreEqual(MessageType.Request, objFrame.Type);
+			Assert.AreEqual("MyID", objFrame.ID);
+			Assert.AreEqual("MyCustomName", objFrame.Name);
+			Assert.IsTrue(objFrame.Data.SequenceEqual(arrData));
+			Assert.IsTrue(objFrame.GetByteArray().SequenceEqual(lstFrame.ToArray()));
 		}
 	}
 }

@@ -21,9 +21,11 @@ namespace Mitto.Connection.Websocket.Server {
         private CancellationTokenSource _objCancelationSource = new CancellationTokenSource();
         private CancellationToken _objCancelationToken;
 
-		public string ID => Guid.NewGuid().ToString();
+		public string ID { get; private set; }
 
 		public Client(IWebSocketBehavior pClient, IKeepAliveMonitor pKeepAliveMonitor) {
+			ID = Guid.NewGuid().ToString();
+
 			_objClient = pClient;
 			_objKeepAliveMonitor = pKeepAliveMonitor;
 			_objKeepAliveMonitor.TimeOut += _objKeepAliveMonitor_TimeOut;

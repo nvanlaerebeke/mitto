@@ -9,8 +9,8 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 
 		public RabbitMQProvider(RabbitMQParams pParams) {
 			_objParams = pParams;
-			PublisherID = System.Guid.NewGuid().ToString();
-			MainQueue = new SenderQueue("MittoMain");
+			PublisherID = "Mitto.Publisher." + System.Guid.NewGuid().ToString();
+			MainQueue = new SenderQueue("Mitto.Main");
 		}
 
 		public IRouter Create(IClientConnection pConnection) {

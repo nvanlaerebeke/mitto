@@ -1,7 +1,7 @@
 ﻿using Mitto.IMessaging;
 using NUnit.Framework;
 
-namespace Mitto.Messaging.Tests.Message.Request {
+namespace Mitto.Messaging.Tests.Message.Control {
 	[TestFixture]
 
 	public class MessageStatusTests {
@@ -11,10 +11,10 @@ namespace Mitto.Messaging.Tests.Message.Request {
 		/// </summary>
 		[Test]
 		public void CreateTest() {
-			var objMessage = new Messaging.Request.MessageStatusRequest("MyID");
+			var objMessage = new Messaging.Control.MessageStatusRequest("MyID");
 
 			Assert.AreEqual("MessageStatusRequest", objMessage.Name);
-			Assert.AreEqual(MessageType.Request, objMessage.Type);
+			Assert.AreEqual(MessageType.Control, objMessage.Type);
 			Assert.AreEqual("MyID", objMessage.RequestID);
 		}
 	}

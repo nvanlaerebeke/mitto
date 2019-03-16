@@ -9,26 +9,26 @@ namespace Mitto.Routing.RabbitMQ {
 	/// 
 	/// The frame looks like this:
 	/// 
-	/// ------------------------------------------------------------------------------------------------------------------------------
-	/// | byte MessageType | byte client id  length| byte[length] client id | byte message id  length| byte[length] id | byte[] data |
-	/// ------------------------------------------------------------------------------------------------------------------------------
+	/// ---------------------------------------------------------------------------------------------
+	/// | byte MessageType | byte client id  length| byte[length] id | byte[] IMessaging.Frame data |
+	/// ---------------------------------------------------------------------------------------------
 	/// 
 	/// </summary>
 	public class Frame {
 		private byte[] _arrByteArray;
 
-		public Frame(string pClientID, string pMessageID, byte[] data) {
-			var arrQueueID = Encoding.ASCII.GetBytes(pClientID);
-			var arrMessageID = Encoding.ASCII.GetBytes(pMessageID);
+		public Frame(string pQueueID, string pConnectionID, byte[] data) {
+			var arrQueueID = Encoding.ASCII.GetBytes(pQueueID);
+			var arrConnectionID = Encoding.ASCII.GetBytes(pConnectionID);
 
 			//Create new array with total length of the frame (see above)
-			_arrByteArray = new byte[1 + 1 + arrQueueID.Length + 1 + arrMessageID.Length + data.Length ];
+			_arrByteArray = new byte[1 + 1 + arrQueueID.Length + 1 + + arrConnectionID.Length + data.Length ];
 			_arrByteArray[0] = data.ElementAt(0); // message type
 			_arrByteArray[1] = (byte)arrQueueID.Length; // client id length
 			Array.Copy(arrQueueID, 0, _arrByteArray, 2, arrQueueID.Length); // add clientid itself
-			_arrByteArray[arrQueueID.Length + 2] = (byte)arrMessageID.Length; // message id Length
-			Array.Copy(arrMessageID, 0, _arrByteArray, (3 + arrQueueID.Length), arrMessageID.Length); // add message id itself
-			Array.Copy(data, 1, _arrByteArray, (3 + arrQueueID.Length + arrMessageID.Length), data.Length - 1);
+			_arrByteArray[1 + 1 + arrQueueID.Length] = (byte)arrConnectionID.Length;
+			Array.Copy(arrConnectionID, 0, _arrByteArray, 1 + 1 + arrQueueID.Length + 1, arrConnectionID.Length);
+			Array.Copy(data, 0, _arrByteArray, (1 + 1 + arrQueueID.Length + 1 + arrConnectionID.Length), data.Length);
 		}
 
 		public Frame(byte[] data) {
@@ -55,12 +55,12 @@ namespace Mitto.Routing.RabbitMQ {
 			}
 		}
 
-		public string MessageID {
+		public string ConnectionID {
 			get {
-				var newArray = new byte[_arrByteArray.ElementAt(1 + 1 + _arrByteArray.ElementAt(1))];
+				var newArray = new byte[_arrByteArray.ElementAt((1 + 1 + _arrByteArray.ElementAt(1)))];
 				Array.Copy(
 					_arrByteArray, // -- source array
-					2 + _arrByteArray.ElementAt(1) + 1,  // -- start index in the source
+					(1 + 1 + _arrByteArray.ElementAt(1) + 1),  // -- start index in the source
 					newArray, // -- destination array
 					0, // -- start index on the destination array
 					newArray.Length // -- # bytes that needs to be read
@@ -69,20 +69,30 @@ namespace Mitto.Routing.RabbitMQ {
 			}
 		}
 
+		public string MessageID {
+			get {
+				return new IMessaging.Frame(Data).ID;
+			}
+		}
+
 		public byte[] Data {
 			get {
-				var singles = 3;
-				var queueid = _arrByteArray.ElementAt(1);
-				var messageid = _arrByteArray.ElementAt(2 + queueid);
-				var newArray = new byte[(_arrByteArray.Length - (singles + queueid + messageid))];
-
-				newArray[0] = _arrByteArray[0];
+				var newArray = new byte[(
+					_arrByteArray.Length - 
+					(
+						1 + 
+						1 + 
+						_arrByteArray.ElementAt(1) +
+						1 +
+						_arrByteArray.ElementAt(1 + 1 + _arrByteArray.ElementAt(1))
+					)
+				)];
 				Array.Copy(
 					_arrByteArray, // -- source array
-					(singles + queueid + messageid),  // -- start index in the source
+					(1 + 1 + _arrByteArray.ElementAt(1) + 1 + _arrByteArray.ElementAt(1 + 1 + _arrByteArray.ElementAt(1))),  // -- start index in the source
 					newArray, // -- destination array
-					1, // -- start index on the destination array
-					newArray.Length - 1 // -- # bytes that needs to be read
+					0, // -- start index on the destination array
+					newArray.Length // -- # bytes that needs to be read
 				);
 				return newArray;
 			}

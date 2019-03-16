@@ -9,7 +9,7 @@ namespace Mitto.Messaging {
 	/// Represents an easy to use interface to communicate with the IQueue.IQueue
 	/// </summary>
 	internal class Client : IClient, IEquatable<Client> {
-		public string ID => Guid.NewGuid().ToString();
+		public string ID { get { return Router.ID; } }
 		private IRequestManager RequestManager { get; set; }
 		private IRouter Router { get; set; }
 
@@ -67,8 +67,6 @@ namespace Mitto.Messaging {
 			objTask.Wait();
 			return objTask.Result;
 		}
-
-
 		#endregion
 		/// <summary>
 		/// Transmits an IMessage over the IQueue connection
@@ -78,6 +76,7 @@ namespace Mitto.Messaging {
 		public void Transmit(IMessage pMessage) {
 			Router.Transmit(new Frame(
 				pMessage.Type, 
+				pMessage.ID,
 				pMessage.Name, 
 				MessagingFactory.Converter.GetByteArray(pMessage)
 			).GetByteArray());

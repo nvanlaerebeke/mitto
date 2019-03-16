@@ -60,7 +60,7 @@ namespace Mitto.Messaging.Tests {
 
 			//Assert
 			objKeepAliveMonitor.Received(1).StartCountDown();
-			objClient.Received(1).Request(Arg.Is<Request.MessageStatusRequest>(m => m.RequestID.Equals(objMessage.ID)), Arg.Any<Action<Response.MessageStatusResponse>>());
+			objClient.Received(1).Request(Arg.Is<Control.MessageStatusRequest>(m => m.RequestID.Equals(objMessage.ID)), Arg.Any<Action<Response.MessageStatusResponse>>());
 		}
 
 		/// <summary>

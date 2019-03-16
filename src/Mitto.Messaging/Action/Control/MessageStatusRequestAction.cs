@@ -1,8 +1,8 @@
 ﻿using Mitto.IMessaging;
-using Mitto.Messaging.Request;
+using Mitto.Messaging.Control;
 using Mitto.Messaging.Response;
 
-namespace Mitto.Messaging.Action.Request {
+namespace Mitto.Messaging.Action.Control {
     public class MessageStatusRequestAction : RequestAction<MessageStatusRequest, MessageStatusResponse> {
         public MessageStatusRequestAction(IClient pClient, MessageStatusRequest pMessage) : base(pClient, pMessage) { }
 

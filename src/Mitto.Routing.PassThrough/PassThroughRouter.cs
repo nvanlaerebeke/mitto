@@ -18,6 +18,7 @@ namespace Mitto.Routing.PassThrough {
 	/// IConnection or IMessageProcessor depending on the context to be handled
 	/// </summary>
 	public class PassThroughRouter : IRouter {
+		public string ID { get; } = System.Guid.NewGuid().ToString();
 		private IClientConnection Connection;
 
 		/// <summary>

@@ -1,4 +1,5 @@
 ﻿using Mitto.IMessaging;
+using Mitto.Messaging.Control;
 using Mitto.Messaging.Request;
 using NSubstitute;
 using NUnit.Framework;

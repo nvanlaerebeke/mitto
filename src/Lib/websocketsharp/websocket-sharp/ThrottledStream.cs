@@ -64,7 +64,7 @@ namespace WebSocketSharp {
 		/// Current bytes per second being sent over the stream
 		/// </summary>
 		public long CurrentBytesPerSecond {
-			get { return (_lngByteCount * 1000L) / (Environment.TickCount - _lngStartTime); }
+			get { return (_lngByteCount * 1000) / (Environment.TickCount - _lngStartTime); }
 		}
 		#endregion
 
@@ -110,9 +110,9 @@ namespace WebSocketSharp {
 
 			var lngTimePassed = Environment.TickCount - _lngStartTime;
 			if (lngTimePassed > 0) {
-				var lngCurrentSpeed = _lngByteCount * 1000L / lngTimePassed;
+				var lngCurrentSpeed = _lngByteCount * 1000 / lngTimePassed;
 				if (lngCurrentSpeed > _lngMaxBytesPerSecond) { // -- do we need to wait?
-					var intMilisecondsToSleep = ((_lngByteCount * 1000L / _lngMaxBytesPerSecond) - lngTimePassed);
+					var intMilisecondsToSleep = ((_lngByteCount * 1000 / _lngMaxBytesPerSecond) - lngTimePassed);
 					if (intMilisecondsToSleep > 1) {
 						try {
 							Thread.Sleep((int)intMilisecondsToSleep);

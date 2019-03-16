@@ -22,6 +22,9 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 	///       consumer plus the main queue is plenty.
 	/// </summary>
 	public class Router : IRouter {
+
+		public string ID { get { return Connection.ID; } }
+
 		/// <summary>
 		/// Unique identifier for this publisher
 		/// </summary>
@@ -99,8 +102,7 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void Connection_Rx(object sender, byte[] e) {
-			var objMessage = MessagingFactory.Provider.GetMessage(e);
-			var objFrame = new Frame(PublisherID, objMessage.ID, e);
+			var objFrame = new Frame(PublisherID, ID, e);
 			if (
 				objFrame.MessageType == MessageType.Response
 			) {

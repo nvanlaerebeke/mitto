@@ -40,7 +40,7 @@ namespace Mitto.Messaging {
 			Log.Info($"Request {Message.Name}({Message.ID}) timed out on {_objClient.ID}, checking status...");
 			_objKeepAliveMonitor.StartCountDown();
 
-			_objClient.Request<Response.MessageStatusResponse>(new Request.MessageStatusRequest(Message.ID), (r => {
+			_objClient.Request<Response.MessageStatusResponse>(new Control.MessageStatusRequest(Message.ID), (r => {
 				if (
 					r.RequestStatus == MessageStatusType.Busy ||
 					r.RequestStatus == MessageStatusType.Queued

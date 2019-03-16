@@ -2,7 +2,7 @@
 using NSubstitute;
 using NUnit.Framework;
 
-namespace Mitto.Messaging.Tests.Action.Request {
+namespace Mitto.Messaging.Tests.Action.Control {
 	[TestFixture]
 	public class MessageStatusTests {
 		/// <summary>
@@ -15,7 +15,7 @@ namespace Mitto.Messaging.Tests.Action.Request {
 			//Arrange
 			var objProcessor = Substitute.For<IMessageProcessor>();
 			var objClient = Substitute.For<IClient>();
-			var objMessage = Substitute.For<Messaging.Request.MessageStatusRequest>("RequestIDFromRequested");
+			var objMessage = Substitute.For<Messaging.Control.MessageStatusRequest>("RequestIDFromRequested");
 			objMessage.ID.Returns("MyRequestID");
 			objProcessor.GetStatus(Arg.Is("RequestIDFromRequested")).Returns(MessageStatusType.Queued);
 
@@ -24,7 +24,7 @@ namespace Mitto.Messaging.Tests.Action.Request {
 			});
 
 			//Act
-			var objAction = new Messaging.Action.Request.MessageStatusRequestAction(objClient, objMessage);
+			var objAction = new Messaging.Action.Control.MessageStatusRequestAction(objClient, objMessage);
 			var objResponse = objAction.Start() as Response.MessageStatusResponse;
 
 			//Assert

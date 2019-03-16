@@ -1,5 +1,5 @@
 ﻿using Mitto.IMessaging;
-using Mitto.Messaging.Request;
+using Mitto.Messaging.Control;
 
 namespace Mitto.Messaging.Response {
     public class MessageStatusResponse: ResponseMessage {

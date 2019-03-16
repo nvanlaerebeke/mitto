@@ -125,7 +125,6 @@ namespace Mitto.Connection.Websocket.Tests.Server {
 			//Setup
 			var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
 			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
-			objWebSocketBehavior.ID.Returns("MyClientID");
 
 			//Act
 			var objClient = new Websocket.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
@@ -138,7 +137,7 @@ namespace Mitto.Connection.Websocket.Tests.Server {
 			objWebSocketBehavior.Received(1).OnMessageReceived += Arg.Any<EventHandler<IMessageEventArgs>>();
 
 			objKeepAliveMonitor.Received(1).Start();
-			Assert.AreEqual("MyClientID", objClient.ID);
+			Assert.IsTrue(Guid.TryParse(objClient.ID, out Guid objGuid));
 		}
 
 		/// <summary>

@@ -104,6 +104,7 @@ namespace Mitto.Messaging {
 		/// <param name="pNamespace"></param>
 		private void LoadTypes(string pNamespace) {
 			Dictionary<MessageType, string> dicMessageNamespaces = new Dictionary<MessageType, string> {
+				{ MessageType.Control, ".Control" },
 				{ MessageType.Notification, ".Notification" },
 				{ MessageType.Request, ".Request" },
 				{ MessageType.Response, ".Response" },
@@ -120,6 +121,7 @@ namespace Mitto.Messaging {
 
 			//Actions
 			Dictionary<MessageType, string> dicActionNamespaces = new Dictionary<MessageType, string> {
+				{ MessageType.Control, ".Action.Control" },
 				{ MessageType.Notification, ".Action.Notification" },
 				{ MessageType.Request, ".Action.Request" },
 				{ MessageType.Sub, ".Action.Subscribe" },
@@ -367,6 +369,7 @@ namespace Mitto.Messaging {
 		public byte[] GetByteArray(IMessage pMessage) {
 			return new Frame(
 				pMessage.Type,
+				pMessage.ID,
 				pMessage.Name,
 				MessagingFactory.Converter.GetByteArray(pMessage)
 			).GetByteArray();

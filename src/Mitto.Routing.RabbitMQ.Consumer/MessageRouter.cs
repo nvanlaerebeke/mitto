@@ -3,13 +3,14 @@ using Mitto.IRouting;
 
 namespace Mitto.Routing.RabbitMQ.Consumer {
 	internal class MessageRouter : IRouter {
+		public string ID { get; private set; }
+
 		private readonly Frame _objFrame;
-		private readonly string _strConsumerID;
 		private SenderQueue _objPublisherQueue;
 
 		private SenderQueue PublisherQueue {
 			get {
-				if(_objPublisherQueue == null) {
+				if (_objPublisherQueue == null) {
 					_objPublisherQueue = new SenderQueue(_objFrame.QueueID);
 				}
 				return _objPublisherQueue;
@@ -17,7 +18,7 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
 		}
 
 		public MessageRouter(string pConsumerID, Frame pFrame) {
-			_strConsumerID = pConsumerID;
+			ID = pFrame.ConnectionID;
 			_objFrame = pFrame;
 		}
 
@@ -28,8 +29,7 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
 		public void Close() { }
 
 		public void Transmit(byte[] pData) {
-			var objMessage = MessagingFactory.Provider.GetMessage(pData);
-			var objFrame = new Frame(_strConsumerID, objMessage.ID, pData);
+			var objFrame = new Frame(ID, _objFrame.ConnectionID, pData);
 			PublisherQueue.Transmit(objFrame);
 		}
 	}

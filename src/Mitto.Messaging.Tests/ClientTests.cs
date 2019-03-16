@@ -4,6 +4,8 @@ using System.Linq;
 using NSubstitute;
 using Mitto.IMessaging;
 using Mitto.IRouting;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Mitto.Messaging.Tests {
 	[TestFixture]
@@ -22,7 +24,7 @@ namespace Mitto.Messaging.Tests {
 			//Act
 			var objClient = new Client(objQueue, objRequestManager);
 			objClient.Request(objMessage, objAction);
-			
+
 			//Assert
 			objRequestManager.Received(1).Request<Response.ACKResponse>(Arg.Any<IRequest>());
 		}
@@ -41,6 +43,21 @@ namespace Mitto.Messaging.Tests {
 			var objQueue = Substitute.For<IRouter>();
 			var objMessage = Substitute.For<IMessage>();
 
+			var arrData = new List<byte>();
+			var arrID = Encoding.UTF32.GetBytes("MyID");
+			var arrName = Encoding.UTF32.GetBytes("MyName");
+
+			objMessage.Type.Returns(MessageType.Request);
+			objMessage.ID.Returns("MyID");
+			objMessage.Name.Returns("MyName");
+
+			arrData.Add((byte)MessageType.Request);
+			arrData.Add((byte)arrID.Length);
+			arrData.AddRange(arrID);
+			arrData.Add((byte)arrName.Length);
+			arrData.AddRange(arrName);
+			arrData.AddRange(new byte[] { 1, 2, 3, 4, 5 });
+
 			objConverter.GetByteArray(Arg.Is(objMessage)).Returns(new byte[] { 1, 2, 3, 4, 5 });
 
 			Config.Initialize(new Config.ConfigParams { MessageConverter = objConverter });
@@ -51,7 +68,7 @@ namespace Mitto.Messaging.Tests {
 
 			//Assert
 			objConverter.Received(1).GetByteArray(Arg.Is(objMessage));
-			objQueue.Received(1).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 0, 0, 1, 2, 3, 4, 5 })));
+			objQueue.Received(1).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(arrData.ToArray())));
 		}
 	}
 }

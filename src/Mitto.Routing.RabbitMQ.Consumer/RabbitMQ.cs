@@ -20,7 +20,7 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
 		/// Unique identifier for this Queue
 		/// Will be used for communication to this specific Consumer/Worker
 		/// </summary>
-		public string ID => Guid.NewGuid().ToString();
+		public string ID { get; } = "Mitto.Consumer." + Guid.NewGuid().ToString();
 		
 		/// <summary>
 		/// Listening Queue for the main Mitto queue
@@ -40,7 +40,7 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
 		/// ToDo: Make the sender Queue optional when creating a queue
 		/// </summary>
 		public RabbitMQ() {
-			MainQueue = new ReaderQueue("MittoMain");
+			MainQueue = new ReaderQueue("Mitto.Main");
 			MainQueue.Rx += MainQueue_Rx;
 			ConsumerQueue = new ReaderQueue(ID);
 			ConsumerQueue.Rx += ConsumerQueue_Rx;

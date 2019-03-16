@@ -12,18 +12,54 @@ Minimum ToDo's:
 
 Improvements:
 	- Autoscale ThreadPool.MinThreads so the application ThreadPool autoscales in time
+
 	- don't allow  names where the byte[] for the strings > 255, this will cause exceptions
+
 	- RabbitMQ: 
-	    - Stop converting the message byte[] => Message, this means modifying our byte[] a bit 
-		  and include the request id in the frame.
+		- keepalives between IRouter on Consumer and IRouter on publisher
+		  these are the disconnected events that need implementing
+
+	    - Improve Queue names, allowing topic exchanges as the routing key can be used to pushto multiple queues:
+		    - Mitto.Main
+			- Mitto.Publisher.<ID>
+			- Mitto.Consumer.<ID>
+		
 		- Add GetMessageStatus support so that "KeepAlives" for message actions work
 		  We can do this by switching GetMessageStatus to a message type like "Control"/"Management"
-		  The best way to do this is move it away from the general json message and just use
-		  a constructed frame of <type><connectionid><requestid><control message frame?>
-		  where the last part is custom, the first 3 parts should be part of every message(WIP)
+		  When receiving a control request Mitto.RabbitMQ can convert it to a Control request message
+		  and use it's own control interface implementation to do w/e is required for that action
+		  
 
+		- Each worker needs a queue that listens for broadcasts, can be the worker Queue already created
+		  just need to make sure Mitto can broadcast to for example Mitto.Consumer.*/Mitto.Publisher to 
+		  talk to the publishers or consumers.
+		
 		- Add cleanup service that makes sure all queues are still in use and cleans up 
 		  those that are not relevant anymore
+		  This can be done by running workers, @ startup the workers can do a broadcast to find out 
+		  who the 'broker' is, when no one anwsers, a negotiation can be started between all 
+		  workers to promote a single worker to a 'broker'. Also when nothing is received from a 
+		  broker for x seconds a new negotiation can be started by any worker to promote one
+		  
+
+		- Support subscriptions, two idea's to get this working
+		  
+		  1. Subscribes are broadcasted, meaning each worker knows all subscriptions
+		     This has the advantage that subscribes are never lost, the node can go down and nothing is missed
+			 do need to a startup for the subscription stuff as when we go online and there are already workers running
+			 than a list is needed with all current subscriptions
+
+		  2. Notify events are broadcasted
+		     This has the upside that not all workers need a list of all subscriptions, the downside is that
+			 the list of subscribed connections (Connection + Consumer + Event etc) needs to be  stored somewhere (a DB?)
+			 because then Mitto can't afford to go down without restoring it's state.
+
+		  Think 1. wins out due to the subscriptions being lightweight and being much easier to implement, a simple
+		  broadcast @ startup to fetch the subscription list is enough to be up and running again. 
+
+		- Make the Queue prefix configurable, by default(currently hardcoded) the prefix should be 'Mitto'
+		  Useful for when having multiple applications using Mitto, all apps can use the same RabbitMQ setup
+		  This way users do not have to set up a RabbitMQ instance/application that uses Mitto
 
 Documentation:
 	- go over the comments in the code - add/improve/fix them where needed
