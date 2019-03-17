@@ -1,4 +1,5 @@
 ﻿using Mitto.ILogging;
+using Mitto.IRouting;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
@@ -12,7 +13,7 @@ namespace Mitto.Routing.RabbitMQ {
 			}
 		}
 
-		public event EventHandler<Frame> Rx;
+		public event EventHandler<RabbitMQFrame> Rx;
 
 		public ReaderQueue(string pQueueName) {
 			StartListening(pQueueName);
@@ -32,7 +33,7 @@ namespace Mitto.Routing.RabbitMQ {
 			var consumer = new EventingBasicConsumer(channel);
 			consumer.Received += (model, ea) => {
 				Task.Run(() => {
-					Rx?.Invoke(this, new Frame(ea.Body));
+					Rx?.Invoke(this, new RabbitMQFrame(ea.Body));
 				});
 			};
 			channel.BasicConsume(queue: pName, autoAck: true, consumer: consumer);

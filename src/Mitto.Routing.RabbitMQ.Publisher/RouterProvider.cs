@@ -4,11 +4,13 @@ using System.Collections.Concurrent;
 
 /// <summary>
 /// ToDo: Create a router for each connection, but do not create a reader queue for
-/// each client seperatly, both the main queue (Mitto.Main) and the publisher Queue are 
+/// each client seperatly, both the main queue (Mitto.Main) and the publisher Queue are
 /// unique per process - so no need to doublicate it for each connection
 /// </summary>
 namespace Mitto.Routing.RabbitMQ.Publisher {
+
 	public class RouterProvider : IRouterProvider {
+
 		/// <summary>
 		/// Unique identifier for this Provider
 		/// </summary>
@@ -16,27 +18,31 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 
 		private readonly SenderQueue MainQueue;
 		private readonly ReaderQueue PublisherQueue;
-		private readonly RequestManager RequestManager;
+		private readonly MessageManager RequestManager;
 		private readonly ConcurrentDictionary<string, Router> Routers = new ConcurrentDictionary<string, Router>();
 		private readonly QueueProvider QueueProvider;
 
 		public RouterProvider(RabbitMQParams pParams) {
 			MainQueue = new SenderQueue("Mitto.Main");
 			PublisherQueue = new ReaderQueue(ID);
-			RequestManager = new RequestManager();
+			RequestManager = new MessageManager(MainQueue);
 			QueueProvider = new QueueProvider(pParams);
 
 			PublisherQueue.Rx += PublisherQueue_Rx;
 		}
 
-		private void PublisherQueue_Rx(object sender, Frame e) {
-			if (Routers.TryGetValue(e.ConnectionID, out Router objRouter)) {
-				objRouter.Process(QueueProvider.GetSenderQueue(e.QueueID), e);
+		private void PublisherQueue_Rx(object sender, RabbitMQFrame e) {
+			if(e.FrameType == RabbitMQFrameType.Messaging) {
+				var objRoutingFrame = new RoutingFrame(e.Data);
+				if (Routers.TryGetValue(objRoutingFrame.ConnectionID, out Router objRouter)) {
+					objRouter.Transmit(e.Data);
+				} else {
+					//ToDo: error handling/logging
+				}
 			} else {
-				//ToDo: Logging
+				//ToDo: handle control messages
 			}
 		}
-
 
 		/// <summary>
 		/// Creates a Router object that provides communication between the client
@@ -46,15 +52,15 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 		/// <returns></returns>
 		public IRouter Create(IClientConnection pConnection) {
 			//Remove if already present
-			if(Routers.ContainsKey(pConnection.ID)) {
-				if(Routers.TryRemove(pConnection.ID, out Router objRouter)) {
+			if (Routers.ContainsKey(pConnection.ID)) {
+				if (Routers.TryRemove(pConnection.ID, out Router objRouter)) {
 					objRouter.Close();
 				}
 			}
 
 			var obj = new Router(MainQueue, RequestManager, pConnection);
 			obj.Disconnected += Router_Disconnected;
-			if(!Routers.TryAdd(pConnection.ID, obj)) {
+			if (!Routers.TryAdd(pConnection.ID, obj)) {
 				//ToDo: logging
 			}
 			return obj;

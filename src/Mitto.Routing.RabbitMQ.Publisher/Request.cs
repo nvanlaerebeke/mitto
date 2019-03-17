@@ -1,4 +1,6 @@
-﻿/// <summary>
+﻿using Mitto.IMessaging;
+using Mitto.IRouting;
+/// <summary>
 /// ToDo: Add downstream KeepAlive that check if the request is still being processed by the IConnection
 /// Will need to pass the actual connection instead of the connection id
 /// </summary>
@@ -14,8 +16,9 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 			ConsumerQueue = pConsumerQueue;
 		}
 
-		public void SetResponse(Frame pFrame) {
-			ConsumerQueue.Transmit(pFrame);
+		public void SetResponse(RoutingFrame pFrame) {
+			var objRabbitMQFrame = new RabbitMQFrame(RabbitMQFrameType.Messaging, RouterProvider.ID, pFrame.GetBytes());
+			ConsumerQueue.Transmit(objRabbitMQFrame);
 		}
 	}
 }

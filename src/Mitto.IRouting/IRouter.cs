@@ -22,5 +22,6 @@ namespace Mitto.IRouting {
 		string ConnectionID { get; }
 		void Transmit(byte[] pMessage);
 		void Close();
+		bool IsAlive(string pRequestID);
 	}
 }

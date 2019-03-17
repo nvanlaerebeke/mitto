@@ -37,7 +37,6 @@
     <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Action\Control\MessageStatusRequestAction.cs" />
     <Compile Include="Action\Request\ReceiveOnChannelRequestAction.cs" />
     <Compile Include="Action\Request\SendToChannelRequestAction.cs" />
     <Compile Include="Action\Subscribe\ChannelSubscribeAction.cs" />
@@ -45,7 +44,6 @@
     <Compile Include="Action\SubscriptionHandler\IChannelSubscriptionHandler.cs" />
     <Compile Include="Action\UnSubscribe\ChannelUnSubscribeAction.cs" />
     <Compile Include="Request\Interfaces\IEchoRequest.cs" />
-    <Compile Include="Control\IMessageStatusRequest.cs" />
     <Compile Include="Request\Interfaces\ISendToChannelRequest.cs" />
     <Compile Include="Request\ReceiveOnChannelRequest.cs" />
     <Compile Include="Request\SendToChannelRequest.cs" />
@@ -72,12 +70,10 @@
     <Compile Include="Notification\InfoNotification.cs" />
     <Compile Include="Notification\LogStatusNotification.cs" />
     <Compile Include="Request\RequestMessage.cs" />
-    <Compile Include="Control\MessageStatusRequest.cs" />
     <Compile Include="Request\EchoRequest.cs" />
     <Compile Include="Request\PingRequest.cs" />
     <Compile Include="Response\ResponseMessage.cs" />
     <Compile Include="Response\ACKResponse.cs" />
-    <Compile Include="Response\MessageStatusResponse.cs" />
     <Compile Include="Response\EchoResponse.cs" />
     <Compile Include="Response\PongResponse.cs" />
     <Compile Include="MessagingException.cs" />

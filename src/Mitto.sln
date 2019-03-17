@@ -65,6 +65,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.ILogging", "Mitto.ILo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Routing.RabbitMQ.Tests", "Mitto.Routing.RabbitMQ.Tests\Mitto.Routing.RabbitMQ.Tests.csproj", "{4D2BF136-C342-4471-ABAB-BD86E0B19D1A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Routing", "Mitto.Routing\Mitto.Routing.csproj", "{6FFEFEF0-8B67-45C8-9ABA-A1E6D276B1C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Routing.Tests", "Mitto.Routing.Tests\Mitto.Routing.Tests.csproj", "{DA10E40B-D532-4036-86BC-D46DC18A9DEC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -297,6 +301,22 @@ Global
 		{4D2BF136-C342-4471-ABAB-BD86E0B19D1A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4D2BF136-C342-4471-ABAB-BD86E0B19D1A}.Release|x64.ActiveCfg = Release|Any CPU
 		{4D2BF136-C342-4471-ABAB-BD86E0B19D1A}.Release|x64.Build.0 = Release|Any CPU
+		{6FFEFEF0-8B67-45C8-9ABA-A1E6D276B1C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FFEFEF0-8B67-45C8-9ABA-A1E6D276B1C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FFEFEF0-8B67-45C8-9ABA-A1E6D276B1C2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6FFEFEF0-8B67-45C8-9ABA-A1E6D276B1C2}.Debug|x64.Build.0 = Debug|Any CPU
+		{6FFEFEF0-8B67-45C8-9ABA-A1E6D276B1C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FFEFEF0-8B67-45C8-9ABA-A1E6D276B1C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FFEFEF0-8B67-45C8-9ABA-A1E6D276B1C2}.Release|x64.ActiveCfg = Release|Any CPU
+		{6FFEFEF0-8B67-45C8-9ABA-A1E6D276B1C2}.Release|x64.Build.0 = Release|Any CPU
+		{DA10E40B-D532-4036-86BC-D46DC18A9DEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA10E40B-D532-4036-86BC-D46DC18A9DEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA10E40B-D532-4036-86BC-D46DC18A9DEC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DA10E40B-D532-4036-86BC-D46DC18A9DEC}.Debug|x64.Build.0 = Debug|Any CPU
+		{DA10E40B-D532-4036-86BC-D46DC18A9DEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA10E40B-D532-4036-86BC-D46DC18A9DEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA10E40B-D532-4036-86BC-D46DC18A9DEC}.Release|x64.ActiveCfg = Release|Any CPU
+		{DA10E40B-D532-4036-86BC-D46DC18A9DEC}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

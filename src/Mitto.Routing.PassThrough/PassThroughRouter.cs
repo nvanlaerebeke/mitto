@@ -2,6 +2,8 @@
 using Mitto.IMessaging;
 using Mitto.IRouting;
 using System.Runtime.CompilerServices;
+using Mitto.Routing.Response;
+using System.Threading;
 
 [assembly: InternalsVisibleToAttribute("Mitto.Routing.PassThrough.Tests")]
 namespace Mitto.Routing.PassThrough {
@@ -32,11 +34,18 @@ namespace Mitto.Routing.PassThrough {
 
 		/// <summary>
 		/// Receive data from the connection to be passed to the IMessageProcessor
+		/// 
+		/// ToDo: don't use IClientConnection in ControlFactory but use IRouter
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void Connection_Rx(object sender, byte[] e) {
-			MessagingFactory.Processor.Process(this, e);
+			var obj = new RoutingFrame(e);
+			if (obj.FrameType == RoutingFrameType.Messaging) {
+				MessagingFactory.Processor.Process(this, obj.Data);
+			} else {
+				ControlFactory.Processor.Process(this, new ControlFrame(obj.Data));
+			}
 		}
 
 		/// <summary>
@@ -52,6 +61,19 @@ namespace Mitto.Routing.PassThrough {
 		/// </summary>
 		public void Close() {
 			Connection.Rx -= Connection_Rx;
+		}
+
+		public bool IsAlive(string pRequestID) {
+			var blnIsAlive = false;
+			ManualResetEvent objWait = new ManualResetEvent(false);
+
+			ControlFactory.Processor.Request<GetMessageStatusResponse>(this, new Request.GetMessageStatusRequest(pRequestID), (GetMessageStatusResponse r) => {
+				blnIsAlive = r.IsAlive;
+				objWait.Set();
+			});
+			objWait.WaitOne(15);
+
+			return blnIsAlive;
 		}
 	}
 }

@@ -22,18 +22,31 @@ namespace Mitto.Messaging {
 					case MessageType.Notification:
 						try {
 							((INotificationAction)pAction).Start();
-						} catch (Exception) { /* ignore */ }
-						break;
-					case MessageType.Request:
-					case MessageType.Sub:
-					case MessageType.UnSub:
-						try {
-							pClient.Transmit(
-								(IResponseMessage)pAction.GetType().GetMethod("Start").Invoke(pAction, new object[0])
+						} catch (Exception ex) {
+							Log.Error(
+								$"Error in Notification Action {pAction.GetType().Name} for {pClient.ID}{Environment.NewLine}" +
+								$"{ex.Message}{Environment.NewLine}" +
+								$"{ex.StackTrace}"
 							);
+							/* ignore */
+						}
+						break;
+					default:
+						try {
+							var objResponse = pAction.GetType().GetMethod("Start").Invoke(pAction, new object[0]);
+							if (objResponse != null) {
+								pClient.Transmit((IResponseMessage)objResponse);
+							}
 						} catch (TargetInvocationException objTargetInvocationException) {
 							var ex = objTargetInvocationException.InnerException;
 							ResponseStatus objStatus = (ex is MessagingException) ? ((MessagingException)ex).Status : new ResponseStatus(ResponseState.Error);
+
+							Log.Error(
+								$"Error in Action {pAction.GetType().Name} for {pClient.ID}{Environment.NewLine}" +
+								$"{ex.Message}{Environment.NewLine}" +
+								$"{ex.StackTrace}"
+							);
+
 							var objResponse = MessagingFactory.Provider.GetResponseMessage(pMessage, objStatus);
 							if (objResponse != null) {
 								pClient.Transmit(objResponse);

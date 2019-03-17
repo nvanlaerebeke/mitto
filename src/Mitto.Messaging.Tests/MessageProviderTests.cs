@@ -118,28 +118,24 @@ namespace Mitto.Messaging.Tests {
 			var objProvider = new MessageProvider();
 
 			//Assert
-			Assert.IsTrue(objProvider.Types.ContainsKey(MessageType.Control));
 			Assert.IsTrue(objProvider.Types.ContainsKey(MessageType.Notification));
 			Assert.IsTrue(objProvider.Types.ContainsKey(MessageType.Request));
 			Assert.IsTrue(objProvider.Types.ContainsKey(MessageType.Response));
 			Assert.IsTrue(objProvider.Types.ContainsKey(MessageType.Sub));
 			Assert.IsTrue(objProvider.Types.ContainsKey(MessageType.UnSub));
 
-			Assert.IsTrue(objProvider.Types[MessageType.Control].Count.Equals(1));
 			Assert.IsTrue(objProvider.Types[MessageType.Notification].Count.Equals(2));
 			Assert.IsTrue(objProvider.Types[MessageType.Request].Count.Equals(4));
-			Assert.IsTrue(objProvider.Types[MessageType.Response].Count.Equals(4));
+			Assert.IsTrue(objProvider.Types[MessageType.Response].Count.Equals(3));
 			Assert.IsTrue(objProvider.Types[MessageType.Sub].Count.Equals(1));
 			Assert.IsTrue(objProvider.Types[MessageType.UnSub].Count.Equals(1));
 
-			Assert.IsTrue(objProvider.Actions.ContainsKey(MessageType.Control));
 			Assert.IsTrue(objProvider.Actions.ContainsKey(MessageType.Notification));
 			Assert.IsTrue(objProvider.Actions.ContainsKey(MessageType.Request));
 			Assert.IsTrue(objProvider.Actions.ContainsKey(MessageType.Sub));
 			Assert.IsTrue(objProvider.Actions.ContainsKey(MessageType.UnSub));
 			Assert.IsTrue(!objProvider.Actions.ContainsKey(MessageType.Response));
 
-			Assert.IsTrue(objProvider.Actions[MessageType.Control].Count.Equals(1));
 			Assert.IsTrue(objProvider.Actions[MessageType.Notification].Count.Equals(2));
 			Assert.IsTrue(objProvider.Actions[MessageType.Request].Count.Equals(4));
 			Assert.IsTrue(objProvider.Actions[MessageType.Sub].Count.Equals(1));
@@ -160,27 +156,23 @@ namespace Mitto.Messaging.Tests {
 			var objProvider = new MessageProvider("Mitto.Messaging.Tests.TestData");
 
 			//Assert
-			Assert.IsTrue(objProvider.Types.ContainsKey(MessageType.Control));
 			Assert.IsTrue(objProvider.Types.ContainsKey(MessageType.Notification));
 			Assert.IsTrue(objProvider.Types.ContainsKey(MessageType.Request));
 			Assert.IsTrue(objProvider.Types.ContainsKey(MessageType.Response));
 			Assert.IsTrue(objProvider.Types.ContainsKey(MessageType.Sub));
 			Assert.IsTrue(objProvider.Types.ContainsKey(MessageType.UnSub));
 
-			Assert.IsTrue(objProvider.Types[MessageType.Control].Count.Equals(1));
 			Assert.IsTrue(objProvider.Types[MessageType.Notification].Count.Equals(3));
 			Assert.IsTrue(objProvider.Types[MessageType.Request].Count.Equals(5));
-			Assert.IsTrue(objProvider.Types[MessageType.Response].Count.Equals(5));
+			Assert.IsTrue(objProvider.Types[MessageType.Response].Count.Equals(4));
 			Assert.IsTrue(objProvider.Types[MessageType.Sub].Count.Equals(2));
 			Assert.IsTrue(objProvider.Types[MessageType.UnSub].Count.Equals(2));
 
-			Assert.IsTrue(objProvider.Actions.ContainsKey(MessageType.Control));
 			Assert.IsTrue(objProvider.Actions.ContainsKey(MessageType.Notification));
 			Assert.IsTrue(objProvider.Actions.ContainsKey(MessageType.Request));
 			Assert.IsTrue(objProvider.Actions.ContainsKey(MessageType.UnSub));
 			Assert.IsTrue(!objProvider.Actions.ContainsKey(MessageType.Response));
 
-			Assert.IsTrue(objProvider.Actions[MessageType.Control].Count.Equals(1));
 			Assert.IsTrue(objProvider.Actions[MessageType.Notification].Count.Equals(3));
 			Assert.IsTrue(objProvider.Actions[MessageType.Request].Count.Equals(5));
 			Assert.IsTrue(objProvider.Actions[MessageType.Sub].Count.Equals(2));

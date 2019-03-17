@@ -37,12 +37,12 @@
     <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Frame.cs" />
     <Compile Include="QueueProvider.cs" />
+    <Compile Include="RabbitMQFrameType.cs" />
     <Compile Include="RabbitMQParams.cs" />
     <Compile Include="ReaderQueue.cs" />
+    <Compile Include="RabbitMQFrame.cs" />
     <Compile Include="SenderQueue.cs" />
-    <Compile Include="RabbitMQMessageFormat.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mitto.ILogging\Mitto.ILogging.csproj">

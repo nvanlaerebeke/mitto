@@ -10,6 +10,23 @@ Minimum ToDo's:
 	  This is to prevent missuse
 
 Improvements:
+	- Improve MessageProvider so that it takes in all the messages in the entire application based on the 
+	  interfaces/base classes it implements, like done for the ControlProvider
+	  This will prevent the need for passing the namespace
+	  Still need to keep the option of the namespaces due to priorities etc
+	  By default overwrite the Mitto.* classes with the application it's classes
+
+	- Move Control messages away from IMessaging and implement them outside of it
+	  Move to the Router, use ControlFrame just as in RabbitMQ implementation, implementation 
+	  should be something router specific as only it knows how to get the status or who or what
+	  to pass the request onto
+
+    - implement compression for data that is transfered using IConnection or Json
+	    Prevent double compression from Json && IConnection
+		On what layer should compression be implemented?, test difference between 
+		compressing the json text vs compressing the UTF32.GetBytes byte[]
+
+
 	- Add a version to the Frame's being sent - can be useful for backwards compatibility when making changes 
 	  to the way data is being encapsulated, can be taken from the AssemblyVersion
 
@@ -62,6 +79,8 @@ Improvements:
 		- Make the Queue prefix configurable, by default(currently hardcoded) the prefix should be 'Mitto'
 		  Useful for when having multiple applications using Mitto, all apps can use the same RabbitMQ setup
 		  This way users do not have to set up a RabbitMQ instance/application that uses Mitto
+
+		- Add a status page (WebPage) that can be viewed when enabled on port x 
 
 Documentation:
 	- go over the comments in the code - add/improve/fix them where needed

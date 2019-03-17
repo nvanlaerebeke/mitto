@@ -16,7 +16,7 @@ namespace Mitto.Messaging {
 
 		public IRequestMessage Message { get; private set; }
 
-		public Request(IClient pClient, IRequestMessage pMessage, Action<T> pCallback) : this(pClient, pMessage, pCallback, new KeepAliveMonitor(30)) { }
+		public Request(IClient pClient, IRequestMessage pMessage, Action<T> pCallback) : this(pClient, pMessage, pCallback, new KeepAliveMonitor(5)) { }
 
 		public Request(IClient pClient, IRequestMessage pMessage, Action<T> pCallback, IKeepAliveMonitor pKeepAliveMonitor) {
 			_objClient = pClient;
@@ -40,15 +40,12 @@ namespace Mitto.Messaging {
 			Log.Info($"Request {Message.Name}({Message.ID}) timed out on {_objClient.ID}, checking status...");
 			_objKeepAliveMonitor.StartCountDown();
 
-			_objClient.Request<Response.MessageStatusResponse>(new Control.MessageStatusRequest(Message.ID), (r => {
-				if (
-					r.RequestStatus == MessageStatusType.Busy ||
-					r.RequestStatus == MessageStatusType.Queued
-				) {
+			Task.Run(() => {
+				if(_objClient.IsAlive(Message.ID)) {
 					_objKeepAliveMonitor.Reset();
-					Log.Info($"Request {Message.Name}({Message.ID}) on {_objClient.ID}");
 				}
-			}));
+				Log.Info($"Request {Message.Name}({Message.ID}) on {_objClient.ID}");
+			});
 		}
 
 		public void Transmit() {

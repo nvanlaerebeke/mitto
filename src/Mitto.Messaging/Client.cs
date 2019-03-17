@@ -74,12 +74,14 @@ namespace Mitto.Messaging {
 		/// </summary>
 		/// <param name="pMessage"></param>
 		public void Transmit(IMessage pMessage) {
-			Router.Transmit(new Frame(
-				pMessage.Type, 
+			var objMessageFrame = new Frame(
+				pMessage.Type,
 				pMessage.ID,
-				pMessage.Name, 
+				pMessage.Name,
 				MessagingFactory.Converter.GetByteArray(pMessage)
-			).GetByteArray());
+			);
+			var objRoutingFrame = new RoutingFrame(RoutingFrameType.Messaging, ID, objMessageFrame.GetByteArray());
+			Router.Transmit(objRoutingFrame.GetBytes());
 		}
 
 		public bool Equals(Client pClient) {
@@ -92,6 +94,10 @@ namespace Mitto.Messaging {
 			return (
 				this.ID == pClient.ID
 			);
+		}
+
+		public bool IsAlive(string pRequestID) {
+			return Router.IsAlive(pRequestID);
 		}
 	}
 }

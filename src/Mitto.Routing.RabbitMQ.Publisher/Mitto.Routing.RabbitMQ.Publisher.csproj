@@ -42,10 +42,11 @@
     <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Action\Request\GetMessageStatusRequestAction.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="Router.cs" />
     <Compile Include="RouterProvider.cs" />
-    <Compile Include="RequestManager.cs" />
+    <Compile Include="MessageManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mitto.IConnection\Mitto.IConnection.csproj">
@@ -64,9 +65,17 @@
       <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
       <Name>Mitto.IRouting</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Mitto.Messaging\Mitto.Messaging.csproj">
+      <Project>{c29037e3-9c2f-4996-8434-36600735d465}</Project>
+      <Name>Mitto.Messaging</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Mitto.Routing.RabbitMQ\Mitto.Routing.RabbitMQ.csproj">
       <Project>{3cb0e6c9-133e-49d7-a393-4fcc9ddeb72b}</Project>
       <Name>Mitto.Routing.RabbitMQ</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Routing\Mitto.Routing.csproj">
+      <Project>{6ffefef0-8b67-45c8-9aba-a1e6d276b1c2}</Project>
+      <Name>Mitto.Routing</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

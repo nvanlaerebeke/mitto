@@ -42,7 +42,6 @@
     <Compile Include="Action\Notification\InfoTests.cs" />
     <Compile Include="Action\Notification\LogStatusTests.cs" />
     <Compile Include="Action\Request\EchoTests.cs" />
-    <Compile Include="Action\Request\MessageStatusTests.cs" />
     <Compile Include="Action\Request\PingTests.cs" />
     <Compile Include="Action\Request\ReceiveOnChannelTests.cs" />
     <Compile Include="Action\Request\SendToChannelTests.cs" />
@@ -59,12 +58,10 @@
     <Compile Include="Notification\LogStatusTests.cs" />
     <Compile Include="RequestTests.cs" />
     <Compile Include="Request\EchoTests.cs" />
-    <Compile Include="Request\MessageStatusTests.cs" />
     <Compile Include="Request\PingTests.cs" />
     <Compile Include="Request\ReceiveOnChannelTests.cs" />
     <Compile Include="Request\SendToChannel.cs" />
     <Compile Include="Response\ACKTests.cs" />
-    <Compile Include="Response\MessageStatusTests.cs" />
     <Compile Include="Response\PongTests.cs" />
     <Compile Include="Response\EchoTests.cs" />
     <Compile Include="Subscribe\ChannelTests.cs" />

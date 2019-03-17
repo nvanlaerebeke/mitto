@@ -37,7 +37,8 @@
     <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Message.cs" />
+    <Compile Include="RoutingFrame.cs" />
+    <Compile Include="RoutingFrameType.cs" />
     <Compile Include="IRouter.cs" />
     <Compile Include="RouterFactory.cs" />
     <Compile Include="IRouterProvider.cs" />

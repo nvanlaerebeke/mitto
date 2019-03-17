@@ -49,6 +49,9 @@ namespace Mitto.Messaging {
 		/// and passes it to the RequestManager in case it's an IResponseMessage, 
 		/// otherwise an IAction is created and is passed to the IActionManager
 		/// to handle the IAction lifetime
+		/// 
+		/// ToDo: Pass the IMessaging.Frame here intead of byte[]
+		///       Also rename Frame to MessageFrame
 		/// </summary>
 		/// <param name="pClient"></param>
 		/// <param name="pData"></param>

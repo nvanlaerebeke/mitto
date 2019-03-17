@@ -1,4 +1,5 @@
 ﻿using Mitto.ILogging;
+using Mitto.IRouting;
 using RabbitMQ.Client;
 using System;
 using System.Collections.Concurrent;
@@ -8,7 +9,7 @@ namespace Mitto.Routing.RabbitMQ {
 	public class SenderQueue {
 		private ILog Log => LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		private BlockingCollection<Frame> _lstTransmitQueue = new BlockingCollection<Frame>();
+		private BlockingCollection<RabbitMQFrame> _lstTransmitQueue = new BlockingCollection<RabbitMQFrame>();
 
 		private CancellationTokenSource _objCancelationSource = new CancellationTokenSource();
 		private CancellationToken _objCancelationToken;
@@ -48,7 +49,7 @@ namespace Mitto.Routing.RabbitMQ {
 			}) { IsBackground = true }.Start();
 		}
 
-		public void Transmit(Frame pFrame) {
+		public void Transmit(RabbitMQFrame pFrame) {
 			_lstTransmitQueue.Add(pFrame);
 		}
 

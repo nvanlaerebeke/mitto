@@ -178,6 +178,10 @@ namespace Mitto {
 			objTask.Wait();
 			return objTask.Result;
 		}
+
+		public bool IsMessageAlive(IRequestMessage pRequest) {
+			return Router.IsAlive(pRequest.ID);
+		}
 		#endregion
 	}
 }

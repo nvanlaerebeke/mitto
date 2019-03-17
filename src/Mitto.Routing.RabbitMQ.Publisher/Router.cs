@@ -1,8 +1,10 @@
 ﻿using Mitto.IConnection;
 using Mitto.IMessaging;
 using Mitto.IRouting;
+using Mitto.Routing.Response;
 using System;
 using System.Linq;
+using System.Threading;
 
 namespace Mitto.Routing.RabbitMQ.Publisher {
 	/// <summary>
@@ -25,7 +27,7 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 		/// <summary>
 		/// Class that manages all the requests
 		/// </summary>
-		private readonly RequestManager RequestManager;
+		private readonly MessageManager MessageManager;
 
 		/// <summary>
 		/// Client connection
@@ -48,8 +50,8 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 		/// </summary>
 		/// <param name="pParams"></param>
 		/// <param name="pConnection"></param>
-		public Router(SenderQueue pMainQueue, RequestManager pRequestManager, IClientConnection pConnection) {
-			RequestManager = pRequestManager;
+		public Router(SenderQueue pMainQueue, MessageManager pMessageManager, IClientConnection pConnection) {
+			MessageManager = pMessageManager;
 
 			Connection = pConnection;
 			Connection.Rx += Connection_Rx;
@@ -68,15 +70,16 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		public void Process(SenderQueue pOrigin, Frame objFrame) {
+		public void Process(SenderQueue pOrigin, RoutingFrame pFrame) {
+			var objFrame = new Frame(pFrame.Data);
 			if (
-				objFrame.MessageType != IMessaging.MessageType.Response &&
-				objFrame.MessageType != IMessaging.MessageType.Notification
+				objFrame.Type != MessageType.Response &&
+				objFrame.Type != MessageType.Notification
 			) {
-				RequestManager.AddRequest(
+				MessageManager.AddRequest(
 					new Request(
-						objFrame.ConnectionID,
-						objFrame.MessageID,
+						pFrame.ConnectionID,
+						objFrame.ID,
 						pOrigin
 					)
 				);
@@ -92,13 +95,11 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void Connection_Rx(object sender, byte[] e) {
-			var objFrame = new Frame(RouterProvider.ID, ConnectionID, e);
-			if (
-				objFrame.MessageType == MessageType.Response
-			) {
-				RequestManager.SetResponse(objFrame);
+			var objFrame = new RoutingFrame(e);
+			if (objFrame.FrameType == RoutingFrameType.Messaging) {
+				MessageManager.Process(objFrame);
 			} else {
-				MainQueue.Transmit(objFrame);
+				ControlFactory.Processor.Process(this, new ControlFrame(objFrame.Data));
 			}
 		}
 
@@ -116,6 +117,18 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 		public void Close() {
 			Connection.Rx -= Connection_Rx;
 			Disconnected?.Invoke(this, this);
+		}
+
+		public bool IsAlive(string pRequestID) {
+			var blnIsAlive = false;
+			ManualResetEvent objWait = new ManualResetEvent(false);
+
+			ControlFactory.Processor.Request<GetMessageStatusResponse>(this, new Routing.Request.GetMessageStatusRequest(pRequestID), (GetMessageStatusResponse r) => {
+				blnIsAlive = r.IsAlive;
+				objWait.Set();
+			});
+			objWait.WaitOne(15);
+			return blnIsAlive;
 		}
 	}
 }

@@ -47,7 +47,7 @@ namespace Mitto.Tests {
             });
 
             //Act
-            var objMessage = MessagingFactory.Converter.GetMessage(typeof(Message), new byte[] { 1, 2, 3, 4 });
+            var objMessage = MessagingFactory.Converter.GetMessage(typeof(IMessage), new byte[] { 1, 2, 3, 4 });
             var arrBytes = MessagingFactory.Converter.GetByteArray(objMessage);
 
             //Assert

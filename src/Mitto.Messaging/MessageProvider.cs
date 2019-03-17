@@ -104,7 +104,6 @@ namespace Mitto.Messaging {
 		/// <param name="pNamespace"></param>
 		private void LoadTypes(string pNamespace) {
 			Dictionary<MessageType, string> dicMessageNamespaces = new Dictionary<MessageType, string> {
-				{ MessageType.Control, ".Control" },
 				{ MessageType.Notification, ".Notification" },
 				{ MessageType.Request, ".Request" },
 				{ MessageType.Response, ".Response" },
@@ -121,7 +120,6 @@ namespace Mitto.Messaging {
 
 			//Actions
 			Dictionary<MessageType, string> dicActionNamespaces = new Dictionary<MessageType, string> {
-				{ MessageType.Control, ".Action.Control" },
 				{ MessageType.Notification, ".Action.Notification" },
 				{ MessageType.Request, ".Action.Request" },
 				{ MessageType.Sub, ".Action.Subscribe" },
@@ -185,8 +183,8 @@ namespace Mitto.Messaging {
 
 			//Requests have a response type, notifications do not
 			if (
-				pType.GetInterfaces().Any(i => 
-					i.Name.StartsWith("IRequestAction") || 
+				pType.GetInterfaces().Any(i =>
+					i.Name.StartsWith("IRequestAction") ||
 					i.Equals(typeof(INotificationAction))
 				)
 			) {
@@ -278,20 +276,20 @@ namespace Mitto.Messaging {
 						continue;
 					}
 					//foreach loaded assembly, get all it's types that match the given namespace
-						var arrTypes = (from t in ass.GetTypes() where t.IsClass && t.Namespace == pNamespace select t);
-					foreach (
-						var objType in arrTypes
-					) {
-						if (
-							objType.GetInterfaces().Contains(typeof(IRequestMessage)) ||
-							objType.GetInterfaces().Contains(typeof(IResponseMessage)) ||
-							objType.GetInterfaces().Contains(typeof(IAction)) ||
-							objType.Namespace.Contains(".Action.SubscriptionHandler") //is a generic type, easy solution is to just check the namespace string instead of  IsSubclassOf(typeof(Action.BaseAction<T>))
-																					  //objType.IsSubclassOf(typeof(NotificationMessage)) ||
-						) {
-							lstTypes.Add(objType);
-						}
-					}
+					(
+						from t in ass.GetTypes()
+						where
+							t.IsClass &&
+							t.Namespace == pNamespace &&
+							!t.IsAbstract &&
+							(
+								t.GetInterfaces().Contains(typeof(IRequestMessage)) ||
+								t.GetInterfaces().Contains(typeof(IResponseMessage)) ||
+								t.GetInterfaces().Contains(typeof(IAction)) ||
+								t.Namespace.Contains(".Action.SubscriptionHandler") //is a generic type, easy solution is to just check the namespace string instead of  IsSubclassOf(typeof(Action.BaseAction<T>))
+							)
+						select t
+					).ToList().ForEach(t => lstTypes.Add(t) );
 				} catch (Exception) { }
 			}
 			return lstTypes;
