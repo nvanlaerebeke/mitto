@@ -1,4 +1,5 @@
 ﻿using Mitto.IMessaging;
+using Mitto.IRouting;
 using NUnit.Framework;
 
 namespace Mitto.Messaging.Tests.UnSubscribe {

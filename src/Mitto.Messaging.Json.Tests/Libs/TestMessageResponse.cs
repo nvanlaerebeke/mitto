@@ -1,5 +1,6 @@
 ﻿using System;
 using Mitto.IMessaging;
+using Mitto.IRouting;
 
 namespace Mitto.Messaging.Json.Tests.Libs {
 	public class TestMessageResponse : IResponseMessage {

@@ -56,8 +56,8 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void MainQueue_Rx(object sender, RabbitMQFrame e) {
-			new MessageRouter(ID, QueueProvider.GetSenderQueue(e.QueueID), e).Start();
+		private void MainQueue_Rx(object sender, RoutingFrame e) {
+			new MessageRouter(ID, QueueProvider.GetSenderQueue(e.SourceID), e).Start();
 		}
 
 		/// <summary>
@@ -68,8 +68,8 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void ConsumerQueue_Rx(object sender, RabbitMQFrame e) {
-			new MessageRouter(ID, QueueProvider.GetSenderQueue(e.QueueID), e).Start();
+		private void ConsumerQueue_Rx(object sender, RoutingFrame e) {
+			new MessageRouter(ID, QueueProvider.GetSenderQueue(e.SourceID), e).Start();
 		}
 
 		/// <summary>

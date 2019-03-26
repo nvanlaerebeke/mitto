@@ -1,4 +1,5 @@
 ﻿using Mitto.IMessaging;
+using Mitto.IRouting;
 using System;
 
 namespace Mitto.Messaging {

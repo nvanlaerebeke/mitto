@@ -1,4 +1,6 @@
-﻿namespace Mitto.IMessaging {
+﻿using Mitto.IRouting;
+
+namespace Mitto.IMessaging {
 	/// <summary>
 	/// Providers the messages and actions for the specific provider
 	/// 

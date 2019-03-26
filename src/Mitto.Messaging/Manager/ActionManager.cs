@@ -1,5 +1,6 @@
 ﻿using Mitto.ILogging;
 using Mitto.IMessaging;
+using Mitto.IRouting;
 using System;
 using System.Collections.Concurrent;
 using System.Reflection;
@@ -58,11 +59,11 @@ namespace Mitto.Messaging {
 			}
 		}
 
-		public MessageStatusType GetStatus(string pRequestID) {
+		public MessageStatus GetStatus(string pRequestID) {
 			if (Actions.ContainsKey(pRequestID)) {
-				return MessageStatusType.Busy;
+				return MessageStatus.Busy;
 			}
-			return MessageStatusType.UnKnown;
+			return MessageStatus.UnKnown;
 		}
 	}
 }

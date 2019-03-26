@@ -6,6 +6,11 @@ using System;
 using System.Threading.Tasks;
 
 namespace Mitto.Routing.RabbitMQ {
+	/// <summary>
+	/// ToDo: Add an option to make a read/write queue exclusive
+	/// The read queues for the publishers will be exclusive
+	/// Same for the Consumers
+	/// </summary>
 	public class ReaderQueue {
 		private ILog Log {
 			get {
@@ -13,7 +18,7 @@ namespace Mitto.Routing.RabbitMQ {
 			}
 		}
 
-		public event EventHandler<RabbitMQFrame> Rx;
+		public event EventHandler<RoutingFrame> Rx;
 
 		public ReaderQueue(string pQueueName) {
 			StartListening(pQueueName);
@@ -33,7 +38,7 @@ namespace Mitto.Routing.RabbitMQ {
 			var consumer = new EventingBasicConsumer(channel);
 			consumer.Received += (model, ea) => {
 				Task.Run(() => {
-					Rx?.Invoke(this, new RabbitMQFrame(ea.Body));
+					Rx?.Invoke(this, new RoutingFrame(ea.Body));
 				});
 			};
 			channel.BasicConsume(queue: pName, autoAck: true, consumer: consumer);

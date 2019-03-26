@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Mitto.IRouting;
+using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 namespace Mitto.IMessaging {

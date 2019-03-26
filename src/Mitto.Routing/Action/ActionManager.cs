@@ -19,7 +19,9 @@ namespace Mitto.Routing.Action {
 						pConnection.Transmit(
 							new RoutingFrame(
 								RoutingFrameType.Control,
+								pFrame.RequestID,
 								pConnection.ConnectionID,
+								"",
 								objResponse.GetFrame().GetBytes()
 							).GetBytes()
 						);

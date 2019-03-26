@@ -5,27 +5,35 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
 	internal class MessageRouter : IRouter {
 		public string ConnectionID { get; private set; }
 
-		private readonly RabbitMQFrame RabbitMQFrame;
 		private readonly RoutingFrame Frame;
 		private readonly SenderQueue Publisher;
 
-		public MessageRouter(string pConsumerID, SenderQueue pPublisher, RabbitMQFrame pFrame) {
+		public MessageRouter(string pConsumerID, SenderQueue pPublisher, RoutingFrame pFrame) {
 			ConnectionID = pConsumerID;
 			Publisher = pPublisher;
-			RabbitMQFrame = pFrame;
-			Frame = new RoutingFrame(pFrame.Data);
+			Frame = pFrame;
 		}
 
 		public void Start() {
-			MessagingFactory.Processor.Process(this, new RoutingFrame(RabbitMQFrame.Data).Data);
+			MessagingFactory.Processor.Process(this, Frame.Data);
 		}
 
 		public void Close() { }
 
+		public void Receive(byte[] pData) {
+			//nothing to do, not applicable for RabbitMQ consumer
+		}
+
 		public void Transmit(byte[] pData) {
-			var objRoutingFrame = new RoutingFrame(RoutingFrameType.Messaging, Frame.ConnectionID, pData);
-			var objRabbitMQFrame = new RabbitMQFrame(RabbitMQFrameType.Messaging, ConnectionID, objRoutingFrame.GetBytes());
-			Publisher.Transmit(objRabbitMQFrame);
+			var objFrame = new RoutingFrame(
+				RoutingFrameType.Messaging,
+				Frame.RequestID,
+				Consumer.ID,
+				Frame.DestinationID,
+				new RoutingFrame(pData).Data
+			);
+			var objMessage = IMessaging.MessagingFactory.Provider.GetMessage(pData);
+			Publisher.Transmit(objFrame);
 		}
 
 		public bool IsAlive(string pRequestID) {

@@ -1,4 +1,5 @@
 ﻿using Mitto.IMessaging;
+using Mitto.IRouting;
 
 namespace Mitto.Messaging.Tests.TestData.Response {
 	public class ResponseTestMessage : ResponseMessage {

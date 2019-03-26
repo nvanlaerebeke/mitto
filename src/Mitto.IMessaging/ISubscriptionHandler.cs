@@ -1,4 +1,6 @@
-﻿namespace Mitto.IMessaging {
+﻿using Mitto.IRouting;
+
+namespace Mitto.IMessaging {
 	public interface ISubscriptionHandler<S, U, N> 
 		where S : IRequestMessage
 		where U : IRequestMessage

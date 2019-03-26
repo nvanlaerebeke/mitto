@@ -9,7 +9,7 @@ namespace Mitto.Routing.RabbitMQ {
 	public class SenderQueue {
 		private ILog Log => LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		private BlockingCollection<RabbitMQFrame> _lstTransmitQueue = new BlockingCollection<RabbitMQFrame>();
+		private BlockingCollection<RoutingFrame> _lstTransmitQueue = new BlockingCollection<RoutingFrame>();
 
 		private CancellationTokenSource _objCancelationSource = new CancellationTokenSource();
 		private CancellationToken _objCancelationToken;
@@ -49,7 +49,7 @@ namespace Mitto.Routing.RabbitMQ {
 			}) { IsBackground = true }.Start();
 		}
 
-		public void Transmit(RabbitMQFrame pFrame) {
+		public void Transmit(RoutingFrame pFrame) {
 			_lstTransmitQueue.Add(pFrame);
 		}
 

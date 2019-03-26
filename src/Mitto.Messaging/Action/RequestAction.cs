@@ -1,4 +1,5 @@
 ﻿using Mitto.IMessaging;
+using Mitto.IRouting;
 
 namespace Mitto.Messaging.Action {
 	public abstract class RequestAction<I, O> : BaseAction<I>, IRequestAction<O>

@@ -43,10 +43,11 @@
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Action\Request\GetMessageStatusRequestAction.cs" />
-    <Compile Include="Request.cs" />
+    <Compile Include="Request\CanStartActionRequest.cs" />
+    <Compile Include="Response\CanStartActionResponse.cs" />
     <Compile Include="Router.cs" />
+    <Compile Include="RouterCache.cs" />
     <Compile Include="RouterProvider.cs" />
-    <Compile Include="MessageManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mitto.IConnection\Mitto.IConnection.csproj">
@@ -76,6 +77,10 @@
     <ProjectReference Include="..\Mitto.Routing\Mitto.Routing.csproj">
       <Project>{6ffefef0-8b67-45c8-9aba-a1e6d276b1c2}</Project>
       <Name>Mitto.Routing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Utilities\Mitto.Utilities.csproj">
+      <Project>{d184bf09-fd6d-4f36-bc6e-bf05e763e3ac}</Project>
+      <Name>Mitto.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

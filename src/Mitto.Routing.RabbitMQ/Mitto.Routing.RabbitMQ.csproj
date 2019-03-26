@@ -37,11 +37,13 @@
     <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="ControlRequest.cs" />
     <Compile Include="QueueProvider.cs" />
-    <Compile Include="RabbitMQFrameType.cs" />
     <Compile Include="RabbitMQParams.cs" />
+    <Compile Include="RabbitMQRequest.cs" />
     <Compile Include="ReaderQueue.cs" />
-    <Compile Include="RabbitMQFrame.cs" />
+    <Compile Include="Request\CanStartActionRequest.cs" />
+    <Compile Include="Response\CanStartActionResponse.cs" />
     <Compile Include="SenderQueue.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -56,6 +58,10 @@
     <ProjectReference Include="..\Mitto.IRouting\Mitto.IRouting.csproj">
       <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
       <Name>Mitto.IRouting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Routing\Mitto.Routing.csproj">
+      <Project>{6ffefef0-8b67-45c8-9aba-a1e6d276b1c2}</Project>
+      <Name>Mitto.Routing</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

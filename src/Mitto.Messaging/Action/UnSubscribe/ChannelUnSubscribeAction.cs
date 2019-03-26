@@ -1,6 +1,7 @@
 ﻿using Mitto.IMessaging;
 using Mitto.Messaging.UnSubscribe;
 using Mitto.Messaging.Response;
+using Mitto.IRouting;
 
 namespace Mitto.Messaging.Action.UnSubscribe {
 	public class ChannelUnSubscribeAction : RequestAction<ChannelUnSubscribe, ACKResponse> {

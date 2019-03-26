@@ -137,10 +137,10 @@ namespace Mitto.Messaging.Tests {
 		[Test, Sequential]
 		public void GetStatusTest(
 			[Values(
-				MessageStatusType.Busy,
-				MessageStatusType.Queued,
-				MessageStatusType.UnKnown
-			)]	MessageStatusType pType,
+				MessageStatus.Busy,
+				MessageStatus.Queued,
+				MessageStatus.UnKnown
+			)]	MessageStatus pType,
 			[Values(false, false, true)] bool pRequestManagerExpected
 		) {
 			//Arrange

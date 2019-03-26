@@ -1,4 +1,6 @@
-﻿namespace Mitto.IMessaging {
+﻿using Mitto.IRouting;
+
+namespace Mitto.IMessaging {
 	public interface IAction { }
 
 	public interface IRequestAction<O> : IAction where O: IResponseMessage {

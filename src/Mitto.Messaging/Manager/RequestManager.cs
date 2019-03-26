@@ -1,5 +1,6 @@
 ﻿using Mitto.ILogging;
 using Mitto.IMessaging;
+using Mitto.IRouting;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 
@@ -36,11 +37,11 @@ namespace Mitto.Messaging {
 			}
 		}
 
-		public MessageStatusType GetStatus(string pRequestID) {
+		public MessageStatus GetStatus(string pRequestID) {
 			if(Requests.ContainsKey(pRequestID)) {
-				return MessageStatusType.Queued;
+				return MessageStatus.Queued;
 			}
-			return MessageStatusType.UnKnown;
+			return MessageStatus.UnKnown;
 		}
 
 		private void RequestTimedOut(object sender, IRequest e) {

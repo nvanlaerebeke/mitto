@@ -5,6 +5,7 @@ using System.Linq;
 using Mitto.IMessaging;
 using System.Threading.Tasks;
 using System.Threading;
+using Mitto.IRouting;
 
 namespace Mitto.Messaging.Tests {
 	[TestFixture]
@@ -218,7 +219,7 @@ namespace Mitto.Messaging.Tests {
 			});
 			Thread.Sleep(25);
 			//Assert
-			Assert.AreEqual(MessageStatusType.Busy, obj.GetStatus(objMessage.ID));
+			Assert.AreEqual(MessageStatus.Busy, obj.GetStatus(objMessage.ID));
 
 		}
 
@@ -238,7 +239,7 @@ namespace Mitto.Messaging.Tests {
 			var obj = new ActionManager();
 
 			//Assert
-			Assert.AreEqual(MessageStatusType.UnKnown, obj.GetStatus("MyID"));
+			Assert.AreEqual(MessageStatus.UnKnown, obj.GetStatus("MyID"));
 		}
 	}
 }

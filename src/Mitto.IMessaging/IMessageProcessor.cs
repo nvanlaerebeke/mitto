@@ -5,6 +5,6 @@ namespace Mitto.IMessaging {
 	public interface IMessageProcessor {
 		void Process(IRouter pRouter, byte[] pData);
 		void Request<T>(IRouter pRouter, IRequestMessage pMessage, Action<T> pAction) where T : IResponseMessage;
-		MessageStatusType GetStatus(string pRequestID);
+		MessageStatus GetStatus(string pRequestID);
 	}
 }

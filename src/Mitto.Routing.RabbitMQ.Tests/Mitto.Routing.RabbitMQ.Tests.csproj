@@ -45,10 +45,17 @@
       <Project>{3bb1c211-9006-4fee-9f40-7556717431b0}</Project>
       <Name>Mitto.IMessaging</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Mitto.IRouting\Mitto.IRouting.csproj">
+      <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
+      <Name>Mitto.IRouting</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Mitto.Routing.RabbitMQ\Mitto.Routing.RabbitMQ.csproj">
       <Project>{3cb0e6c9-133e-49d7-a393-4fcc9ddeb72b}</Project>
       <Name>Mitto.Routing.RabbitMQ</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="RabbitMQFrameests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

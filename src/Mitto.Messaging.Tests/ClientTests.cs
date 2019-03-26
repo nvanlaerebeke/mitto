@@ -43,23 +43,6 @@ namespace Mitto.Messaging.Tests {
 			var objQueue = Substitute.For<IRouter>();
 			var objMessage = Substitute.For<IMessage>();
 
-			var arrData = new List<byte>();
-			var arrID = Encoding.UTF32.GetBytes("MyID");
-			var arrName = Encoding.UTF32.GetBytes("MyName");
-
-			objMessage.Type.Returns(MessageType.Request);
-			objMessage.ID.Returns("MyID");
-			objMessage.Name.Returns("MyName");
-
-			arrData.Add((byte)MessageType.Request);
-			arrData.Add((byte)arrID.Length);
-			arrData.AddRange(arrID);
-			arrData.Add((byte)arrName.Length);
-			arrData.AddRange(arrName);
-			arrData.AddRange(new byte[] { 1, 2, 3, 4, 5 });
-
-			objConverter.GetByteArray(Arg.Is(objMessage)).Returns(new byte[] { 1, 2, 3, 4, 5 });
-
 			Config.Initialize(new Config.ConfigParams { MessageConverter = objConverter });
 
 			//Act
@@ -68,7 +51,7 @@ namespace Mitto.Messaging.Tests {
 
 			//Assert
 			objConverter.Received(1).GetByteArray(Arg.Is(objMessage));
-			objQueue.Received(1).Transmit(Arg.Is<byte[]>(b => b.SequenceEqual(arrData.ToArray())));
+			objQueue.Received(1).Transmit(Arg.Any<byte[]>());
 		}
 	}
 }

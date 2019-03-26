@@ -2,6 +2,7 @@
 using NSubstitute;
 using Mitto.IMessaging;
 using System.Linq;
+using Mitto.IRouting;
 
 namespace Mitto.Messaging.Json.Tests {
 	[TestFixture]

@@ -10,6 +10,10 @@ Minimum ToDo's:
 	  This is to prevent missuse
 
 Improvements:
+	- Use arrData.CopyTo instead of Array.Copy and if possible use System.Buffer.BlockCopy (much faster):
+		https://stackoverflow.com/a/415839/2106514
+		https://stackoverflow.com/questions/1605090/what-is-the-difference-between-array-copy-and-array-copyto/1667856#1667856
+
 	- Improve MessageProvider so that it takes in all the messages in the entire application based on the 
 	  interfaces/base classes it implements, like done for the ControlProvider
 	  This will prevent the need for passing the namespace
@@ -97,6 +101,9 @@ Benchmarking:
 	  - Websocket TransmitQueue/Thread vs SendAsync
 	  - Message names in UTF-32, see what encoding class names can actually be, can't it
 	    be switched to asni?, it's much smaller in overhead
+	  - Locations where messages are kept/pasted add timing benchmarks, example:
+	        Ping: x times, avarage response time over 5 sec, 10 sec, 30 sec, last 10k messages
+			Enable when in debug or m/b info mode?
 
 Features:
   - Create a connection type for IPC (WCF) - what can can be used on linux & osx?

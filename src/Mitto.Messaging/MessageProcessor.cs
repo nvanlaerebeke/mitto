@@ -97,9 +97,9 @@ namespace Mitto.Messaging {
 		/// </summary>
 		/// <param name="pRequestID"></param>
 		/// <returns></returns>
-		public MessageStatusType GetStatus(string pRequestID) {
+		public MessageStatus GetStatus(string pRequestID) {
 			var objActionStatus = ActionManager.GetStatus(pRequestID);
-			if(objActionStatus == MessageStatusType.UnKnown) {
+			if(objActionStatus == MessageStatus.UnKnown) {
 				return RequestManager.GetStatus(pRequestID);
 			}
 			return objActionStatus;

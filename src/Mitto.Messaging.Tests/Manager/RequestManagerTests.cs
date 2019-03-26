@@ -3,6 +3,7 @@ using NSubstitute;
 using System;
 using System.Linq;
 using Mitto.IMessaging;
+using Mitto.IRouting;
 
 namespace Mitto.Messaging.Tests {
 	[TestFixture]
@@ -92,7 +93,7 @@ namespace Mitto.Messaging.Tests {
 			obj.Request<IResponseMessage>(objRequest);
 
 			//Assert
-			Assert.AreEqual(MessageStatusType.Queued, obj.GetStatus(objRequest.Message.ID));
+			Assert.AreEqual(MessageStatus.Queued, obj.GetStatus(objRequest.Message.ID));
 		}
 
 		/// <summary>
@@ -106,7 +107,7 @@ namespace Mitto.Messaging.Tests {
 			//Act
 			var obj = new RequestManager();
 			//Assert
-			Assert.AreEqual(MessageStatusType.UnKnown, obj.GetStatus("MyID"));
+			Assert.AreEqual(MessageStatus.UnKnown, obj.GetStatus("MyID"));
 		}
 	}
 }

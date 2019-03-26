@@ -1,7 +1,8 @@
 ﻿using Mitto.IRouting;
+using System;
 
 namespace Mitto.Routing.Request {
-	public abstract class ControlRequest : ControlMessage, IControlRequest {
-		public string ID { get; protected set; } = System.Guid.NewGuid().ToString();
+
+	public abstract class ControlRequestMessage : ControlMessage, IControlRequest {
 	}
 }

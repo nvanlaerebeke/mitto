@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Mitto.IMessaging {
+namespace Mitto.IRouting {
 	public interface IMessage {
 		String ID { get; }
 		String Name { get; }

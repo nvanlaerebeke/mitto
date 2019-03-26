@@ -192,8 +192,8 @@ namespace Mitto.Main.Tests.Client {
 
 			var objConnection = Substitute.For<IClient>();
 			var objRouter = Substitute.For<IRouter>();
-			var objRequestMessage = Substitute.For<IMessaging.IRequestMessage>();
-			var objAction = Substitute.For<Action<IMessaging.IResponseMessage>>();
+			var objRequestMessage = Substitute.For<IRequestMessage>();
+			var objAction = Substitute.For<Action<IResponseMessage>>();
 
 			objProvider.CreateClient().Returns(objConnection);
 			objRouterProvider.Create(objConnection).Returns(objRouter);

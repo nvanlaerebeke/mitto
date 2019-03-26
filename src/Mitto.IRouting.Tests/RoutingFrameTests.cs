@@ -12,12 +12,18 @@ namespace Mitto.Routing.RabbitMQ.Tests {
 		public void CreateFrameByteArrayTest() {
 			//Arrange
 			var objMessageFrame = new Frame(MessageType.Request, "MyID", "MyName", new byte[] { 1, 2, 3, 4, 5 });
-			var arrConnectionID = System.Text.Encoding.ASCII.GetBytes("MyConnectionID");
+			var arrRequestID = System.Text.Encoding.ASCII.GetBytes("MyID");
+			var arrSourceID = System.Text.Encoding.ASCII.GetBytes("MySourceID");
+			var arrDestinationID = System.Text.Encoding.ASCII.GetBytes("MyDestinationID");
 
 			var lstFrame = new List<byte>();
 			lstFrame.Add((byte)RoutingFrameType.Messaging);
-			lstFrame.Add((byte)arrConnectionID.Length);
-			lstFrame.AddRange(arrConnectionID);
+			lstFrame.Add((byte)arrRequestID.Length);
+			lstFrame.AddRange(arrRequestID);
+			lstFrame.Add((byte)arrSourceID.Length);
+			lstFrame.AddRange(arrSourceID);
+			lstFrame.Add((byte)arrDestinationID.Length);
+			lstFrame.AddRange(arrDestinationID);
 			lstFrame.AddRange(objMessageFrame.GetByteArray());
 
 			//Act
@@ -25,7 +31,8 @@ namespace Mitto.Routing.RabbitMQ.Tests {
 
 			//Assert
 			Assert.AreEqual(RoutingFrameType.Messaging, objFrame.FrameType);
-			Assert.AreEqual("MyConnectionID", objFrame.ConnectionID);
+			Assert.AreEqual("MySourceID", objFrame.SourceID);
+			Assert.AreEqual("MyDestinationID", objFrame.DestinationID);
 			Assert.IsTrue(objFrame.Data.SequenceEqual(objMessageFrame.GetByteArray()));
 		}
 
@@ -35,11 +42,13 @@ namespace Mitto.Routing.RabbitMQ.Tests {
 			var objMessageFrame = new Frame(MessageType.Request, "MyID", "MyName", new byte[] { 1, 2, 3, 4, 5 });
 
 			//Act
-			var objFrame = new RoutingFrame(RoutingFrameType.Messaging, "MyConnectionID", objMessageFrame.GetByteArray());
+			var objFrame = new RoutingFrame(RoutingFrameType.Messaging, "MyID", "MySourceID", "MyDestinationID", objMessageFrame.GetByteArray());
 
 			//Assert
 			Assert.AreEqual(RoutingFrameType.Messaging, objFrame.FrameType);
-			Assert.AreEqual("MyConnectionID", objFrame.ConnectionID);
+			Assert.AreEqual("MyID", objFrame.RequestID);
+			Assert.AreEqual("MySourceID", objFrame.SourceID);
+			Assert.AreEqual("MyDestinationID", objFrame.DestinationID);
 			Assert.IsTrue(objFrame.Data.SequenceEqual(objMessageFrame.GetByteArray()));
 		}
 	}

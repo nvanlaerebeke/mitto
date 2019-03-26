@@ -1,4 +1,7 @@
-﻿namespace Mitto.IMessaging {
+﻿/// <summary>
+/// ToDo: move back to IMessaging
+/// </summary>
+namespace Mitto.IRouting {
 	public class ResponseStatus {
 		public ResponseState State { get; set; } = ResponseState.Success;
 		public int ErrorCode { get; set; } = 0;

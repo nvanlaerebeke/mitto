@@ -80,7 +80,7 @@ namespace Mitto.Messaging {
 				pMessage.Name,
 				MessagingFactory.Converter.GetByteArray(pMessage)
 			);
-			var objRoutingFrame = new RoutingFrame(RoutingFrameType.Messaging, ID, objMessageFrame.GetByteArray());
+			var objRoutingFrame = new RoutingFrame(RoutingFrameType.Messaging, pMessage.ID, ID, "", objMessageFrame.GetByteArray());
 			Router.Transmit(objRoutingFrame.GetBytes());
 		}
 

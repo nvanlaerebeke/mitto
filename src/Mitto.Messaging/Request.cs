@@ -1,5 +1,6 @@
 ﻿using Mitto.ILogging;
 using Mitto.IMessaging;
+using Mitto.IRouting;
 using Mitto.Utilities;
 using System;
 using System.Threading.Tasks;
@@ -72,7 +73,7 @@ namespace Mitto.Messaging {
 							$"{objSpan.Hours.ToString().PadLeft(2, '0')}",
 							$"{objSpan.Minutes.ToString().PadLeft(2, '0')}",
 							$"{objSpan.Seconds.ToString().PadLeft(2, '0')}",
-							$"{objSpan.Milliseconds.ToString().PadLeft(4, '0')}"
+							$"{objSpan.Milliseconds.ToString().PadLeft(3, '0')}"
 						)
 					)
 				);

@@ -18,6 +18,8 @@ namespace Mitto.Routing.PassThrough {
 	/// As the name describes, this class takes in byte[] data from the 
 	/// IConnection and IMessageProcessor and passes it to the 
 	/// IConnection or IMessageProcessor depending on the context to be handled
+	/// 
+	/// ToDo: convert transmit & receive to RoutingFrame instead of byte[]
 	/// </summary>
 	public class PassThroughRouter : IRouter {
 		public string ConnectionID { get; } = System.Guid.NewGuid().ToString();
@@ -40,12 +42,7 @@ namespace Mitto.Routing.PassThrough {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void Connection_Rx(object sender, byte[] e) {
-			var obj = new RoutingFrame(e);
-			if (obj.FrameType == RoutingFrameType.Messaging) {
-				MessagingFactory.Processor.Process(this, obj.Data);
-			} else {
-				ControlFactory.Processor.Process(this, new ControlFrame(obj.Data));
-			}
+			Receive(e);
 		}
 
 		/// <summary>
@@ -54,6 +51,15 @@ namespace Mitto.Routing.PassThrough {
 		/// <param name="pMessage"></param>
 		public void Transmit(byte[] pMessage) {
 			Connection.Transmit(pMessage);
+		}
+
+		public void Receive(byte[] pData) {
+			var obj = new RoutingFrame(pData);
+			if (obj.FrameType == RoutingFrameType.Messaging) {
+				MessagingFactory.Processor.Process(this, obj.Data);
+			} else {
+				ControlFactory.Processor.Process(this, obj);
+			}
 		}
 
 		/// <summary>
@@ -67,11 +73,11 @@ namespace Mitto.Routing.PassThrough {
 			var blnIsAlive = false;
 			ManualResetEvent objWait = new ManualResetEvent(false);
 
-			ControlFactory.Processor.Request<GetMessageStatusResponse>(this, new Request.GetMessageStatusRequest(pRequestID), (GetMessageStatusResponse r) => {
+			ControlFactory.Processor.Request(new ControlRequest<GetMessageStatusResponse>(this, new Request.GetMessageStatusRequest(pRequestID), (r) => {
 				blnIsAlive = r.IsAlive;
 				objWait.Set();
-			});
-			objWait.WaitOne(15);
+			}));
+			objWait.WaitOne(15000);
 
 			return blnIsAlive;
 		}

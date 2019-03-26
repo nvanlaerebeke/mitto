@@ -4,6 +4,7 @@ using System.Linq;
 using System;
 using Mitto.IConnection;
 using Mitto.IMessaging;
+using Mitto.IRouting;
 
 namespace Mitto.Routing.PassThrough.Tests {
 	[TestFixture()]
@@ -53,6 +54,7 @@ namespace Mitto.Routing.PassThrough.Tests {
 			//Arrange
 			var objMessageProcessor = Substitute.For<IMessageProcessor>();
 			var objConnection = Substitute.For<IClientConnection>();
+			var objRoutingFrame = new RoutingFrame(RoutingFrameType.Messaging, "MyRequestID", "MySourceID", "MyDestinationID", new byte[] { 1, 2, 3, 4 });
 
 			Config.Initialize(new Config.ConfigParams(){
 				MessageProcessor = objMessageProcessor
@@ -60,7 +62,7 @@ namespace Mitto.Routing.PassThrough.Tests {
 
 			//Act
 			var obj = new PassThroughRouter(objConnection);
-			objConnection.Rx += Raise.Event<EventHandler<byte[]>>(objConnection, new byte[] { 1, 2, 3, 4 });
+			objConnection.Rx += Raise.Event<EventHandler<byte[]>>(objConnection, objRoutingFrame.GetBytes());
 
 			//Assert
 			objMessageProcessor.Received(1).Process(Arg.Is(obj), Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));

@@ -5,19 +5,29 @@ using Mitto.IRouting;
 using Mitto.Routing.Action;
 
 namespace Mitto.Routing {
-	public class ControlProcessor {
-		private ActionManager ActionManager = new ActionManager();
-		private RequestManager RequestManager = new RequestManager();
 
-		public void Request<T>(IRouter pConnection, ControlRequest pRequest, Action<T> pAction) where T: ControlResponse {
-			RequestManager.Send(new Request<T>(pConnection, pRequest, pAction));
+	public class ControlProcessor {
+		private readonly ActionManager ActionManager;
+		private readonly RequestManager RequestManager;
+
+		public ControlProcessor() {
+			ActionManager = new ActionManager();
+			RequestManager = new RequestManager();
 		}
 
-		public void Process(IRouter pConnection, ControlFrame pFrame) {
-			if(pFrame.FrameType == ControlFrameType.Request) {
-				ActionManager.Process(pConnection, pFrame);
-			} else {
-				RequestManager.Process(pFrame);
+		public void Request(IRequest pRequest) {
+			RequestManager.Send(pRequest);
+		}
+
+		public void Process(IRouter pConnection, RoutingFrame pFrame) {
+			//If a request is received start processing the request
+			//If a response is received, let the requestmanager handle
+			//setting the response
+			var objFame = new ControlFrame(pFrame.Data);
+			if (objFame.FrameType == ControlFrameType.Request) {
+				ActionManager.Process(pConnection, objFame);
+			} else if (objFame.FrameType == ControlFrameType.Response) {
+				RequestManager.Receive(pFrame);
 			}
 		}
 	}

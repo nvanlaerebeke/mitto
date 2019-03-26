@@ -1,4 +1,5 @@
 ﻿using Mitto.IMessaging;
+using Mitto.IRouting;
 using System;
 using System.Runtime.CompilerServices;
 
@@ -8,6 +9,6 @@ namespace Mitto.Messaging {
 	internal interface IRequestManager {
 		void Request<T>(IRequest pRequest) where T : IResponseMessage;
 		void SetResponse(IResponseMessage pMessage);
-		MessageStatusType GetStatus(string pRequestID);
+		MessageStatus GetStatus(string pRequestID);
 	}
 }

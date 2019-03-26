@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mitto.IRouting;
+using System;
 using System.Linq;
 
 namespace Mitto.IMessaging {
@@ -10,6 +11,8 @@ namespace Mitto.IMessaging {
 	/// ----------------------------------------------------------------------------------------------------------------------------------
 	/// | byte MessageType | byte id length | byte[length] UTF-32 id | byte message name length | byte[length] UTF-32 name | byte[] data |
 	/// ----------------------------------------------------------------------------------------------------------------------------------
+	/// 
+	/// ToDo: is it needed to have a frame for IMessaging?, isn't RoutingFrame enough?
 	/// 
 	/// </summary>
 	public class Frame : IFrame {

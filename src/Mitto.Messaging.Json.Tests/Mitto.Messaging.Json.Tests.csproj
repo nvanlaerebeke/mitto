@@ -59,6 +59,10 @@
       <Project>{3bb1c211-9006-4fee-9f40-7556717431b0}</Project>
       <Name>Mitto.IMessaging</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Mitto.IRouting\Mitto.IRouting.csproj">
+      <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
+      <Name>Mitto.IRouting</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Mitto.Messaging.Json\Mitto.Messaging.Json.csproj">
       <Project>{786f3627-bc95-4c92-9240-b0cd3d8bbb58}</Project>
       <Name>Mitto.Messaging.Json</Name>

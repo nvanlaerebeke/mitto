@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mitto.IRouting;
+using System;
 
 namespace Mitto.IMessaging {
 	public interface IClient : IEquatable<IClient> {
