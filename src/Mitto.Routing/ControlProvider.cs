@@ -27,8 +27,19 @@ namespace Mitto.Routing {
 				typeof(IControlRequest),
 				typeof(IControlResponse)
 			};
-			foreach (var ass in AppDomain.CurrentDomain.GetAssemblies()) {
+			var arrAssemblies = AppDomain.CurrentDomain.GetAssemblies()
+				.OrderBy(a => a.FullName.Contains("Mitto.Routing.PassThrough") ? 1 : a.FullName.Contains("Mitto.Routing.") ? 2 : 3).ToList();
+
+			foreach (var ass in arrAssemblies) {
 				try {
+					var types = (
+						from t in ass.GetTypes()
+						where
+							t.IsClass &&
+							!t.IsAbstract &&
+							t.GetInterfaces().Any(i => lstSupportedTypes.Contains(i))
+						select t
+					).ToList();
 					(
 						from t in ass.GetTypes()
 						where
@@ -37,27 +48,36 @@ namespace Mitto.Routing {
 							t.GetInterfaces().Any(i => lstSupportedTypes.Contains(i))
 						select t
 					).ToList().ForEach(t => {
+						if(t.FullName.Contains("Routing")) {
+							Console.WriteLine("HERE");
+						}
 						if (t.GetInterfaces().Contains(typeof(IControlAction))) {
 							var tmpType = t;
 							while(
 								tmpType != null &&
-								!tmpType.FullName.Contains("Mitto.Routing.Action.BaseControlAction")
+								!tmpType.IsAbstract 
 							) { tmpType = t.BaseType; }
 
 							if (tmpType != null) {
 								Type objRequestType = (tmpType.GenericTypeArguments.Length > 0) ? tmpType.GenericTypeArguments[0] : null;
 								Type objResponseType = (tmpType.GenericTypeArguments.Length > 1) ? tmpType.GenericTypeArguments[1] : null;
 								if (objRequestType != null && objResponseType != null) {
-									Actions.Add(new ActionInfo(objRequestType, objResponseType, t));
+									var objActionType = new ActionInfo(objRequestType, objResponseType, t);
+									Actions.RemoveAll(a => a.ActionType.Name.Equals(objActionType.ActionType.Name));
+									Actions.Add(objActionType);
 								}
 							}
 						} else if (t.GetInterfaces().Contains(typeof(IControlRequest))) {
+							Requests.Remove(t.Name);
 							Requests.Add(t.Name, t);
 						} else if (t.GetInterfaces().Contains(typeof(IControlResponse))) {
+							Responses.Remove(t.Name);
 							Responses.Add(t.Name, t);
 						}
 					});
-				} catch (Exception) { }
+				} catch (Exception ex) {
+					Console.WriteLine(ex);
+				}
 			}
 		}
 

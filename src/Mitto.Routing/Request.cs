@@ -1,9 +1,14 @@
 ﻿using Mitto.IRouting;
-using Mitto.Routing.Response;
 using System;
 using System.Threading.Tasks;
 
 namespace Mitto.Routing {
+	/// <summary>
+	/// ToDo: this should be the layer below IMessaging, think the request in this context
+	/// should be without the IResponseMessage - If it's needed to have a requestmessage type
+	/// a Request class in IMessaging should be added that uses this in the background
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
 	public class Request<T> : IRequest where T : IResponseMessage {
 		private readonly IRouter Origin;
 

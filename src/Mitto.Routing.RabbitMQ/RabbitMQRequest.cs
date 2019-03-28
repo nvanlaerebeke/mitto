@@ -19,7 +19,7 @@ namespace Mitto.Routing.RabbitMQ {
 		public void Send() {
 			Status = MessageStatus.Queued;
 			if (Request.FrameType == RoutingFrameType.Control) {
-				//ControlFactory.Processor.Process(Router, new ControlFrame(Request.Data));
+				ControlFactory.Processor.Process(Router, Request);
 			} else {
 				var obj = new RoutingFrame(Request.FrameType, Request.RequestID, PublisherID, Router.ConnectionID, Request.Data);
 				Router.Receive(obj.GetBytes());
