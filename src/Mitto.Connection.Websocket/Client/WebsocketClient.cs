@@ -34,8 +34,6 @@ namespace Mitto.Connection.Websocket.Client {
 		internal WebsocketClient(IWebSocketClient pWebSocket, IKeepAliveMonitor pKeepAliveMonitor) {
 			_objWebSocketClient = pWebSocket;
 			_objKeepAliveMonitor = pKeepAliveMonitor;
-			_objKeepAliveMonitor.TimeOut += _objKeepAliveMonitor_TimeOut;
-			_objKeepAliveMonitor.UnResponsive += _objKeepAliveMonitor_UnResponsive;
 		}
 
 		#region Constructor & Connecting
@@ -55,6 +53,9 @@ namespace Mitto.Connection.Websocket.Client {
 			_objWebSocketClient.OnMessage += Connection_OnMessage;
 
 			_objWebSocketClient.ConnectAsync(objParams);
+
+			_objKeepAliveMonitor.TimeOut += _objKeepAliveMonitor_TimeOut;
+			_objKeepAliveMonitor.UnResponsive += _objKeepAliveMonitor_UnResponsive;
 		}
 
 		private void Close() {
@@ -135,7 +136,7 @@ namespace Mitto.Connection.Websocket.Client {
 		}
 
 		private BlockingCollection<byte[]> _colQueue;
-		private CancellationTokenSource _objCancelationSource = new CancellationTokenSource();
+		private CancellationTokenSource _objCancelationSource;
 		private CancellationToken _objCancelationToken;
 
 		/// <summary>
@@ -148,6 +149,7 @@ namespace Mitto.Connection.Websocket.Client {
 
 		private void StartTransmitQueue() {
 			_colQueue = new BlockingCollection<byte[]>();
+			_objCancelationSource = new CancellationTokenSource();
 			_objCancelationToken = _objCancelationSource.Token;
 
 			//Do not use Task.Run or ThreadPool here, we need a long running thread for the SenderQueue

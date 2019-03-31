@@ -1,7 +1,4 @@
-﻿using Mitto.Routing.Request;
-using Mitto.Routing.Response;
-using System;
-using Mitto.IRouting;
+﻿using Mitto.IRouting;
 using Mitto.Routing.Action;
 
 namespace Mitto.Routing {
@@ -19,15 +16,20 @@ namespace Mitto.Routing {
 			RequestManager.Send(pRequest);
 		}
 
+		/// <summary>
+		/// ToDo: pass IRequest instead of IRouter + the Frame
+		/// </summary>
+		/// <param name="pConnection"></param>
+		/// <param name="pFrame"></param>
 		public void Process(IRouter pConnection, RoutingFrame pFrame) {
 			//If a request is received start processing the request
 			//If a response is received, let the requestmanager handle
 			//setting the response
 			var objFame = new ControlFrame(pFrame.Data);
-			if (objFame.FrameType == ControlFrameType.Request) {
+			if (objFame.FrameType == MessageType.Request) {
 				ActionManager.Process(pConnection, objFame);
-			} else if (objFame.FrameType == ControlFrameType.Response) {
-				RequestManager.Receive(pFrame);
+			} else if (objFame.FrameType == MessageType.Response) {
+				RequestManager.Receive(pConnection, pFrame);
 			}
 		}
 	}

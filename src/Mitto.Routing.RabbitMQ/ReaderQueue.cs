@@ -18,9 +18,14 @@ namespace Mitto.Routing.RabbitMQ {
 			}
 		}
 
+		public readonly QueueType QueueType;
+		public readonly bool Shared;
 		public event EventHandler<RoutingFrame> Rx;
+		public event EventHandler<ReaderQueue> Disconnected;
 
-		public ReaderQueue(string pQueueName) {
+		public ReaderQueue(QueueType pType, string pQueueName, bool pShared) {
+			QueueType = pType;
+			Shared = pShared;
 			StartListening(pQueueName);
 		}
 
@@ -33,15 +38,39 @@ namespace Mitto.Routing.RabbitMQ {
 			var factory = new ConnectionFactory() { HostName = "test.crazyzone.be" };
 			var connection = factory.CreateConnection();
 			var channel = connection.CreateModel();
-			channel.QueueDeclare(queue: pName, durable: false, exclusive: false, autoDelete: false, arguments: null);
+
+			connection.ConnectionShutdown += Connection_ConnectionShutdown;
+
+			channel.ExchangeDeclare(exchange: QueueType.ToString(), type: "fanout");
+			channel.QueueDeclare(pName, false, false, !Shared);
+			channel.QueueBind(pName, QueueType.ToString(), pName);
+			channel.ModelShutdown += Channel_ModelShutdown;
 
 			var consumer = new EventingBasicConsumer(channel);
+			consumer.ConsumerCancelled += Consumer_ConsumerCancelled;
+			consumer.Shutdown += Consumer_Shutdown;
 			consumer.Received += (model, ea) => {
 				Task.Run(() => {
 					Rx?.Invoke(this, new RoutingFrame(ea.Body));
 				});
 			};
 			channel.BasicConsume(queue: pName, autoAck: true, consumer: consumer);
+		}
+
+		private void Connection_ConnectionShutdown(object sender, ShutdownEventArgs e) {
+			throw new NotImplementedException();
+		}
+
+		private void Consumer_ConsumerCancelled(object sender, ConsumerEventArgs e) {
+			throw new NotImplementedException();
+		}
+
+		private void Channel_ModelShutdown(object sender, ShutdownEventArgs e) {
+			throw new NotImplementedException();
+		}
+
+		private void Consumer_Shutdown(object sender, ShutdownEventArgs e) {
+			Disconnected?.Invoke(this, this);
 		}
 	}
 }

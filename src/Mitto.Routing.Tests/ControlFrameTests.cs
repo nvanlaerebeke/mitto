@@ -22,7 +22,7 @@ namespace Mitto.Routing.Tests {
 			byte[] arrData = new byte[] { 1, 2, 3, 4, 5 };
 
 			var lstFrame = new List<byte>();
-			lstFrame.Add((byte)ControlFrameType.Response);
+			lstFrame.Add((byte)MessageType.Response);
 			lstFrame.Add((byte)arrID.Length);
 			lstFrame.AddRange(arrID);
 			lstFrame.Add((byte)arrName.Length);
@@ -33,7 +33,7 @@ namespace Mitto.Routing.Tests {
 			var objFrame = new ControlFrame(lstFrame.ToArray());
 
 			//Assert
-			Assert.AreEqual(ControlFrameType.Response, objFrame.FrameType);
+			Assert.AreEqual(MessageType.Response, objFrame.FrameType);
 			Assert.AreEqual("MyID", objFrame.RequestID);
 			Assert.AreEqual("MyCustomName", objFrame.MessageName);
 			Assert.IsTrue(objFrame.Data.SequenceEqual(arrData));
@@ -52,7 +52,7 @@ namespace Mitto.Routing.Tests {
 			byte[] arrData = new byte[] { 1, 2, 3, 4, 5 };
 
 			var lstFrame = new List<byte>();
-			lstFrame.Add((byte)ControlFrameType.Response);
+			lstFrame.Add((byte)MessageType.Response);
 			lstFrame.Add((byte)arrID.Length);
 			lstFrame.AddRange(arrID);
 			lstFrame.Add((byte)arrName.Length);
@@ -60,10 +60,10 @@ namespace Mitto.Routing.Tests {
 			lstFrame.AddRange(arrData);
 
 			//Act
-			var objFrame = new ControlFrame(ControlFrameType.Response, "MyCustomName", "MyID", arrData);
+			var objFrame = new ControlFrame(MessageType.Response, "MyCustomName", "MyID", arrData);
 
 			//Assert
-			Assert.AreEqual(ControlFrameType.Response, objFrame.FrameType);
+			Assert.AreEqual(MessageType.Response, objFrame.FrameType);
 			Assert.AreEqual("MyID", objFrame.RequestID);
 			Assert.AreEqual("MyCustomName", objFrame.MessageName);
 			Assert.IsTrue(objFrame.Data.SequenceEqual(arrData));

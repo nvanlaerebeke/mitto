@@ -28,5 +28,9 @@ namespace Mitto.IRouting {
 			State = pState;
 			Message = pMessage;
 		}
+
+		public override string ToString() {
+			return $"Status: {State.ToString()} | Message: {Message}";
+		}
 	}
 }

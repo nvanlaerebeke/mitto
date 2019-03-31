@@ -1,5 +1,6 @@
 ﻿using Mitto.IConnection;
 using Mitto.IRouting;
+using System;
 
 namespace Mitto.Routing.RabbitMQ.Publisher {
 
@@ -10,20 +11,31 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 		/// </summary>
 		public static string ID { get; } = $"Mitto.Publisher.{System.Guid.NewGuid().ToString()}";
 
-		private readonly ReaderQueue PublisherQueue;
-		private readonly RouterCache RouterCache;
+		private static ReaderQueue PublisherQueue;
+		private static RouterCache RouterCache;
+		private static RequestManager RequestManager;
+		//private static QueueWatcher QueueWatcher;
+
 
 		public RouterProvider(RabbitMQParams pParams) {
-			RouterCache = new RouterCache(new SenderQueue("Mitto.Main"), new RequestManager());
+			RequestManager = new RequestManager();
+			RouterCache = new RouterCache(new SenderQueue(QueueType.Main, "Mitto.Main", true), RequestManager);
 
-			PublisherQueue = new ReaderQueue(ID);
+			PublisherQueue = new ReaderQueue(QueueType.Publisher, ID, false);
 			PublisherQueue.Rx += PublisherQueue_Rx;
 		}
 
 		private void PublisherQueue_Rx(object sender, RoutingFrame pFrame) {
-			var objRouter = RouterCache.GetByRouterID(pFrame.DestinationID) as Router;
-			if (objRouter != null) {
-				objRouter.Transmit(pFrame);
+			if (pFrame.FrameType == RoutingFrameType.Messaging) {
+				var objRouter = RouterCache.GetByRouterID(pFrame.DestinationID) as Router;
+				if (objRouter != null) {
+					objRouter.Transmit(pFrame);
+				}
+			} else if(pFrame.FrameType == RoutingFrameType.Control) {
+				var objRouter = RouterCache.GetByConsumerID(pFrame.SourceID) as ConsumerRouter;
+				if(objRouter != null) {
+					objRouter.Receive(pFrame.GetBytes());
+				}
 			}
 		}
 
@@ -35,6 +47,10 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 		/// <returns></returns>
 		public IRouter Create(IClientConnection pConnection) {
 			return RouterCache.GetByConnection(pConnection);
+		}
+
+		public static bool HasRequest(string pRequestID) {
+			return RequestManager.ContainsRequest(pRequestID);
 		}
 	}
 }

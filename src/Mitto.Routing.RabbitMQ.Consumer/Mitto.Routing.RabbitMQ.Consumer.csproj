@@ -42,6 +42,7 @@
     <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="ConsumerRequest.cs" />
     <Compile Include="MessageRouter.cs" />
     <Compile Include="Consumer.cs" />
   </ItemGroup>
@@ -61,6 +62,10 @@
     <ProjectReference Include="..\Mitto.Routing.RabbitMQ\Mitto.Routing.RabbitMQ.csproj">
       <Project>{3cb0e6c9-133e-49d7-a393-4fcc9ddeb72b}</Project>
       <Name>Mitto.Routing.RabbitMQ</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Routing\Mitto.Routing.csproj">
+      <Project>{6ffefef0-8b67-45c8-9aba-a1e6d276b1c2}</Project>
+      <Name>Mitto.Routing</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

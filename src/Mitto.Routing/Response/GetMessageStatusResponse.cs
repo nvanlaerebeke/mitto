@@ -13,7 +13,7 @@ namespace Mitto.Routing.Response {
 		}
 
 		public override ControlFrame GetFrame() {
-			return new ControlFrame(ControlFrameType.Response, this.GetType().Name, ID, new byte[] { (byte)(IsAlive ? 1 : 0) });
+			return GetFrame(new byte[] { (byte)(IsAlive ? 1 : 0) });
 		}
 	}
 }

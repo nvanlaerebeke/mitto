@@ -12,7 +12,7 @@ namespace Mitto.Messaging.Action.Request {
 		}
 
 		public override ACKResponse Start() {
-			System.Threading.Thread.Sleep(10000);
+			//System.Threading.Thread.Sleep(10000);
 			var obj = MessagingFactory.Provider.GetSubscriptionHandler<IChannelSubscriptionHandler>();
 			if (obj.Notify(Client, Request)) {
 				return new ACKResponse(Request);

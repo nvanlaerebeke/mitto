@@ -8,27 +8,35 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 		private readonly ConcurrentDictionary<string, IRouter> RouterPerConnectionID = new ConcurrentDictionary<string, IRouter>();
 		private readonly ConcurrentDictionary<string, IRouter> RouterByID = new ConcurrentDictionary<string, IRouter>();
 		private readonly ConcurrentDictionary<string, IRouter> ConsumerRouters = new ConcurrentDictionary<string, IRouter>();
+
 		private readonly RequestManager RequestManager;
 		private readonly SenderQueue MainQueue;
 
-		public RouterCache(SenderQueue pMainQueue, RequestManager pMessageManager) {
+		internal RouterCache(SenderQueue pMainQueue, RequestManager pMessageManager) {
 			MainQueue = pMainQueue;
 			RequestManager = pMessageManager;
 		}
 
-		public IRouter GetByConsumerID(string pConsumerID) {
+		internal IRouter GetByConsumerID(string pConsumerID) {
 			if (ConsumerRouters.ContainsKey(pConsumerID)) {
 				if (ConsumerRouters.TryGetValue(pConsumerID, out IRouter objRouter)) {
 					return objRouter;
 				} else {
-					//new ConsumerRouter(Publisher, ConsumerQu);
-					return null;
+					//ToDo: error logging
+					System.Threading.Thread.Sleep(5); // wait a bit and try again
+				}
+			} else {
+				var objRouter = new ConsumerRouter(new SenderQueue(QueueType.Consumer, pConsumerID, false), RequestManager);
+				objRouter.Disconnected += ObjRouter_Disconnected;
+				if (!ConsumerRouters.TryAdd(pConsumerID, objRouter)) {
+					//ToDo: error logging
+					System.Threading.Thread.Sleep(5); // wait a bit and try again
 				}
 			}
-			return null;
+			return GetByConsumerID(pConsumerID);
 		}
 
-		public IRouter GetByConnection(IClientConnection pConnection) {
+		internal IRouter GetByConnection(IClientConnection pConnection) {
 			IRouter objRouter = null;
 			if (RouterPerConnectionID.ContainsKey(pConnection.ID)) {
 				if (RouterPerConnectionID.TryGetValue(pConnection.ID, out objRouter)) {
@@ -48,8 +56,11 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 			}
 			return obj;
 		}
+		internal bool ContainConnection(string pClientID) {
+			return RouterPerConnectionID.ContainsKey(pClientID);
+		}
 
-		public IRouter GetByRouterID(string pRouterID) {
+		internal IRouter GetByRouterID(string pRouterID) {
 			if (RouterByID.ContainsKey(pRouterID)) {
 				if (RouterByID.TryGetValue(pRouterID, out IRouter objRouter)) {
 					return objRouter;
@@ -68,6 +79,10 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 					//ToDo: Logging
 				}
 			}
+		}
+
+		private void ObjRouter_Disconnected(object sender, IRouter e) {
+			ConsumerRouters.TryRemove(e.ConnectionID, out _);
 		}
 	}
 }

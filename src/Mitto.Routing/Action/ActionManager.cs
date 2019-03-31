@@ -10,15 +10,22 @@ namespace Mitto.Routing.Action {
 
 		public void Process(IRouter pConnection, ControlFrame pFrame) {
 			var obj = ControlFactory.Provider.GetAction(pConnection, pFrame);
+			if(obj == null) {
+				//ToDo: logging
+				return;
+			}
 			if(!Actions.TryAdd(pFrame.RequestID, obj)) {
 				//ToDo: error handling/logging
 			} else {
 				try {
 					var objResponse = (IControlResponse)obj.GetType().GetMethod("Start").Invoke(obj, new object[0]);
+					Console.WriteLine($"Response gotten for RequestID {pFrame.RequestID}");
+					ControlFrame objControlFrame = objResponse.GetFrame();
 					if (objResponse != null) {
 						pConnection.Transmit(
 							new RoutingFrame(
 								RoutingFrameType.Control,
+								MessageType.Response,
 								pFrame.RequestID,
 								pConnection.ConnectionID,
 								"",
@@ -26,7 +33,8 @@ namespace Mitto.Routing.Action {
 							).GetBytes()
 						);
 					}
-				} catch (Exception) {
+				} catch (Exception ex) {
+					Console.WriteLine(ex);
 					//ToDo: error handling
 				}
 			}

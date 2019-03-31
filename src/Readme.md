@@ -8,6 +8,7 @@ Minimum ToDo's:
 	- IConnection.Disconnected => needs to be EventHandler<IClientConnection> instead of just EventHandler
 	- Hide more classes, make them only available from Mitto.xxx, example the factories like ConnectionFactory
 	  This is to prevent missuse
+	- RabbitMQ Sender/Reader queue recovery after connection lost
 
 Improvements:
 	- Use arrData.CopyTo instead of Array.Copy and if possible use System.Buffer.BlockCopy (much faster):
@@ -96,14 +97,15 @@ Benchmarking:
 	
 	Tests:
       - encoding/decoding utf32 vs utf16 vs utf8 - UTF32 takes up much more bytes
+	  - Message names in ANSII?, currently UTF-32, see what encoding class names can actually be, can't it
+		be switched to asni?, it's much smaller in overhead
 	  - test overhead for converting between json/objects (both directions)
 	  - Websockets vs TcpSocket
 	  - Websocket TransmitQueue/Thread vs SendAsync
-	  - Message names in UTF-32, see what encoding class names can actually be, can't it
-	    be switched to asni?, it's much smaller in overhead
 	  - Locations where messages are kept/pasted add timing benchmarks, example:
 	        Ping: x times, avarage response time over 5 sec, 10 sec, 30 sec, last 10k messages
 			Enable when in debug or m/b info mode?
+	  - Memory profiling, checks for memory leaks
 
 Features:
   - Create a connection type for IPC (WCF) - what can can be used on linux & osx?
@@ -135,3 +137,4 @@ Testing:
 		- with jumbo frames
 		- with different communication media and messaging
 	- Code coverage plugin for nunit/nsubstitute?
+	- Try in .Net Core?

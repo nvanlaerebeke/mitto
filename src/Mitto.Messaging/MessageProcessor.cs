@@ -50,8 +50,7 @@ namespace Mitto.Messaging {
 		/// otherwise an IAction is created and is passed to the IActionManager
 		/// to handle the IAction lifetime
 		/// 
-		/// ToDo: Pass the IMessaging.Frame here intead of byte[]
-		///       Also rename Frame to MessageFrame
+		/// ToDo: Pass IRequest instead of the IRouter + byte[] that should actually be a MessageFrame(or routingframe)
 		/// </summary>
 		/// <param name="pClient"></param>
 		/// <param name="pData"></param>

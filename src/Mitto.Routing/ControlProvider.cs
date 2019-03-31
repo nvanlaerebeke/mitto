@@ -48,9 +48,6 @@ namespace Mitto.Routing {
 							t.GetInterfaces().Any(i => lstSupportedTypes.Contains(i))
 						select t
 					).ToList().ForEach(t => {
-						if(t.FullName.Contains("Routing")) {
-							Console.WriteLine("HERE");
-						}
 						if (t.GetInterfaces().Contains(typeof(IControlAction))) {
 							var tmpType = t;
 							while(
@@ -91,7 +88,7 @@ namespace Mitto.Routing {
 
 		public ControlMessage GetMessage(ControlFrame pFrame) {
 			ControlMessage objMessage = null;
-			if(pFrame.FrameType == ControlFrameType.Request) {
+			if(pFrame.FrameType == MessageType.Request) {
 				if(Requests.ContainsKey(pFrame.MessageName)) {
 					objMessage = (ControlMessage)Activator.CreateInstance(Requests[pFrame.MessageName], pFrame);
 				}

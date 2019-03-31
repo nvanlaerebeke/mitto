@@ -18,6 +18,7 @@ namespace Mitto.Routing.RabbitMQ.Tests {
 
 			var lstFrame = new List<byte>();
 			lstFrame.Add((byte)RoutingFrameType.Messaging);
+			lstFrame.Add((byte)MessageType.Request);
 			lstFrame.Add((byte)arrRequestID.Length);
 			lstFrame.AddRange(arrRequestID);
 			lstFrame.Add((byte)arrSourceID.Length);
@@ -31,6 +32,7 @@ namespace Mitto.Routing.RabbitMQ.Tests {
 
 			//Assert
 			Assert.AreEqual(RoutingFrameType.Messaging, objFrame.FrameType);
+			Assert.AreEqual(MessageType.Request, objFrame.MessageType);
 			Assert.AreEqual("MySourceID", objFrame.SourceID);
 			Assert.AreEqual("MyDestinationID", objFrame.DestinationID);
 			Assert.IsTrue(objFrame.Data.SequenceEqual(objMessageFrame.GetByteArray()));
@@ -42,10 +44,11 @@ namespace Mitto.Routing.RabbitMQ.Tests {
 			var objMessageFrame = new Frame(MessageType.Request, "MyID", "MyName", new byte[] { 1, 2, 3, 4, 5 });
 
 			//Act
-			var objFrame = new RoutingFrame(RoutingFrameType.Messaging, "MyID", "MySourceID", "MyDestinationID", objMessageFrame.GetByteArray());
+			var objFrame = new RoutingFrame(RoutingFrameType.Messaging, MessageType.Request, "MyID", "MySourceID", "MyDestinationID", objMessageFrame.GetByteArray());
 
 			//Assert
 			Assert.AreEqual(RoutingFrameType.Messaging, objFrame.FrameType);
+			Assert.AreEqual(MessageType.Request, objFrame.MessageType);
 			Assert.AreEqual("MyID", objFrame.RequestID);
 			Assert.AreEqual("MySourceID", objFrame.SourceID);
 			Assert.AreEqual("MyDestinationID", objFrame.DestinationID);

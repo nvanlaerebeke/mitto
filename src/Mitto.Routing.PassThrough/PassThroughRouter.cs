@@ -22,7 +22,7 @@ namespace Mitto.Routing.PassThrough {
 	/// ToDo: convert transmit & receive to RoutingFrame instead of byte[]
 	/// </summary>
 	public class PassThroughRouter : IRouter {
-		public string ConnectionID { get; } = System.Guid.NewGuid().ToString();
+		public string ConnectionID { get { return Connection.ID; } }
 		private IClientConnection Connection;
 
 		/// <summary>

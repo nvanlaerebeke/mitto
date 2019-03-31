@@ -54,7 +54,7 @@ namespace Mitto.Routing.PassThrough.Tests {
 			//Arrange
 			var objMessageProcessor = Substitute.For<IMessageProcessor>();
 			var objConnection = Substitute.For<IClientConnection>();
-			var objRoutingFrame = new RoutingFrame(RoutingFrameType.Messaging, "MyRequestID", "MySourceID", "MyDestinationID", new byte[] { 1, 2, 3, 4 });
+			var objRoutingFrame = new RoutingFrame(RoutingFrameType.Messaging, MessageType.Request, "MyRequestID", "MySourceID", "MyDestinationID", new byte[] { 1, 2, 3, 4 });
 
 			Config.Initialize(new Config.ConfigParams(){
 				MessageProcessor = objMessageProcessor

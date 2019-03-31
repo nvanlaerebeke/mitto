@@ -14,6 +14,9 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
 	///       data back to a message before being able to package it
 	///       
 	/// ToDo: Add an application shutdown handler to close/clean up the queue's
+	/// ToDo: Move the SenderQueues for the Providers into a Router object that
+	///		  checks if the publisher still exists every x seconds (could reset it when data
+	///		  received from that queue)
 	/// </summary>
 	public class Consumer {
 		/// <summary>
@@ -34,6 +37,8 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
 
 		private QueueProvider QueueProvider;
 
+		private readonly RequestManager RequestManager;
+
 		/// <summary>
 		/// Constructor for the RabbitMQ Consumer Queue
 		/// 
@@ -42,12 +47,14 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
 		/// ToDo: Make the sender Queue optional when creating a queue
 		/// </summary>
 		public Consumer(RabbitMQParams pParams) {
+			RequestManager = new RequestManager();
+
 			QueueProvider = new QueueProvider(pParams);
 
-			MainQueue = QueueProvider.GetReaderQueue("Mitto.Main");
+			MainQueue = QueueProvider.GetReaderQueue(QueueType.Main, "Mitto.Main", true);
 			MainQueue.Rx += MainQueue_Rx;
 
-			ConsumerQueue = QueueProvider.GetReaderQueue(ID);
+			ConsumerQueue = QueueProvider.GetReaderQueue(QueueType.Consumer, ID, false);
 			ConsumerQueue.Rx += ConsumerQueue_Rx;
 		}
 
@@ -57,7 +64,7 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void MainQueue_Rx(object sender, RoutingFrame e) {
-			new MessageRouter(ID, QueueProvider.GetSenderQueue(e.SourceID), e).Start();
+			RequestManager.Send(new ConsumerRequest(QueueProvider.GetSenderQueue(QueueType.Publisher, e.SourceID, false), e));
 		}
 
 		/// <summary>
@@ -69,7 +76,12 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void ConsumerQueue_Rx(object sender, RoutingFrame e) {
-			new MessageRouter(ID, QueueProvider.GetSenderQueue(e.SourceID), e).Start();
+			//RequestManager.Receive(e);
+			if (e.FrameType == RoutingFrameType.Control) {
+				ControlFactory.Processor.Process(new MessageRouter(ID, QueueProvider.GetSenderQueue(QueueType.Publisher, e.SourceID, false), e), e);
+			} else {
+				RequestManager.Receive(new MessageRouter(ID, QueueProvider.GetSenderQueue(QueueType.Publisher, e.SourceID, false), e), e);
+			}
 		}
 
 		/// <summary>
@@ -78,7 +90,7 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
 		/// </summary>
 		/// <param name="pMessage"></param>
 		public void Transmit(byte[] pData) {
-			//nothing to do
+			
 		}
 
 		/// <summary>

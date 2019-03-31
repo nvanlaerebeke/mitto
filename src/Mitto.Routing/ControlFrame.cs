@@ -10,7 +10,7 @@ namespace Mitto.IRouting {
 
 
 		public ControlFrame(byte[] data) { _arrByteArray = data; }
-		public ControlFrame(ControlFrameType pType, string pMessageName, string pRequestID, byte[] data) {
+		public ControlFrame(MessageType pType, string pMessageName, string pRequestID, byte[] data) {
 			var arrID = Encoding.ASCII.GetBytes(pRequestID);
 			var arrMessageName = Encoding.UTF32.GetBytes(pMessageName);
 
@@ -23,9 +23,9 @@ namespace Mitto.IRouting {
 			Array.Copy(data, 0, _arrByteArray, 1 + 1 + arrID.Length + 1 + arrMessageName.Length, data.Length);
 		}
 
-		public ControlFrameType FrameType {
+		public MessageType FrameType {
 			get {
-				return (ControlFrameType)_arrByteArray.ElementAt(0);
+				return (MessageType)_arrByteArray.ElementAt(0);
 			}
 		}
 

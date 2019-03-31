@@ -42,9 +42,11 @@
     <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Action\Request\CanStartRequestAction.cs" />
     <Compile Include="Action\Request\GetMessageStatusRequestAction.cs" />
     <Compile Include="Request\CanStartActionRequest.cs" />
     <Compile Include="Response\CanStartActionResponse.cs" />
+    <Compile Include="ConsumerRouter.cs" />
     <Compile Include="Router.cs" />
     <Compile Include="RouterCache.cs" />
     <Compile Include="RouterProvider.cs" />

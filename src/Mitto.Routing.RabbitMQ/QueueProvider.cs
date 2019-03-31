@@ -7,28 +7,28 @@ namespace Mitto.Routing.RabbitMQ {
 		
 		public QueueProvider(RabbitMQParams pParams) { }
 				
-		public ReaderQueue GetReaderQueue(string pQueueID) {
+		public ReaderQueue GetReaderQueue(QueueType pType, string pQueueID, bool pShared) {
 			if(ReaderQueues.ContainsKey(pQueueID)) {
 				if(ReaderQueues.TryGetValue(pQueueID, out ReaderQueue objQueue)) {
 					return objQueue;
 				}
 			}
 			//Not found or error, create, add and return
-			var obj = new ReaderQueue(pQueueID);
+			var obj = new ReaderQueue(pType, pQueueID, pShared);
 			if(!ReaderQueues.TryAdd(pQueueID, obj)) {
 				//ToDo: Logging
 			}
 			return obj;
 		}
 
-		public SenderQueue GetSenderQueue(string pQueueID) {
+		public SenderQueue GetSenderQueue(QueueType pType, string pQueueID, bool pShared) {
 			if (SenderQueues.ContainsKey(pQueueID)) {
 				if (SenderQueues.TryGetValue(pQueueID, out SenderQueue objQueue)) {
 					return objQueue;
 				}
 			}
 			//Not found or error, create, add and return
-			var obj = new SenderQueue(pQueueID);
+			var obj = new SenderQueue(pType, pQueueID, pShared);
 			if (!SenderQueues.TryAdd(pQueueID, obj)) {
 				//ToDo: Logging
 			}

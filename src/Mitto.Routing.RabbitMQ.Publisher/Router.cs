@@ -32,7 +32,7 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 		/// Client connection
 		/// </summary>
 		private readonly IClientConnection Connection;
-		private readonly SenderQueue MainQueue;
+		private readonly SenderQueue SenderQueue;
 
 		/// <summary>
 		/// Creates a router for the IClientConnection
@@ -45,7 +45,7 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 		/// <param name="pParams"></param>
 		/// <param name="pConnection"></param>
 		public Router(SenderQueue pMainQueue, RequestManager pRequestManager, IClientConnection pConnection) {
-			MainQueue = pMainQueue;
+			SenderQueue = pMainQueue;
 			RequestManager = pRequestManager;
 
 			Connection = pConnection;
@@ -60,12 +60,11 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void Connection_Rx(object sender, byte[] e) {
-			var obj = new RabbitMQRequest(RouterProvider.ID, this, new RoutingFrame(e));
-			RequestManager.Send(obj);
+			RequestManager.Send(new RabbitMQRequest(RouterProvider.ID, this, new RoutingFrame(e)));
 		}
 
 		public void Receive(byte[] pData) {
-			MainQueue.Transmit(new RoutingFrame(pData));
+			SenderQueue.Transmit(new RoutingFrame(pData));
 		}
 
 		/// <summary>
@@ -77,7 +76,7 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 		}
 
 		public void Transmit(RoutingFrame pFrame) {
-			RequestManager.Receive(pFrame);
+			RequestManager.Receive(this, pFrame);
 		}
 
 		/// <summary>
@@ -101,7 +100,7 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
 				}
 			));
 
-			objWait.WaitOne(15);
+			objWait.WaitOne(5000);
 			return blnIsAlive;
 		}
 	}

@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3CB0E6C9-133E-49D7-A393-4FCC9DDEB72B}</ProjectGuid>
+    <ProjectGuid>{6944757A-9DC0-466A-9E99-D2211A854AA2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Mitto.Routing.RabbitMQ</RootNamespace>
-    <AssemblyName>Mitto.Routing.RabbitMQ</AssemblyName>
+    <RootNamespace>Mitto.Routing.RabbitMQ.Guardian</RootNamespace>
+    <AssemblyName>Mitto.Routing.RabbitMQ.Guardian</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,48 +31,33 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
-      <Link>Properties\AssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="QueueProvider.cs" />
-    <Compile Include="QueueType.cs" />
-    <Compile Include="RabbitMQParams.cs" />
-    <Compile Include="RabbitMQRequest.cs" />
-    <Compile Include="ReaderQueue.cs" />
-    <Compile Include="Request\CanStartActionRequest.cs" />
-    <Compile Include="Response\CanStartActionResponse.cs" />
-    <Compile Include="SenderQueue.cs" />
+    <Compile Include="Guardian.cs" />
+    <Compile Include="GuardianProvider.cs" />
+    <Compile Include="Negotiator.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Mitto.ILogging\Mitto.ILogging.csproj">
-      <Project>{30f11e8a-a8d2-48c7-9d86-d5d007a47609}</Project>
-      <Name>Mitto.ILogging</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Mitto.IMessaging\Mitto.IMessaging.csproj">
-      <Project>{3bb1c211-9006-4fee-9f40-7556717431b0}</Project>
-      <Name>Mitto.IMessaging</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Mitto.IRouting\Mitto.IRouting.csproj">
       <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
       <Name>Mitto.IRouting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Routing.RabbitMQ\Mitto.Routing.RabbitMQ.csproj">
+      <Project>{3cb0e6c9-133e-49d7-a393-4fcc9ddeb72b}</Project>
+      <Name>Mitto.Routing.RabbitMQ</Name>
     </ProjectReference>
     <ProjectReference Include="..\Mitto.Routing\Mitto.Routing.csproj">
       <Project>{6ffefef0-8b67-45c8-9aba-a1e6d276b1c2}</Project>
       <Name>Mitto.Routing</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mitto.Utilities\Mitto.Utilities.csproj">
-      <Project>{d184bf09-fd6d-4f36-bc6e-bf05e763e3ac}</Project>
-      <Name>Mitto.Utilities</Name>
-    </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="RabbitMQ.Client">
-      <Version>5.1.0</Version>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

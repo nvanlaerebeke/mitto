@@ -1,9 +1,10 @@
 ﻿using Mitto.IRouting;
+using Mitto.Routing.Request;
 using System.Text;
 
 namespace Mitto.Routing.RabbitMQ.Request {
 
-	public class CanStartActionRequest : Routing.Request.ControlRequestMessage {
+	public class CanStartActionRequest : ControlRequestMessage {
 		public string RequestID { get; set; }
 
 		public CanStartActionRequest(string pRequestID) {

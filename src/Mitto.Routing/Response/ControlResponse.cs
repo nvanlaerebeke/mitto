@@ -1,7 +1,8 @@
-﻿namespace Mitto.Routing.Response {
+﻿using Mitto.IRouting;
+
+namespace Mitto.Routing.Response {
 	public abstract class ControlResponse :  ControlMessage, IControlResponse {
-		public string ID { get; private set; }
-		public ControlResponse(string pRequestID) {
+		public ControlResponse(string pRequestID) : base(MessageType.Response) {
 			ID = pRequestID;
 		}
 	}
