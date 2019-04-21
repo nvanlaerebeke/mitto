@@ -77,6 +77,10 @@
       <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
       <Name>Mitto.IRouting</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Mitto.Utilities\Mitto.Utilities.csproj">
+      <Project>{d184bf09-fd6d-4f36-bc6e-bf05e763e3ac}</Project>
+      <Name>Mitto.Utilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

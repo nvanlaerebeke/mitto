@@ -1,4 +1,6 @@
-﻿using Mitto.IRouting;
+﻿using Mitto.ILogging;
+using Mitto.IRouting;
+using Mitto.Utilities;
 using System;
 
 namespace Mitto.Routing {
@@ -7,6 +9,8 @@ namespace Mitto.Routing {
     /// ToDo: Add KeepAlives that raise the RequestTimedOut
     /// </summary>
     public class FrameRequest : IRequest {
+        private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private readonly IRouter Origin;
         private readonly RoutingFrame Frame;
 
@@ -16,9 +20,13 @@ namespace Mitto.Routing {
 
         public MessageStatus Status { get; private set; } = MessageStatus.UnKnown;
 
+        private readonly IKeepAliveMonitor KeepAliveMonitor;
+
         public FrameRequest(IRouter pRouter, RoutingFrame pRequest) {
             Origin = pRouter;
             Frame = pRequest;
+
+            KeepAliveMonitor = new KeepAliveMonitor(15);
         }
 
         public void Send() {
@@ -28,6 +36,18 @@ namespace Mitto.Routing {
             ) {
                 ControlFactory.Processor.Process(Origin, Frame);
             }
+
+            KeepAliveMonitor.Start();
+            KeepAliveMonitor.TimeOut += KeepAliveMonitor_TimeOut;
+        }
+
+        private void KeepAliveMonitor_TimeOut(object sender, EventArgs e) {
+            Log.Info($"Frame {Frame.RequestID} timed out");
+
+            KeepAliveMonitor.TimeOut -= KeepAliveMonitor_TimeOut;
+            KeepAliveMonitor.Stop();
+
+            RequestTimedOut?.Invoke(this, this);
         }
 
         public void SetResponse(RoutingFrame pFrame) {

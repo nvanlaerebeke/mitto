@@ -9,7 +9,7 @@ namespace Mitto.Routing.PassThrough {
             return new PassThroughRouter(pConnection);
         }
 
-        public ISubscriptionRouter GetSubscriptionRouter<T>(IRouter pRouter) {
+        public IRouter GetSubscriptionRouter<T>(IRouter pRouter) {
             return new PassThroughSubscriptionRouter<T>(pRouter);
         }
     }

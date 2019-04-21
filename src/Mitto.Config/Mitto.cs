@@ -7,7 +7,7 @@ using Mitto.Logging;
 using Mitto.Messaging;
 using Mitto.Messaging.Json;
 using Mitto.Routing.PassThrough;
-using Mitto.Subscription.Handlers;
+using Mitto.Subscription.Messaging;
 
 namespace Mitto {
 

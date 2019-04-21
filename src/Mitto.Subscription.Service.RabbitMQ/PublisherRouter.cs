@@ -9,31 +9,28 @@ using Mitto.Subscription.Messaging;
 using System;
 using System.Threading;
 
-namespace Mitto.Subscription.RabbitMQ {
+namespace Mitto.Subscription.Service.RabbitMQ {
 
-    internal class SubscriptionRouter : IRouter, IEquatable<SubscriptionRouter> {
-        public string ConnectionID { get; private set; }
+    internal class PublisherRouter : IRouter, IEquatable<PublisherRouter> {
+        public string ConnectionID { get { return ConsumerQueue.QueueName; } }
+
+        public string SourceID { get { return ReaderQueue.QueueName; } }
+        public string DestinationID { get { return PublisherQueue.QueueName; } }
+        public readonly SenderQueue ConsumerQueue;
+        public readonly SenderQueue PublisherQueue;
 
         private readonly ReaderQueue ReaderQueue;
-        private readonly SenderQueue SenderQueue;
+
         private readonly Executor Executor;
 
-        public SubscriptionRouter(string pConnectionID, ReaderQueue pReaderQueue, SenderQueue pSenderQueue) {
-            ConnectionID = pConnectionID;
+        public PublisherRouter(SenderQueue pConsumerQueue, ReaderQueue pReaderQueue, SenderQueue pPublisherQueue) {
+            ConsumerQueue = pConsumerQueue;
+            PublisherQueue = pPublisherQueue;
             ReaderQueue = pReaderQueue;
-            SenderQueue = pSenderQueue;
             Executor = new Executor(this);
         }
 
         public void Receive(byte[] pData) {
-            var objMessage = MessagingFactory.Provider.GetMessage(pData);
-            if (objMessage is SubMessage) {
-                Executor.Sub(objMessage as SubMessage);
-            } else if (objMessage is UnSubMessage) {
-                Executor.UnSub(objMessage as UnSubMessage);
-            } else if (objMessage is RequestMessage) {
-                Executor.Notify(objMessage as RequestMessage);
-            }
         }
 
         public void Transmit(byte[] pData) {
@@ -46,7 +43,7 @@ namespace Mitto.Subscription.RabbitMQ {
                 ConnectionID,
                 objFrame.Data
             );
-            SenderQueue.Transmit(objRoutingFrame);
+            PublisherQueue.Transmit(objRoutingFrame);
         }
 
         public void Close() {
@@ -70,7 +67,7 @@ namespace Mitto.Subscription.RabbitMQ {
             return blnIsAlive;
         }
 
-        public bool Equals(SubscriptionRouter pRouter) {
+        public bool Equals(PublisherRouter pRouter) {
             return (
                 this == pRouter || (
                     ConnectionID.Equals(pRouter.ConnectionID)

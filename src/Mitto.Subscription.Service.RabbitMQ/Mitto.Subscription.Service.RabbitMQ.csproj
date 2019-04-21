@@ -7,8 +7,8 @@
     <ProjectGuid>{F79D0DD2-4FB4-47DB-B765-5D6516B8C5EA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Mitto.Subscription.RabbitMQ</RootNamespace>
-    <AssemblyName>Mitto.Subscription.RabbitMQ</AssemblyName>
+    <RootNamespace>Mitto.Subscription.Service.RabbitMQ</RootNamespace>
+    <AssemblyName>Mitto.Subscription.Service.RabbitMQ</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -38,10 +38,10 @@
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Executor.cs" />
-    <Compile Include="ISubscriptionProcessor.cs" />
-    <Compile Include="SubscriptionProcessor.cs" />
+    <Compile Include="ConsumerRouter.cs" />
+    <Compile Include="SubscriptionActionManager.cs" />
     <Compile Include="SubscriptionProvider.cs" />
-    <Compile Include="SubscriptionRouter.cs" />
+    <Compile Include="PublisherRouter.cs" />
     <Compile Include="SubscriptionService.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -69,11 +69,11 @@
       <Project>{6ffefef0-8b67-45c8-9aba-a1e6d276b1c2}</Project>
       <Name>Mitto.Routing</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mitto.Subscription.Handlers\Mitto.Subscription.Messaging.csproj">
+    <ProjectReference Include="..\Mitto.Subscription.Messaging\Mitto.Subscription.Messaging.csproj">
       <Project>{5d420f78-c169-4615-acb2-a039bf8acbd6}</Project>
       <Name>Mitto.Subscription.Messaging</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mitto.Subscription.IHandlers\Mitto.Subscription.IMessaging.csproj">
+    <ProjectReference Include="..\Mitto.Subscription.IMessaging\Mitto.Subscription.IMessaging.csproj">
       <Project>{9ff69878-e3d3-459d-a779-a6cb0091de75}</Project>
       <Name>Mitto.Subscription.IMessaging</Name>
     </ProjectReference>

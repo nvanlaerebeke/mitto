@@ -30,7 +30,7 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
             return false;
         }
 
-        public ISubscriptionRouter GetSubscriptionRouter<T>(IRouter pRouter) {
+        public IRouter GetSubscriptionRouter<T>(IRouter pRouter) {
             var objRouter = pRouter as ConsumerRouter;
             return new SubscriptionRouter(objRouter, SubscriptionExchange);
         }

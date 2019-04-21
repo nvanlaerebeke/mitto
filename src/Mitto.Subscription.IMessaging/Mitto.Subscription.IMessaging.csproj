@@ -45,7 +45,7 @@
     </Compile>
     <Compile Include="ISubMessage.cs" />
     <Compile Include="ISubscriptionClient.cs" />
-    <Compile Include="IUnSubscribeMessage.cs" />
+    <Compile Include="IUnSubMessage.cs" />
     <Compile Include="Request\IReceiveOnChannelRequest.cs" />
     <Compile Include="Request\ISendToChannelRequest.cs" />
   </ItemGroup>

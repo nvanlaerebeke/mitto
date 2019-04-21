@@ -57,6 +57,10 @@
     <Compile Include="ResponseStatus.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Mitto.ILogging\Mitto.ILogging.csproj">
+      <Project>{30f11e8a-a8d2-48c7-9d86-d5d007a47609}</Project>
+      <Name>Mitto.ILogging</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Mitto.IRouting\Mitto.IRouting.csproj">
       <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
       <Name>Mitto.IRouting</Name>

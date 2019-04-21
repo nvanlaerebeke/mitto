@@ -7,92 +7,94 @@ using System;
 using System.Threading.Tasks;
 
 namespace Mitto.Routing.RabbitMQ {
-	public class RabbitMQRequest : IRequest {
-		private static ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public string ID { get { return Request.RequestID; } }
-		public MessageStatus Status { get; private set; } = MessageStatus.UnKnown;
-		public event EventHandler<IRequest> RequestTimedOut;
+    public class RabbitMQRequest : IRequest {
+        private static ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		private readonly RoutingFrame Request;
-		private readonly IRouter Router;
-		private readonly string PublisherID;
-		private readonly IKeepAliveMonitor KeepAliveMonitor;
-		private IRouter Consumer;
+        public string ID { get { return Request.RequestID; } }
+        public MessageStatus Status { get; private set; } = MessageStatus.UnKnown;
 
-		public RabbitMQRequest(string pPublisherID, IRouter pRouter, RoutingFrame pFrame) {
-			PublisherID = pPublisherID;
-			Router = pRouter;
-			Request = pFrame;
+        public event EventHandler<IRequest> RequestTimedOut;
 
-			KeepAliveMonitor = new KeepAliveMonitor(2000);
-		}
+        private readonly RoutingFrame Request;
+        private readonly IRouter Router;
+        private readonly string PublisherID;
+        private readonly IKeepAliveMonitor KeepAliveMonitor;
+        private IRouter Consumer;
 
-		public void Send() {
-			Status = MessageStatus.Queued;
-			if (Request.FrameType == RoutingFrameType.Control) {
-				//ToDo: should this be here? - isn't this only for MessageRequests?
-				ControlFactory.Processor.Process(Router, Request);
-			} else {
-				var obj = new RoutingFrame(
-					Request.FrameType, 
-					Request.MessageType, 
-					Request.RequestID, 
-					PublisherID, 
-					Router.ConnectionID, 
-					Request.Data
-				);
-				Router.Receive(obj.GetBytes());
-			}
-			KeepAliveMonitor.Start();
-			KeepAliveMonitor.TimeOut += KeepAliveMonitor_TimeOut;
-			KeepAliveMonitor.UnResponsive += KeepAliveMonitor_UnResponsive;
-		}
+        public RabbitMQRequest(string pPublisherID, IRouter pRouter, RoutingFrame pFrame) {
+            PublisherID = pPublisherID;
+            Router = pRouter;
+            Request = pFrame;
 
-		public void SetResponse(RoutingFrame pFrame) {
-			EndRequest();
-			Router.Transmit(pFrame.GetBytes());
-		}
+            KeepAliveMonitor = new KeepAliveMonitor(15);
+        }
 
-		public void SetStatus(IRouter pConsumerRouter, MessageStatus pStatus) {
-			if(pStatus == MessageStatus.Busy || pStatus == MessageStatus.Queued) {
-				KeepAliveMonitor.Reset();
-				Consumer = pConsumerRouter;
-			}
-			Status = pStatus;
-		}
+        public void Send() {
+            Status = MessageStatus.Queued;
+            if (Request.FrameType == RoutingFrameType.Control) {
+                //ToDo: should this be here? - isn't this only for MessageRequests?
+                ControlFactory.Processor.Process(Router, Request);
+            } else {
+                var obj = new RoutingFrame(
+                    Request.FrameType,
+                    Request.MessageType,
+                    Request.RequestID,
+                    PublisherID,
+                    Router.ConnectionID,
+                    Request.Data
+                );
+                Router.Receive(obj.GetBytes());
+            }
+            KeepAliveMonitor.Start();
+            KeepAliveMonitor.TimeOut += KeepAliveMonitor_TimeOut;
+            KeepAliveMonitor.UnResponsive += KeepAliveMonitor_UnResponsive;
+        }
 
-		private void KeepAliveMonitor_TimeOut(object sender, System.EventArgs e) {
-			Log.Info($"Request {Request.RequestID} timed out on {Router.ConnectionID}, checking status...");
-			KeepAliveMonitor.StartCountDown();
+        public void SetResponse(RoutingFrame pFrame) {
+            EndRequest();
+            Router.Transmit(pFrame.GetBytes());
+        }
 
-			if (Consumer != null) {
-				Task.Run(() => {
-					ControlFactory.Processor.Request(new ControlRequest<GetMessageStatusResponse>(
-						Consumer,
-						new GetMessageStatusRequest(Request.RequestID),
-						(GetMessageStatusResponse r) => {
-							if (r.IsAlive) {
-								KeepAliveMonitor.Reset();
-							} else {
-								EndRequest();
-								RequestTimedOut?.Invoke(this, this);
-							}
-						}
-					));
-				});
-			}
-		}
+        public void SetStatus(IRouter pConsumerRouter, MessageStatus pStatus) {
+            if (pStatus == MessageStatus.Busy || pStatus == MessageStatus.Queued) {
+                KeepAliveMonitor.Reset();
+                Consumer = pConsumerRouter;
+            }
+            Status = pStatus;
+        }
 
-		private void KeepAliveMonitor_UnResponsive(object sender, System.EventArgs e) {
-			EndRequest();
-			RequestTimedOut?.Invoke(this, this);
-		}
+        private void KeepAliveMonitor_TimeOut(object sender, System.EventArgs e) {
+            Log.Info($"Request {Request.RequestID} timed out on {Router.ConnectionID}, checking status...");
+            KeepAliveMonitor.StartCountDown();
 
-		private void EndRequest() {
-			KeepAliveMonitor.TimeOut -= KeepAliveMonitor_TimeOut;
-			KeepAliveMonitor.UnResponsive -= KeepAliveMonitor_UnResponsive;
-			KeepAliveMonitor.Stop();
-		}
-	}
+            if (Consumer != null) {
+                Task.Run(() => {
+                    ControlFactory.Processor.Request(new ControlRequest<GetMessageStatusResponse>(
+                        Consumer,
+                        new GetMessageStatusRequest(Request.RequestID),
+                        (GetMessageStatusResponse r) => {
+                            if (r.IsAlive) {
+                                KeepAliveMonitor.Reset();
+                            } else {
+                                EndRequest();
+                                RequestTimedOut?.Invoke(this, this);
+                            }
+                        }
+                    ));
+                });
+            }
+        }
+
+        private void KeepAliveMonitor_UnResponsive(object sender, System.EventArgs e) {
+            EndRequest();
+            RequestTimedOut?.Invoke(this, this);
+        }
+
+        private void EndRequest() {
+            KeepAliveMonitor.TimeOut -= KeepAliveMonitor_TimeOut;
+            KeepAliveMonitor.UnResponsive -= KeepAliveMonitor_UnResponsive;
+            KeepAliveMonitor.Stop();
+        }
+    }
 }

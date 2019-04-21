@@ -1,4 +1,5 @@
-﻿using Mitto.IRouting;
+﻿using Mitto.IMessaging;
+using Mitto.IRouting;
 using System;
 
 namespace Mitto.Routing.RabbitMQ.Consumer {
@@ -65,7 +66,12 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void MainQueue_Rx(object sender, RoutingFrame e) {
-            RequestManager.Send(new ConsumerRequest(QueueProvider.GetSenderQueue(QueueType.Publisher, e.SourceID, false), e));
+            //var objRouter = QueueProvider.GetSenderQueue(QueueType.Publisher, e.SourceID, false);
+            //var objRequest = new ConsumerRequest(QueueProvider.GetSenderQueue(QueueType.Publisher, e.SourceID, false), e);
+            var objPublisherQueue = QueueProvider.GetSenderQueue(QueueType.Publisher, e.SourceID, false);
+            var objRouter = new ConsumerRouter(ID, objPublisherQueue, e);
+            MessagingFactory.Processor.Process(objRouter, e.Data);
+            //RequestManager.Send(objRequest);
         }
 
         /// <summary>
@@ -81,7 +87,8 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
             if (e.FrameType == RoutingFrameType.Control) {
                 ControlFactory.Processor.Process(new ConsumerRouter(ID, QueueProvider.GetSenderQueue(QueueType.Publisher, e.SourceID, false), e), e);
             } else {
-                RequestManager.Receive(new ConsumerRouter(ID, QueueProvider.GetSenderQueue(QueueType.Publisher, e.SourceID, false), e), e);
+                var objRouter = new ConsumerRouter(ID, QueueProvider.GetSenderQueue(QueueType.Publisher, e.SourceID, false), e);
+                RequestManager.Receive(objRouter, e);
             }
         }
 

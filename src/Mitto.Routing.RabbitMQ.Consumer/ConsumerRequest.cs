@@ -3,32 +3,56 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Mitto.IRouting;
+using Mitto.ILogging;
+using Mitto.IMessaging;
 
 namespace Mitto.Routing.RabbitMQ.Consumer {
-	internal class ConsumerRequest : IRequest {
-		public string ID => Request.RequestID;
 
-		public MessageStatus Status => throw new NotImplementedException();
+    /// <summary>
+    /// ToDo: KeepAlive
+    /// </summary>
+    internal class ConsumerRequest : IMessaging.IRequest {
+        private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public event EventHandler<IRequest> RequestTimedOut;
+        public string ID => Request.RequestID;
 
+        public IRouting.MessageStatus Status => throw new NotImplementedException();
 
-		private readonly RoutingFrame Request;
-		private readonly SenderQueue ProviderQueue;
+        public IRequestMessage Message => throw new NotImplementedException();
 
-		public ConsumerRequest(SenderQueue pProviderQueue, RoutingFrame pRequest) {
-			ProviderQueue = pProviderQueue;
-			Request = pRequest;
-		}
+        public event EventHandler<IMessaging.IRequest> RequestTimedOut;
 
-		public void Send() {
-			Console.WriteLine($"Sending request with ID {ID}");
-			new ConsumerRouter(ID, ProviderQueue, Request).Start();
-		}
+        private readonly IRouting.RoutingFrame Request;
+        private readonly SenderQueue ProviderQueue;
+        private readonly Delegate Action;
 
-		public void SetResponse(RoutingFrame pFrame) {
-			//Not applicable, the MessageRouter will handle it
-		}
-	}
+        public ConsumerRequest(SenderQueue pProviderQueue, IRouting.RoutingFrame pRequest, Action<IResponseMessage> pCallback) {
+            ProviderQueue = pProviderQueue;
+            Request = pRequest;
+            Action = pCallback;
+        }
+
+        /// <summary>
+        /// ToDo: do not create a new Router on very send
+        /// </summary>
+        public void Transmit() {
+            Log.Debug($"Sending request with ID {ID}");
+            new ConsumerRouter(ID, ProviderQueue, Request).Start();
+        }
+
+        public void SetResponse(IResponseMessage pMessage) {
+            /*var objRoutingFrame = new RoutingFrame(
+                pFrame.FrameType,
+                pFrame.MessageType,
+                pFrame.RequestID,
+                ProviderQueue.QueueName,
+                Consumer.ID,
+                pFrame.Data
+            );
+            ProviderQueue.Transmit(objRoutingFrame);*/
+            Task.Run(() => {
+                Action.DynamicInvoke(pMessage);
+            });
+        }
+    }
 }

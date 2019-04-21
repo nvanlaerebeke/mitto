@@ -69,11 +69,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Routing", "Mitto.Rout
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Routing.Tests", "Mitto.Routing.Tests\Mitto.Routing.Tests.csproj", "{DA10E40B-D532-4036-86BC-D46DC18A9DEC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Subscription.Messaging", "Mitto.Subscription.Handlers\Mitto.Subscription.Messaging.csproj", "{5D420F78-C169-4615-ACB2-A039BF8ACBD6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Subscription.Messaging", "Mitto.Subscription.Messaging\Mitto.Subscription.Messaging.csproj", "{5D420F78-C169-4615-ACB2-A039BF8ACBD6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Subscription.IMessaging", "Mitto.Subscription.IHandlers\Mitto.Subscription.IMessaging.csproj", "{9FF69878-E3D3-459D-A779-A6CB0091DE75}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Subscription.IMessaging", "Mitto.Subscription.IMessaging\Mitto.Subscription.IMessaging.csproj", "{9FF69878-E3D3-459D-A779-A6CB0091DE75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Subscription.Messaging.Tests", "Mitto.Subscription.Handlers.Tests\Mitto.Subscription.Messaging.Tests.csproj", "{7BEBD9E0-0376-472B-BA0B-653E6139635E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Subscription.Messaging.Tests", "Mitto.Subscription.Messaging.Tests\Mitto.Subscription.Messaging.Tests.csproj", "{7BEBD9E0-0376-472B-BA0B-653E6139635E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Subscription.Service.RabbitMQ", "Mitto.Subscription.Service.RabbitMQ\Mitto.Subscription.Service.RabbitMQ.csproj", "{F79D0DD2-4FB4-47DB-B765-5D6516B8C5EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -347,6 +349,14 @@ Global
 		{7BEBD9E0-0376-472B-BA0B-653E6139635E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7BEBD9E0-0376-472B-BA0B-653E6139635E}.Release|x64.ActiveCfg = Release|Any CPU
 		{7BEBD9E0-0376-472B-BA0B-653E6139635E}.Release|x64.Build.0 = Release|Any CPU
+		{F79D0DD2-4FB4-47DB-B765-5D6516B8C5EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F79D0DD2-4FB4-47DB-B765-5D6516B8C5EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F79D0DD2-4FB4-47DB-B765-5D6516B8C5EA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F79D0DD2-4FB4-47DB-B765-5D6516B8C5EA}.Debug|x64.Build.0 = Debug|Any CPU
+		{F79D0DD2-4FB4-47DB-B765-5D6516B8C5EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F79D0DD2-4FB4-47DB-B765-5D6516B8C5EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F79D0DD2-4FB4-47DB-B765-5D6516B8C5EA}.Release|x64.ActiveCfg = Release|Any CPU
+		{F79D0DD2-4FB4-47DB-B765-5D6516B8C5EA}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

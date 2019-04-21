@@ -50,7 +50,7 @@ namespace Mitto.Routing.RabbitMQ.Publisher {
             return RequestManager.ContainsRequest(pRequestID);
         }
 
-        public ISubscriptionRouter GetSubscriptionRouter<T>(IRouter pRouter) {
+        public IRouter GetSubscriptionRouter<T>(IRouter pRouter) {
             return null;
         }
     }

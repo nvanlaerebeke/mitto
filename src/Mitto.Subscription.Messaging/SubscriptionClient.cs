@@ -1,12 +1,17 @@
-﻿using Mitto.IMessaging;
+﻿using Mitto.ILogging;
+using Mitto.IMessaging;
 using Mitto.IRouting;
 using Mitto.Messaging;
 using Mitto.Messaging.Response;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Mitto.Subscription.Messaging {
 
     internal class SubscriptionClient<T> : ISubscriptionClient {
-        private readonly ISubscriptionRouter Router;
+        private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        private readonly IRouter Router;
         private readonly IClient Client;
 
         public SubscriptionClient(IClient pClient) {
@@ -15,20 +20,33 @@ namespace Mitto.Subscription.Messaging {
         }
 
         public bool Sub(SubMessage pMessage) {
-            MessagingFactory.Processor.Request<ACKResponse>(Router, pMessage, (r) => {
-            });
-            return Router.Sub(GetFrame(pMessage));
+            return Forward(pMessage);
         }
 
         public bool UnSub(UnSubMessage pMessage) {
-            return Router.UnSub(GetFrame(pMessage));
+            return Forward(pMessage);
         }
 
         public bool Notify(RequestMessage pMessage) {
-            return Router.Notify(GetFrame(pMessage));
+            return Forward(pMessage);
         }
 
-        private RoutingFrame GetFrame(IMessage pMessage) {
+        private bool Forward(IRequestMessage pMessage) {
+            ManualResetEvent objBlock = new ManualResetEvent(false);
+            var blnResult = false;
+
+            Task.Run(() => {
+                MessagingFactory.Processor.Request<ACKResponse>(Router, pMessage, (r) => {
+                    blnResult = (r.Status.State == ResponseState.Success);
+                    objBlock.Set();
+                });
+            });
+
+            objBlock.WaitOne(30000);
+            return blnResult;
+        }
+
+        /*private RoutingFrame GetFrame(IMessage pMessage) {
             return new RoutingFrame(
                 RoutingFrameType.Messaging,
                 MessageType.Request,
@@ -42,6 +60,6 @@ namespace Mitto.Subscription.Messaging {
                     MessagingFactory.Converter.GetByteArray(pMessage)
                 ).GetByteArray()
             );
-        }
+        }*/
     }
 }

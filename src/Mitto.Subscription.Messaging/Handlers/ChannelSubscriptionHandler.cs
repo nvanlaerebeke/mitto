@@ -62,6 +62,7 @@ namespace Mitto.Subscription.Messaging.Handlers {
         }
 
         public bool Sub(IRouter pClient, ChannelSubscribe pMessage) {
+            //System.Threading.Thread.Sleep(2000);
             try {
                 if (!_dicSubscriptions.ContainsKey(pMessage.ChannelName)) {
                     _dicSubscriptions.TryAdd(pMessage.ChannelName, new List<IRouter>());

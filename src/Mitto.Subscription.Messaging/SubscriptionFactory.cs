@@ -1,4 +1,4 @@
-﻿namespace Mitto.Subscription.Handlers {
+﻿namespace Mitto.Subscription.Messaging {
 
     public static class SubscriptionFactory {
 

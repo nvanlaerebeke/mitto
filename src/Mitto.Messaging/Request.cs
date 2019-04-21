@@ -5,79 +5,81 @@ using System;
 using System.Threading.Tasks;
 
 namespace Mitto.Messaging {
-	public class Request<T> : IRequest where T : IResponseMessage {
-		private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		private Delegate _objAction;
-		private IClient _objClient;
-		private IKeepAliveMonitor _objKeepAliveMonitor;
+    public class Request<T> : IRequest where T : IResponseMessage {
+        private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public event EventHandler<IRequest> RequestTimedOut;
+        private readonly Delegate _objAction;
+        private readonly IClient _objClient;
+        private readonly IKeepAliveMonitor _objKeepAliveMonitor;
 
-		public IRequestMessage Message { get; private set; }
+        public event EventHandler<IRequest> RequestTimedOut;
 
-		public Request(IClient pClient, IRequestMessage pMessage, Action<T> pCallback) : this(pClient, pMessage, pCallback, new KeepAliveMonitor(5)) { }
+        public IRequestMessage Message { get; private set; }
 
-		public Request(IClient pClient, IRequestMessage pMessage, Action<T> pCallback, IKeepAliveMonitor pKeepAliveMonitor) {
-			_objClient = pClient;
-			Message = pMessage;
-			_objAction = pCallback;
-			_objKeepAliveMonitor = pKeepAliveMonitor;
+        public Request(IClient pClient, IRequestMessage pMessage, Action<T> pCallback) : this(pClient, pMessage, pCallback, new KeepAliveMonitor(15)) {
+        }
 
-			_objKeepAliveMonitor.TimeOut += _objKeepAliveMonitor_TimeOut;
-			_objKeepAliveMonitor.UnResponsive += _objKeepAliveMonitor_UnResponsive;
+        public Request(IClient pClient, IRequestMessage pMessage, Action<T> pCallback, IKeepAliveMonitor pKeepAliveMonitor) {
+            _objClient = pClient;
+            Message = pMessage;
+            _objAction = pCallback;
+            _objKeepAliveMonitor = pKeepAliveMonitor;
 
-			Log.Info($"Creating {Message.Name}({Message.ID}) on {_objClient.ID}");
-		}
+            _objKeepAliveMonitor.TimeOut += _objKeepAliveMonitor_TimeOut;
+            _objKeepAliveMonitor.UnResponsive += _objKeepAliveMonitor_UnResponsive;
 
-		private void _objKeepAliveMonitor_UnResponsive(object sender, EventArgs e) {
-			_objKeepAliveMonitor.Stop();
-			RequestTimedOut?.Invoke(sender, this);
-			Log.Info($"Request {Message.Name}({Message.ID}) unresponsive on {_objClient.ID}, cleaning up...");
-		}
+            Log.Info($"Creating {Message.Name}({Message.ID}) on {_objClient.ID}");
+        }
 
-		private void _objKeepAliveMonitor_TimeOut(object sender, EventArgs e) {
-			Log.Info($"Request {Message.Name}({Message.ID}) timed out on {_objClient.ID}, checking status...");
-			_objKeepAliveMonitor.StartCountDown();
+        private void _objKeepAliveMonitor_UnResponsive(object sender, EventArgs e) {
+            _objKeepAliveMonitor.Stop();
+            RequestTimedOut?.Invoke(sender, this);
+            Log.Info($"Request {Message.Name}({Message.ID}) unresponsive on {_objClient.ID}, cleaning up...");
+        }
 
-			Task.Run(() => {
-				if(_objClient.IsAlive(Message.ID)) {
-					_objKeepAliveMonitor.Reset();
-				}
-				Log.Info($"Request {Message.Name}({Message.ID}) on {_objClient.ID}");
-			});
-		}
+        private void _objKeepAliveMonitor_TimeOut(object sender, EventArgs e) {
+            Log.Info($"Request {Message.Name}({Message.ID}) timed out on {_objClient.ID}, checking status...");
+            _objKeepAliveMonitor.StartCountDown();
 
-		public void Transmit() {
-			Log.Info($"Sending request {Message.Name}({Message.ID}) on {_objClient.ID}");
-			_objClient.Transmit(Message);
-			_objKeepAliveMonitor.Start();
+            Task.Run(() => {
+                if (_objClient.IsAlive(Message.ID)) {
+                    _objKeepAliveMonitor.Reset();
+                }
+                Log.Info($"Request {Message.Name}({Message.ID}) on {_objClient.ID}");
+            });
+        }
 
-		}
-		public void SetResponse(IResponseMessage pResponse) {
-			_objKeepAliveMonitor.Stop();
-			_objKeepAliveMonitor.TimeOut -= _objKeepAliveMonitor_TimeOut;
-			_objKeepAliveMonitor.UnResponsive -= _objKeepAliveMonitor_UnResponsive;
+        public void Transmit() {
+            Log.Info($"Sending request {Message.Name}({Message.ID}) on {_objClient.ID}");
+            _objClient.Transmit(Message);
+            _objKeepAliveMonitor.Start();
+        }
 
-			Task.Run(() => {
-				var objSpan = (pResponse.EndTime - pResponse.StartTime);
+        public void SetResponse(IResponseMessage pResponse) {
+            _objKeepAliveMonitor.Stop();
+            _objKeepAliveMonitor.TimeOut -= _objKeepAliveMonitor_TimeOut;
+            _objKeepAliveMonitor.UnResponsive -= _objKeepAliveMonitor_UnResponsive;
 
-				Log.Info(
-					String.Format(
-						"Response {0} received for {1} took {2}",
-						Message.Name,
-						$"{Message.ID}",
-						String.Format(
-							"{0}:{1}:{2}.{3}",
-							$"{objSpan.Hours.ToString().PadLeft(2, '0')}",
-							$"{objSpan.Minutes.ToString().PadLeft(2, '0')}",
-							$"{objSpan.Seconds.ToString().PadLeft(2, '0')}",
-							$"{objSpan.Milliseconds.ToString().PadLeft(3, '0')}"
-						)
-					)
-				);
-				_objAction.DynamicInvoke(pResponse);
-			});
-		}
-	}
+            Task.Run(() => {
+                var objSpan = (pResponse.EndTime - pResponse.StartTime);
+
+                Log.Info(
+                    String.Format(
+                        "Response {0} received for {1} took {2}",
+                        Message.Name,
+                        $"{Message.ID}",
+                        String.Format(
+                            "{0}:{1}:{2}.{3}",
+                            $"{objSpan.Hours.ToString().PadLeft(2, '0')}",
+                            $"{objSpan.Minutes.ToString().PadLeft(2, '0')}",
+                            $"{objSpan.Seconds.ToString().PadLeft(2, '0')}",
+                            $"{objSpan.Milliseconds.ToString().PadLeft(3, '0')}"
+                        )
+                    )
+                );
+                _objAction.DynamicInvoke(pResponse);
+            });
+        }
+    }
 }

@@ -22,7 +22,7 @@ namespace Mitto.Messaging {
         /// </summary>
         /// <param name="pRequestManager"></param>
         /// <param name="pActionManager"></param>
-        internal MessageProcessor(IRequestManager pRequestManager, IActionManager pActionManager) {
+        public MessageProcessor(IRequestManager pRequestManager, IActionManager pActionManager) {
             RequestManager = pRequestManager;
             ActionManager = pActionManager;
         }

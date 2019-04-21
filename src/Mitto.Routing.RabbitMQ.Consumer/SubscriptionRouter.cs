@@ -1,68 +1,75 @@
 ﻿using Mitto.IRouting;
+using Mitto.Routing.Request;
+using Mitto.Routing.Response;
 using System;
+using System.Threading;
 
 namespace Mitto.Routing.RabbitMQ.Consumer {
 
     /// <summary>
     /// ToDo: Make notify/sub/unsub a request with a true/false response
     /// </summary>
-    internal class SubscriptionRouter : ISubscriptionRouter, IRouter {
+    internal class SubscriptionRouter : IRouter {
+        public string ConnectionID { get { return Exchange.QueueName; } }
+
         private readonly ConsumerRouter Router;
         private readonly SenderQueue Exchange;
 
-        public string SourceID { get { return Router.Request.DestinationID; } }
-        public string DestinationID { get { return Router.Publisher.QueueName; } }
+        //public string SourceID { get { return Router.Request.DestinationID; } }
+        //public string DestinationID { get { return Router.Publisher.QueueName; } }
 
         public SubscriptionRouter(ConsumerRouter pRouter, SenderQueue pExchange) {
             Router = pRouter;
             Exchange = pExchange;
         }
 
-        public string ID => throw new NotImplementedException();
-
-        public bool Notify(RoutingFrame pFrame) {
-            Exchange.Transmit(GetFrame(pFrame));
-            return true;
-        }
-
-        public bool Sub(RoutingFrame pFrame) {
-            Exchange.Transmit(GetFrame(pFrame));
-            return true;
-        }
-
-        public bool UnSub(RoutingFrame pFrame) {
-            Exchange.Transmit(GetFrame(pFrame));
-            return true;
-        }
-
-        private RoutingFrame GetFrame(RoutingFrame pFrame) {
+        /*private RoutingFrame GetFrame(RoutingFrame pFrame) {
             return new RoutingFrame(
                 pFrame.FrameType,
                 pFrame.MessageType,
                 pFrame.RequestID,
-                SourceID,
+                RouterProvider.ID,
                 DestinationID,
                 pFrame.Data
             );
-        }
-
-        public string ConnectionID => throw new NotImplementedException();
+        }*/
 
         public void Transmit(byte[] pData) {
-            Exchange.Transmit(GetFrame(new RoutingFrame(pData)));
+            var objRoutingFrame = new RoutingFrame(pData);
+            var objNewFrame = new RoutingFrame(
+                objRoutingFrame.FrameType,
+                objRoutingFrame.MessageType,
+                objRoutingFrame.RequestID,
+                Consumer.ID,
+                Router.Publisher.QueueName,
+                objRoutingFrame.Data
+            );
+            Exchange.Transmit(objNewFrame);
         }
 
         public void Receive(byte[] pData) {
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void Close() {
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public bool IsAlive(string pRequestID) {
-            //throw new NotImplementedException();
-            return true;
+            var blnIsAlive = false;
+            ManualResetEvent objWait = new ManualResetEvent(false);
+
+            ControlFactory.Processor.Request(new ControlRequest<GetMessageStatusResponse>(
+                this,
+                new GetMessageStatusRequest(pRequestID),
+                (GetMessageStatusResponse r) => {
+                    blnIsAlive = r.IsAlive;
+                    objWait.Set();
+                }
+            ));
+
+            objWait.WaitOne(5000);
+            return blnIsAlive;
         }
     }
 }

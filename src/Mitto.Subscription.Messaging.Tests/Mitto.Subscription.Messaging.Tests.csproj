@@ -87,11 +87,11 @@
       <Project>{c29037e3-9c2f-4996-8434-36600735d465}</Project>
       <Name>Mitto.Messaging</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mitto.Subscription.Handlers\Mitto.Subscription.Messaging.csproj">
+    <ProjectReference Include="..\Mitto.Subscription.Messaging\Mitto.Subscription.Messaging.csproj">
       <Project>{5d420f78-c169-4615-acb2-a039bf8acbd6}</Project>
       <Name>Mitto.Subscription.Messaging</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mitto.Subscription.IHandlers\Mitto.Subscription.IMessaging.csproj">
+    <ProjectReference Include="..\Mitto.Subscription.IMessaging\Mitto.Subscription.IMessaging.csproj">
       <Project>{9ff69878-e3d3-459d-a779-a6cb0091de75}</Project>
       <Name>Mitto.Subscription.IMessaging</Name>
     </ProjectReference>
