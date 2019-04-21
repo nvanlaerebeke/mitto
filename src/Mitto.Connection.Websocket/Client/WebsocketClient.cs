@@ -2,16 +2,14 @@
 using Mitto.ILogging;
 using Mitto.Utilities;
 using System;
-using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using WebSocketSharp;
 
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 
 /// <summary>
-/// Class that represents the Websocket Client in Mitto
-/// Provides functionality to communicate with a websocket server
+/// Class that represents the WebSocket Client in Mitto
+/// Provides functionality to communicate with a WebSocket server
 /// </summary>
 namespace Mitto.Connection.Websocket.Client {
 
@@ -22,7 +20,7 @@ namespace Mitto.Connection.Websocket.Client {
 
         private IWebSocketClient _objWebSocketClient;
         private IKeepAliveMonitor _objKeepAliveMonitor;
-        public long CurrentBytesPerSecond { get { return _objWebSocketClient.CurrentBytesPerSecond; } }
+        public long CurrentBytesPerSecond { get { return (_objWebSocketClient == null) ? 0 : _objWebSocketClient.CurrentBytesPerSecond; } }
 
         public event EventHandler<IClient> Connected;
 
@@ -44,8 +42,8 @@ namespace Mitto.Connection.Websocket.Client {
 
         public void ConnectAsync(IClientParams pParams) {
             if (!(pParams is ClientParams objParams)) {
-                Log.Error("Incorrect parameters for Websocket client");
-                throw new Exception("Incorrect parameters for Websocket client");
+                Log.Error("Incorrect parameters for WebSocket client");
+                throw new Exception("Incorrect parameters for WebSocket client");
             }
             Log.Info($"Connecting {ID} to {objParams.Hostname}:{objParams.Port}");
 
@@ -65,6 +63,7 @@ namespace Mitto.Connection.Websocket.Client {
 
         private void Close() {
             Log.Info($"Closing connection: {ID}");
+
             _objKeepAliveMonitor.TimeOut -= _objKeepAliveMonitor_TimeOut;
             _objKeepAliveMonitor.UnResponsive -= _objKeepAliveMonitor_UnResponsive;
 
@@ -73,7 +72,10 @@ namespace Mitto.Connection.Websocket.Client {
             _objWebSocketClient.OnError -= Connection_OnError;
             _objWebSocketClient.OnMessage -= Connection_OnMessage;
 
-            if (_objWebSocketClient.ReadyState != WebSocketState.Closing && _objWebSocketClient.ReadyState != WebSocketState.Closed) {
+            if (
+                _objWebSocketClient.ReadyState != WebSocketState.Closing &&
+                _objWebSocketClient.ReadyState != WebSocketState.Closed
+            ) {
                 _objWebSocketClient.Close();
             }
             _objKeepAliveMonitor.Stop();
@@ -84,7 +86,7 @@ namespace Mitto.Connection.Websocket.Client {
             _objKeepAliveMonitor.StartCountDown();
             if (_objWebSocketClient.Ping()) {
                 _objKeepAliveMonitor.Reset();
-                Log.Debug($"pong received: {ID}");
+                Log.Debug($"Pong received: {ID}");
             }
         }
 
@@ -95,7 +97,7 @@ namespace Mitto.Connection.Websocket.Client {
 
         #endregion Constructor & Connecting
 
-        #region Websocket Event Handlers
+        #region WebSocket Event Handlers
 
         private void Connection_OnOpen(object sender, EventArgs e) {
             Log.Info($"Connection {ID} connected");
@@ -124,7 +126,7 @@ namespace Mitto.Connection.Websocket.Client {
                 Log.Debug($"Text received on {ID}");
                 var data = System.Text.Encoding.UTF32.GetBytes(e.Data);
                 Rx?.Invoke(this, data);
-            } else if (e.IsPing) { // -- do nothing, keepalive is handled in this class
+            } else if (e.IsPing) { // -- do nothing, keep-alive is handled in this class
                 Log.Debug($"Ping received on {ID}");
             } else if (e.IsBinary) {
                 Log.Debug($"Data received on {ID}");
@@ -132,7 +134,7 @@ namespace Mitto.Connection.Websocket.Client {
             }
         }
 
-        #endregion Websocket Event Handlers
+        #endregion WebSocket Event Handlers
 
         #region Client Methods
 
