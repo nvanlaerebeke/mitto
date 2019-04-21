@@ -43,11 +43,6 @@
     <Compile Include="Action\Notification\LogStatusTests.cs" />
     <Compile Include="Action\Request\EchoTests.cs" />
     <Compile Include="Action\Request\PingTests.cs" />
-    <Compile Include="Action\Request\ReceiveOnChannelTests.cs" />
-    <Compile Include="Action\Request\SendToChannelTests.cs" />
-    <Compile Include="Action\Subscribe\ChannelTests.cs" />
-    <Compile Include="Action\SubscriptionHandler\ChannelTests.cs" />
-    <Compile Include="Action\UnSubscribe\ChannelTests.cs" />
     <Compile Include="ClientTests.cs" />
     <Compile Include="FrameTests.cs" />
     <Compile Include="Manager\ActionManagerTests.cs" />
@@ -59,23 +54,14 @@
     <Compile Include="RequestTests.cs" />
     <Compile Include="Request\EchoTests.cs" />
     <Compile Include="Request\PingTests.cs" />
-    <Compile Include="Request\ReceiveOnChannelTests.cs" />
-    <Compile Include="Request\SendToChannel.cs" />
     <Compile Include="Response\ACKTests.cs" />
     <Compile Include="Response\PongTests.cs" />
     <Compile Include="Response\EchoTests.cs" />
-    <Compile Include="Subscribe\ChannelTests.cs" />
     <Compile Include="TestData\Action\Notification\NotificationTestAction.cs" />
     <Compile Include="TestData\Action\Request\RequestTestAction.cs" />
-    <Compile Include="TestData\Action\Subscribe\SubscribeTestAction.cs" />
-    <Compile Include="TestData\Action\SubscriptionHandler\SubscriptionHandlerTestClass.cs" />
-    <Compile Include="TestData\Action\UnSubscribe\UnSubscribeTestAction.cs" />
     <Compile Include="TestData\Notification\NotificationTestMessage.cs" />
     <Compile Include="TestData\Request\RequestTestMessage.cs" />
     <Compile Include="TestData\Response\ResponseTestMessage.cs" />
-    <Compile Include="TestData\Subscribe\SubscribeTestMessage.cs" />
-    <Compile Include="TestData\UnSubscribe\UnSubscribeTestMessage.cs" />
-    <Compile Include="UnSubscribe\ChannelTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NSubstitute">

@@ -8,370 +8,252 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Mitto.Messaging.Tests")]
+
 namespace Mitto.Messaging {
-	/// <summary>
-	/// Provides the Messages and Actions for the application
-	/// 
-	/// The messages are expected to have the following structure in the given namespace
-	///     - Action
-	///         - Notification
-	///         - Request
-	///         - Subscribe
-	///         - SubscriptionHandler
-	///         - UnSubscribe
-	///     - Notification
-	///     - Request
-	///     - Response
-	///     - Subscribe
-	///     - UnSubscribe
-	///         
-	/// Examples:
-	///     <Namespace>.Request.EchoRequest
-	///     <Namespace>.Response.EchoResponse
-	///     <Namespace>.Action.Request.EchoRequestAction
-	///     
-	/// </summary>
-	public class MessageProvider : IMessageProvider {
-		private ILog Log {
-			get { return LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType); }
-		}
 
-		/// <summary>
-		/// The available IMessage classes
-		/// </summary>
-		internal Dictionary<MessageType, Dictionary<string, Type>> Types { get; } = new Dictionary<MessageType, Dictionary<string, Type>>();
+    /// <summary>
+    /// ToDo: merge requests and responses into one dictionary, naming convention prevents collisions in name usage
+    /// </summary>
+    public class MessageProvider : IMessageProvider {
 
-		/// <summary>
-		/// The available IAction classes
-		/// </summary>
-		internal Dictionary<MessageType, Dictionary<string, Type>> Actions { get; } = new Dictionary<MessageType, Dictionary<string, Type>>();
+        private ILog Log {
+            get { return LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType); }
+        }
 
-		/// <summary>
-		/// Gives easy access to get the response type of a request message
-		/// Loaded based on the Action<RequestType, ResponseType> types
-		/// </summary>
-		internal Dictionary<string, Type> ResponseMessageTranslation = new Dictionary<string, Type>();
+        /// <summary>
+        /// The available IRequestMessage classes
+        /// </summary>
+        internal Dictionary<string, Type> Requests { get; } = new Dictionary<string, Type>();
 
-		/// <summary>
-		/// The available SubscriptionHandler classes
-		/// </summary>
-		internal Dictionary<string, object> SubscriptionHandlers { get; } = new Dictionary<string, object>();
+        /// <summary>
+        /// The available IResponseMessage classes
+        /// </summary>
+        internal Dictionary<string, Type> Responses = new Dictionary<string, Type>();
 
-		/// <summary>
-		/// Loads the types present in the specified Namespaces
-		/// The build-in types will be automatically added first
-		/// 
-		/// It is possible to overwrite the build-in message types and actions by your 
-		/// own implementation when creating the class in your own namespaces
-		/// 
-		/// Note that the order of the passed namespaces will be respected and the last
-		/// in the list will win.
-		/// </summary>
-		/// <param name="pNamespace"></param>
-		public MessageProvider(IEnumerable<string> pNamespaces) {
-			LoadTypes(typeof(MessageProvider).Namespace);
-			foreach (var strNamespace in pNamespaces) {
-				if (strNamespace != typeof(MessageProvider).Namespace) {
-					LoadTypes(strNamespace);
-				}
-			}
-		}
+        /// <summary>
+        /// The available IAction classes
+        /// </summary>
+        internal List<ActionInfo> Actions { get; } = new List<ActionInfo>();
 
-		/// <summary>
-		/// Loads the types present in the specified Namespace
-		/// The build-in types will be automatically added first
-		/// 
-		/// It is possible to overwrite the build-in message types and actions by your 
-		/// own implementation when creating the class in your own namespace
-		/// </summary>
-		/// <param name="pNamespace"></param>
-		public MessageProvider(string pNamespace) {
-			if (pNamespace != typeof(MessageProvider).Namespace) {
-				LoadTypes(typeof(MessageProvider).Namespace);
-			}
-			LoadTypes(pNamespace);
-		}
+        /// <summary>
+        /// The available SubscriptionHandler classes
+        /// </summary>
+        internal List<SubscriptionInfo> SubscriptionHandlers { get; } = new List<SubscriptionInfo>();
 
-		/// <summary>
-		/// Loads the base types only
-		/// </summary>
-		public MessageProvider() {
-			LoadTypes(typeof(MessageProvider).Namespace);
-		}
+        /// <summary>
+        /// Loads the types present in the loaded assemblies
+        /// The build-in types will be automatically added first
+        ///
+        /// It is possible to overwrite the build-in message types and actions by your
+        /// own implementation when creating the class in your own namespaces
+        ///
+        /// Note that when implementing the same message multiple times the last one will win
+        /// </summary>
+        /// <param name="pNamespace"></param>
+        public MessageProvider() {
+            Load();
+        }
 
-		/// <summary>
-		/// Loads the types based on the provided namespace
-		/// </summary>
-		/// <param name="pNamespace"></param>
-		private void LoadTypes(string pNamespace) {
-			Dictionary<MessageType, string> dicMessageNamespaces = new Dictionary<MessageType, string> {
-				{ MessageType.Notification, ".Notification" },
-				{ MessageType.Request, ".Request" },
-				{ MessageType.Response, ".Response" },
-				{ MessageType.Sub, ".Subscribe" },
-				{ MessageType.UnSub, ".UnSubscribe" }
-			};
+        private void Load() {
+            List<Type> lstSupportedTypes = new List<Type>() {
+                typeof(INotificationMessage),
+                typeof(IRequestMessage),
+                typeof(IResponseMessage),
+                typeof(IAction),
+                typeof(ISubscriptionHandler)
+            };
 
-			//Messages
-			foreach (var objKvp in dicMessageNamespaces) {
-				foreach (var objType in GetByNamespace(pNamespace + objKvp.Value)) {
-					AddMessageType(objKvp.Key, objType);
-				}
-			}
+            var arrAssemblies = AppDomain.CurrentDomain.GetAssemblies()
+                .OrderBy(a => a.FullName.Contains("Mitto.Messaging") ? 1 : a.FullName.Contains("Mitto.") ? 2 : 3).ToList();
 
-			//Actions
-			Dictionary<MessageType, string> dicActionNamespaces = new Dictionary<MessageType, string> {
-				{ MessageType.Notification, ".Action.Notification" },
-				{ MessageType.Request, ".Action.Request" },
-				{ MessageType.Sub, ".Action.Subscribe" },
-				{ MessageType.UnSub, ".Action.UnSubscribe" }
-			};
+            foreach (var ass in arrAssemblies) {
+                try {
+                    var types = (
+                        from t in ass.GetTypes()
+                        where
+                            t.IsClass &&
+                            !t.IsAbstract &&
+                            t.GetInterfaces().Any(i => lstSupportedTypes.Contains(i))
+                        select t
+                    ).ToList();
+                    (
+                        from t in ass.GetTypes()
+                        where
+                            t.IsClass &&
+                            !t.IsAbstract &&
+                            t.GetInterfaces().Any(i => lstSupportedTypes.Contains(i))
+                        select t
+                    ).ToList().ForEach(t => {
+                        var lstInterfaces = t.GetInterfaces();
+                        if (lstInterfaces.Contains(typeof(IAction))) {
+                            var tmpType = lstInterfaces.Where(i => i.IsInterface && i.FullName.Contains("IRequestAction") && i.IsAbstract).FirstOrDefault();
+                            if (tmpType != null) {
+                                Type objRequestType = (tmpType.GenericTypeArguments.Length > 0) ? tmpType.GenericTypeArguments[0] : null;
+                                Type objResponseType = (tmpType.GenericTypeArguments.Length > 1) ? tmpType.GenericTypeArguments[1] : null;
+                                if (objRequestType != null && objResponseType != null) {
+                                    var objActionType = new ActionInfo(objRequestType, objResponseType, t);
+                                    Actions.RemoveAll(a => a.ActionType.Name.Equals(objActionType.ActionType.Name));
+                                    Actions.Add(objActionType);
+                                }
+                            }
+                        } else if (
+                            lstInterfaces.Contains(typeof(IRequestMessage)) ||
+                            lstInterfaces.Contains(typeof(INotificationMessage))
+                        ) {
+                            Requests.Remove(t.Name);
+                            Requests.Add(t.Name, t);
+                        } else if (lstInterfaces.Contains(typeof(IResponseMessage))) {
+                            Responses.Remove(t.Name);
+                            Responses.Add(t.Name, t);
+                        } else if (lstInterfaces.Contains(typeof(ISubscriptionHandler))) {
+                            var tmpType = t.GetInterfaces().Where(i => i.IsInterface && i.FullName.Contains("ISubscriptionHandler") && i.IsAbstract).FirstOrDefault();
+                            if (tmpType != null) {
+                                Type objSubType = (tmpType.GenericTypeArguments.Length > 0) ? tmpType.GenericTypeArguments[0] : null;
+                                Type objUnSubType = (tmpType.GenericTypeArguments.Length > 1) ? tmpType.GenericTypeArguments[1] : null;
+                                Type objNotifyType = (tmpType.GenericTypeArguments.Length > 2) ? tmpType.GenericTypeArguments[2] : null;
+                                if (objSubType != null && objUnSubType != null && objNotifyType != null) {
+                                    var objHandler = (ISubscriptionHandler)Activator.CreateInstance(t);
+                                    var objSubscriptionInfo = new SubscriptionInfo(objSubType, objUnSubType, objNotifyType, objHandler);
+                                    SubscriptionHandlers.RemoveAll(s => s.HandlerType.Equals(t.Name));
+                                    SubscriptionHandlers.Add(objSubscriptionInfo);
+                                }
+                            }
+                        }
+                    });
+                } catch (Exception ex) {
+                    Log.Error(ex);
+                }
+            }
+        }
 
-			foreach (var objKvp in dicActionNamespaces) {
-				foreach (var objType in GetByNamespace(pNamespace + objKvp.Value)) {
-					AddActionType(objKvp.Key, objType);
-				}
-			}
+        /// <summary>
+        /// Gets an IMessage based on it's data (byte array)
+        /// See the Frame object for more information on what the bytes are represent
+        /// </summary>
+        /// <param name="pData"></param>
+        /// <returns>IMessage</returns>
+        public IMessage GetMessage(byte[] pData) {
+            var objFrame = new Frame(pData);
 
-			//Subscription handlers
-			foreach (var objType in GetByNamespace(pNamespace + ".Action.SubscriptionHandler")) {
-				AddSubscriptionHandlerType(objType.Name, objType);
-			}
-		}
+            Type objType = null;
+            if (objFrame.Type != MessageType.Response) {
+                if (Requests.ContainsKey(objFrame.Name)) {
+                    objType = Requests[objFrame.Name];
+                }
+            } else {
+                if (Responses.ContainsKey(objFrame.Name)) {
+                    objType = Responses[objFrame.Name];
+                }
+            }
+            if (objType != null) {
+                return MessagingFactory.Converter.GetMessage(objType, objFrame.Data);
+            }
+            return null;
+        }
 
-		/// <summary>
-		/// Adds the provided IMessage type to the cached types
-		/// 
-		/// Messages must implement the IMessage interface and may not be abstract classes
-		///
-		/// When passing a message with a name that already exists it will overwrite 
-		/// the already existing cache version.
-		/// 
-		/// MessageType/Name combination should be unique
-		/// </summary>
-		/// <param name="pMessageType"></param>
-		/// <param name="pType"></param>
-		private void AddMessageType(MessageType pMessageType, Type pType) {
-			if (pType.IsAbstract || !pType.GetInterfaces().Contains(typeof(IMessage))) { return; }
+        /// <summary>
+        /// Returns the response for a specific request message with the provided response code
+        ///
+        /// When no specific response class can be found, the response will be a Response.ACK
+        ///
+        ///
+        /// ToDo: will have to convert the enumeration to an actual int so that the application can pass it's errors and
+        /// so that there can be more than 255 return codes
+        /// </summary>
+        /// <param name="pMessage"></param>
+        /// <param name="pCode"></param>
+        /// <returns></returns>
+        public IResponseMessage GetResponseMessage(IRequestMessage pMessage, ResponseStatus pStatus) {
+            Type objResponseType = typeof(ACKResponse); // -- default
 
-			var strName = pType.Name;
-			//Log.Info($"Detected message {pMessageType.ToString()} '{strName}'");
-			if (!Types.ContainsKey(pMessageType)) {
-				Types.Add(pMessageType, new Dictionary<string, Type> { { strName, pType } });
-			} else {
-				if (!Types[pMessageType].ContainsKey(strName)) {
-					Types[pMessageType].Add(strName, pType);
-				} else {
-					Types[pMessageType][strName] = pType;
-				}
-			}
-		}
+            var objInfo = Actions.Where(a => a.RequestType.Name == pMessage.Name).FirstOrDefault();
+            if (objInfo != null) {
+                objResponseType = objInfo.ResponseType;
+            }
 
-		/// <summary>
-		/// Adds the provided IAction type to the cached types
-		/// 
-		/// Actions must implement the IRequestAction or INotification interfaces
-		/// 
-		/// When passing an action with a name that already exists it will overwrite 
-		/// the already existing cache version.
-		/// 
-		/// MessageType/Name combination should be unique
-		/// </summary>
-		/// <param name="pMessageType"></param>
-		/// <param name="pType"></param>
-		private void AddActionType(MessageType pMessageType, Type pType) {
-			if (pType.IsAbstract || !pType.GetInterfaces().Contains(typeof(IAction))) { return; }
+            return Activator.CreateInstance(objResponseType, pMessage, pStatus) as IResponseMessage;
+        }
 
-			//Requests have a response type, notifications do not
-			if (
-				pType.GetInterfaces().Any(i =>
-					i.Name.StartsWith("IRequestAction") ||
-					i.Equals(typeof(INotificationAction))
-				)
-			) {
-				var tmpType = pType;
-				while (
-					tmpType != null &&
-					!tmpType.FullName.Contains("Mitto.Messaging.Action.RequestAction") &&
-					!tmpType.FullName.Contains("Mitto.Messaging.Action.NotificationAction")
-				) {
-					tmpType = tmpType.BaseType;
-				}
-				if (tmpType == null) { return; }
+        /// <summary>
+        /// Gets the IAction for a specific IMessage (Request/Notification)
+        /// </summary>
+        /// <param name="pClient"></param>
+        /// <param name="pMessage"></param>
+        /// <returns></returns>
+        public IAction GetAction(IClient pClient, IRequestMessage pMessage) {
+            var objInfo = Actions.Where(a => a.RequestType.Name == pMessage.Name).FirstOrDefault();
+            return (objInfo != null) ? (IAction)Activator.CreateInstance(objInfo.ActionType, pClient, pMessage) : null;
+        }
 
-				Type objRequestType = (tmpType.GenericTypeArguments.Length > 0) ? tmpType.GenericTypeArguments[0] : null;
-				Type objResponseType = (tmpType.GenericTypeArguments.Length > 1) ? tmpType.GenericTypeArguments[1] : null;
+        public T GetSubscriptionHandler<T>() {
+            var objInfo = SubscriptionHandlers.Where(s => s.HandlerType.Equals(typeof(T))).FirstOrDefault();
+            ISubscriptionHandler objHandler = null;
+            if (objInfo != null) {
+                objHandler = objInfo.Handler;
+            }
+            return (T)objHandler;
+        }
 
-				if (objResponseType != null) {
-					//Log.Info($"Detected response message '{objRequestType.Name}'");
-					ResponseMessageTranslation.Add(objRequestType.Name, objResponseType);
-				}
+        public ISubscriptionHandler GetSubscriptionHandler(IMessage pMessage) {
+            var objInfo = SubscriptionHandlers.Where(s =>
+                s.NotifyType.Name.Equals(pMessage.GetType().Name) ||
+                s.SubType.Name.Equals(pMessage.GetType().Name) ||
+                s.UnSubType.Name.Equals(pMessage.GetType().Name)
+            ).FirstOrDefault();
+            if (objInfo != null) {
+                return objInfo.Handler;
+            }
+            return null;
+        }
 
-				if (objRequestType.IsInterface || objRequestType.IsAbstract) {
-					//Log.Error($"Unsupported request type {objRequestType.FullName}, must be a class that an be instantiated");
-					throw new Exception($"Unsupported request type {objRequestType.FullName}, must be a class that an be instantiated");
-				}
+        internal class ActionInfo : IEquatable<ActionInfo> {
+            public Type RequestType { get; private set; }
+            public Type ResponseType { get; private set; }
+            public Type ActionType { get; private set; }
 
-				//Add the Action to the list for easy access when receiving Request X and needing the Action Y
-				//Log.Info($"Detected action type {pMessageType.ToString()} '{objRequestType.Name}'");
-				if (!Actions.ContainsKey(pMessageType)) {
-					Actions.Add(pMessageType, new Dictionary<string, Type> { { objRequestType.Name, pType } });
-				} else {
-					if (!Actions[pMessageType].ContainsKey(objRequestType.Name)) {
-						Actions[pMessageType].Add(objRequestType.Name, pType);
-					} else {
-						Actions[pMessageType][objRequestType.Name] = pType;
-					}
-				}
-			}
-		}
+            public ActionInfo(Type pRequestType, Type pResponseType, Type pActionType) {
+                RequestType = pRequestType;
+                ResponseType = pResponseType;
+                ActionType = pActionType;
+            }
 
-		/// <summary>
-		/// Adds a subscription handler of type pType to the provider list
-		/// Overwrites any existing type present for that name
-		/// </summary>
-		/// <param name="pName"></param>
-		/// <param name="pType"></param>
-		private void AddSubscriptionHandlerType(string pName, Type pType) {
-			if (
-				pType.IsAbstract ||
-				!pType.GetInterfaces().Any() // -- need this else NSubstitute will add it's generated class as well
-											 //    would be beter to have the actual interface here but it's generic, this is easier 
-			) { return; }
+            public bool Equals(ActionInfo pActionInfo) {
+                return (
+                    this == pActionInfo ||
+                    (
+                        this.RequestType.FullName.Equals(pActionInfo.RequestType.FullName) &&
+                        this.ResponseType.FullName.Equals(pActionInfo.ResponseType.FullName) &&
+                        this.ActionType.FullName.Equals(pActionInfo.ActionType.FullName)
+                    )
+                );
+            }
+        }
 
-			var arrKeys = new List<string>() { pName };
-			foreach (var objInterface in pType.GetInterfaces()) {
-				if (objInterface.Namespace.Equals(pType.Namespace)) {
-					arrKeys.Add(objInterface.Name);
-				}
-			}
+        internal class SubscriptionInfo : IEquatable<SubscriptionInfo> {
+            public readonly Type SubType;
+            public readonly Type UnSubType;
+            public readonly Type NotifyType;
+            public readonly Type HandlerType;
+            public readonly ISubscriptionHandler Handler;
 
-			var obj = Activator.CreateInstance(pType);
-			foreach (var strKey in arrKeys) {
-				if (!SubscriptionHandlers.ContainsKey(strKey)) {
-					SubscriptionHandlers.Add(strKey, obj);
-				} else {
-					SubscriptionHandlers[strKey] = obj;
-				}
-			}
-		}
+            public SubscriptionInfo(Type pSubType, Type pUnSubType, Type pNotifyType, ISubscriptionHandler pHandler) {
+                SubType = pSubType;
+                UnSubType = pUnSubType;
+                NotifyType = pNotifyType;
+                HandlerType = pHandler.GetType();
+                Handler = pHandler;
+            }
 
-		/// <summary>
-		/// Gets all Request/Response/Notification messages and the Actions from the provided namespace
-		/// </summary>
-		/// <param name="pNamespace"></param>
-		/// <returns>List<Type></returns>
-		private List<Type> GetByNamespace(string pNamespace) {
-			var lstTypes = new List<Type>();
-
-			//Loop over all loaded assemblies so no classes are missed
-			foreach (
-				var ass in AppDomain.CurrentDomain.GetAssemblies()
-			) {
-				try {
-					if (
-						new string[] {
-							"Mitto.Connection.Websocket"
-						}.Any(ass.FullName.Contains)
-					) {
-						continue;
-					}
-					//foreach loaded assembly, get all it's types that match the given namespace
-					(
-						from t in ass.GetTypes()
-						where
-							t.IsClass &&
-							t.Namespace == pNamespace &&
-							!t.IsAbstract &&
-							(
-								t.GetInterfaces().Contains(typeof(IRequestMessage)) ||
-								t.GetInterfaces().Contains(typeof(IResponseMessage)) ||
-								t.GetInterfaces().Contains(typeof(IAction)) ||
-								t.Namespace.Contains(".Action.SubscriptionHandler") //is a generic type, easy solution is to just check the namespace string instead of  IsSubclassOf(typeof(Action.BaseAction<T>))
-							)
-						select t
-					).ToList().ForEach(t => lstTypes.Add(t) );
-				} catch (Exception) { }
-			}
-			return lstTypes;
-		}
-
-		/// <summary>
-		/// Gets an IMessage based on it's data (byte array)
-		/// See the Frame object for more information on what the bytes are represent
-		/// </summary>
-		/// <param name="pData"></param>
-		/// <returns>IMessage</returns>
-		public IMessage GetMessage(byte[] pData) {
-			var objFrame = new Frame(pData);
-			if (
-				Types.ContainsKey(objFrame.Type) &&
-				Types[objFrame.Type].ContainsKey(objFrame.Name)
-			) {
-				return MessagingFactory.Converter.GetMessage(Types[objFrame.Type][objFrame.Name], objFrame.Data);
-			}
-			return null;
-		}
-
-		/// <summary>
-		/// Returns the response for a specific request message with the provided response code
-		/// 
-		/// When no specific response class can be found, the response will be a Response.ACK
-		/// 
-		/// 
-		/// ToDo: will have to convert the enum to an actual int so that the application can pass it's errors and 
-		/// so that there can be more than 255 return codes
-		/// </summary>
-		/// <param name="pMessage"></param>
-		/// <param name="pCode"></param>
-		/// <returns></returns>
-		public IResponseMessage GetResponseMessage(IRequestMessage pMessage, ResponseStatus pStatus) {
-			Type objResponseType = typeof(ACKResponse); // -- default
-			if (
-				ResponseMessageTranslation.ContainsKey(pMessage.Name)
-			) {
-				objResponseType = ResponseMessageTranslation[pMessage.Name];
-			}
-			return Activator.CreateInstance(objResponseType, pMessage, pStatus) as IResponseMessage;
-		}
-
-		/// <summary>
-		/// Gets the IAction for a specific IMessage (Request/Notification)
-		/// </summary>
-		/// <param name="pClient"></param>
-		/// <param name="pMessage"></param>
-		/// <returns></returns>
-		public IAction GetAction(IClient pClient, IRequestMessage pMessage) {
-			if (
-				Actions.ContainsKey(pMessage.Type) &&
-				Actions[pMessage.Type].ContainsKey(pMessage.Name)
-			) {
-				var type = (Actions[pMessage.Type][pMessage.Name]);
-				var obj = Activator.CreateInstance(Actions[pMessage.Type][pMessage.Name], pClient, pMessage);
-				return (IAction)obj;
-			}
-			return null;
-		}
-
-		public T GetSubscriptionHandler<T>() { // where T : ISubscriptionHandler<IRequestMessage, IRequestMessage> {
-			return (SubscriptionHandlers.ContainsKey(typeof(T).Name)) ? (T)SubscriptionHandlers[typeof(T).Name] : default(T);
-		}
-
-		/// <summary>
-		/// Gets the byte[] representation for the given IMessage
-		/// 
-		/// Note: uses the configured IMessageConverter
-		/// See frame documentation on how a frame should look
-		/// </summary>
-		/// <param name="pMessage"></param>
-		/// <returns></returns>
-		public byte[] GetByteArray(IMessage pMessage) {
-			return new Frame(
-				pMessage.Type,
-				pMessage.ID,
-				pMessage.Name,
-				MessagingFactory.Converter.GetByteArray(pMessage)
-			).GetByteArray();
-		}
-	}
+            public bool Equals(SubscriptionInfo pInfo) {
+                return (
+                    this == pInfo ||
+                    (
+                        this.SubType == pInfo.SubType &&
+                        this.UnSubType == pInfo.UnSubType &&
+                        this.NotifyType == pInfo.NotifyType
+                    )
+                );
+            }
+        }
+    }
 }

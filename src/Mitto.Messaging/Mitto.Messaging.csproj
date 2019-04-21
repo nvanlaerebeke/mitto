@@ -39,19 +39,7 @@
     <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Action\Request\ReceiveOnChannelRequestAction.cs" />
-    <Compile Include="Action\Request\SendToChannelRequestAction.cs" />
-    <Compile Include="Action\Subscribe\ChannelSubscribeAction.cs" />
-    <Compile Include="Action\SubscriptionHandler\ChannelSubscriptionHandler.cs" />
-    <Compile Include="Action\SubscriptionHandler\IChannelSubscriptionHandler.cs" />
-    <Compile Include="Action\UnSubscribe\ChannelUnSubscribeAction.cs" />
     <Compile Include="Request\Interfaces\IEchoRequest.cs" />
-    <Compile Include="Request\Interfaces\ISendToChannelRequest.cs" />
-    <Compile Include="Request\ReceiveOnChannelRequest.cs" />
-    <Compile Include="Request\SendToChannelRequest.cs" />
-    <Compile Include="Subscribe\ChannelSubscribe.cs" />
-    <Compile Include="UnSubscribe\UnSubMessage.cs" />
-    <Compile Include="Subscribe\SubMessage.cs" />
     <Compile Include="Manager\ActionManager.cs" />
     <Compile Include="Action\BaseAction.cs" />
     <Compile Include="Action\Notification\InfoNotificationAction.cs" />
@@ -61,10 +49,8 @@
     <Compile Include="Action\Request\EchoRequestAction.cs" />
     <Compile Include="Action\Request\PingRequestAction.cs" />
     <Compile Include="Manager\IActionManager.cs" />
-    <Compile Include="IRequest.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="IMessageRequest.cs" />
-    <Compile Include="Manager\IRequestManager.cs" />
     <Compile Include="MessageProcessor.cs" />
     <Compile Include="MessageProvider.cs" />
     <Compile Include="Message.cs" />
@@ -79,9 +65,7 @@
     <Compile Include="Response\EchoResponse.cs" />
     <Compile Include="Response\PongResponse.cs" />
     <Compile Include="MessagingException.cs" />
-    <Compile Include="Manager\RequestManager.cs" />
     <Compile Include="Request.cs" />
-    <Compile Include="UnSubscribe\ChannelUnSubscribe.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

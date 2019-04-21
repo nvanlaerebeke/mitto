@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Mitto.ILogging;
 using Mitto.IRouting;
 using Mitto.Routing.Request;
 using Mitto.Routing.Response;
@@ -11,44 +12,47 @@ using Mitto.Routing.Response;
 /// ToDo: Combine with Request
 /// </summary>
 namespace Mitto.Routing {
-	public class ControlRequest<T> : IRequest where T: ControlResponse {
-		public string ID { get { return Request.ID; } }
-		public MessageStatus Status { get; private set; } = MessageStatus.UnKnown;
 
-		private readonly IRouter Router;
-		private readonly ControlRequestMessage Request;
-		private Action<T> Callback;
+    public class ControlRequest<T> : IRequest where T : ControlResponse {
+        private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public event EventHandler<IRequest> RequestTimedOut;
+        public string ID { get { return Request.ID; } }
+        public MessageStatus Status { get; private set; } = MessageStatus.UnKnown;
 
-		public ControlRequest(IRouter pRouter, ControlRequestMessage pRequest, Action<T> pAction) {
-			Router = pRouter;
-			Request = pRequest;
-			Callback = pAction;
-		}
+        private readonly IRouter Router;
+        private readonly ControlRequestMessage Request;
+        private Action<T> Callback;
 
-		public void Send() {
-			Console.WriteLine($"Sending request {Request.GetType().Name} with ID {Request.ID}");
-			Status = MessageStatus.Busy;
-			Router.Transmit(
-				new RoutingFrame(
-					RoutingFrameType.Control, 
-					MessageType.Request, 
-					Request.ID, 
-					Router.ConnectionID, 
-					"", 
-					Request
-						.GetFrame()
-						.GetBytes()
-				).GetBytes()
-			);
-		}
+        public event EventHandler<IRequest> RequestTimedOut;
 
-		public void SetResponse(RoutingFrame pFrame) {
-			Task.Run(() => {
-				var obj = ControlFactory.Provider.GetMessage(new ControlFrame(pFrame.Data));
-				Callback.DynamicInvoke(obj);
-			});
-		}
-	}
+        public ControlRequest(IRouter pRouter, ControlRequestMessage pRequest, Action<T> pAction) {
+            Router = pRouter;
+            Request = pRequest;
+            Callback = pAction;
+        }
+
+        public void Send() {
+            Log.Debug($"Sending request {Request.GetType().Name} with ID {Request.ID}");
+            Status = MessageStatus.Busy;
+            Router.Transmit(
+                new RoutingFrame(
+                    RoutingFrameType.Control,
+                    MessageType.Request,
+                    Request.ID,
+                    Router.ConnectionID,
+                    "",
+                    Request
+                        .GetFrame()
+                        .GetBytes()
+                ).GetBytes()
+            );
+        }
+
+        public void SetResponse(RoutingFrame pFrame) {
+            Task.Run(() => {
+                var obj = ControlFactory.Provider.GetMessage(new ControlFrame(pFrame.Data));
+                Callback.DynamicInvoke(obj);
+            });
+        }
+    }
 }

@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7BEBD9E0-0376-472B-BA0B-653E6139635E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Mitto.Subscription.Messaging.Tests</RootNamespace>
+    <AssemblyName>Mitto.Subscription.Messaging.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">15.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Action\Request\ReceiveOnChannelTests.cs" />
+    <Compile Include="MessageProviderTests.cs" />
+    <Compile Include="TestData\Action\Request\SendToChannelRequestAction.cs" />
+    <Compile Include="Action\Request\SendToChannelTests.cs" />
+    <Compile Include="Action\Subscribe\ChannelTests.cs" />
+    <Compile Include="Action\SubscriptionHandler\ChannelTests.cs" />
+    <Compile Include="Action\UnSubscribe\ChannelTests.cs" />
+    <Compile Include="Request\ReceiveOnChannelTests.cs" />
+    <Compile Include="Request\SendToChannel.cs" />
+    <Compile Include="Subscribe\ChannelTests.cs" />
+    <Compile Include="TestData\Action\Subscribe\SubscribeTestAction.cs" />
+    <Compile Include="TestData\Action\SubscriptionHandler\SubscriptionHandlerTestClass.cs" />
+    <Compile Include="TestData\Action\UnSubscribe\UnSubscribeTestAction.cs" />
+    <Compile Include="TestData\Request\RequestTestMessage.cs" />
+    <Compile Include="TestData\Response\ResponseTestMessage.cs" />
+    <Compile Include="TestData\Subscribe\SubscribeTestMessage.cs" />
+    <Compile Include="TestData\UnSubscribe\UnSubscribeTestMessage.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnSubscribe\ChannelTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NSubstitute">
+      <Version>4.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="NUnit">
+      <Version>3.11.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Mitto.Config\Mitto.Config.csproj">
+      <Project>{e3e0d40d-99ac-4ed4-9e64-19cdc10813b0}</Project>
+      <Name>Mitto.Config</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.IMessaging\Mitto.IMessaging.csproj">
+      <Project>{3bb1c211-9006-4fee-9f40-7556717431b0}</Project>
+      <Name>Mitto.IMessaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.IRouting\Mitto.IRouting.csproj">
+      <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
+      <Name>Mitto.IRouting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Messaging\Mitto.Messaging.csproj">
+      <Project>{c29037e3-9c2f-4996-8434-36600735d465}</Project>
+      <Name>Mitto.Messaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Subscription.Handlers\Mitto.Subscription.Messaging.csproj">
+      <Project>{5d420f78-c169-4615-acb2-a039bf8acbd6}</Project>
+      <Name>Mitto.Subscription.Messaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Subscription.IHandlers\Mitto.Subscription.IMessaging.csproj">
+      <Project>{9ff69878-e3d3-459d-a779-a6cb0091de75}</Project>
+      <Name>Mitto.Subscription.IMessaging</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Response\" />
+  </ItemGroup>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

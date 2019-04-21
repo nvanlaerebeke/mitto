@@ -24,7 +24,7 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
 
 		public void Send() {
 			Console.WriteLine($"Sending request with ID {ID}");
-			new MessageRouter(ID, ProviderQueue, Request).Start();
+			new ConsumerRouter(ID, ProviderQueue, Request).Start();
 		}
 
 		public void SetResponse(RoutingFrame pFrame) {

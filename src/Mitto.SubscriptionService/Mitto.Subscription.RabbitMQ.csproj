@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F79D0DD2-4FB4-47DB-B765-5D6516B8C5EA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Mitto.Subscription.RabbitMQ</RootNamespace>
+    <AssemblyName>Mitto.Subscription.RabbitMQ</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Executor.cs" />
+    <Compile Include="ISubscriptionProcessor.cs" />
+    <Compile Include="SubscriptionProcessor.cs" />
+    <Compile Include="SubscriptionProvider.cs" />
+    <Compile Include="SubscriptionRouter.cs" />
+    <Compile Include="SubscriptionService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Mitto.ILogging\Mitto.ILogging.csproj">
+      <Project>{30f11e8a-a8d2-48c7-9d86-d5d007a47609}</Project>
+      <Name>Mitto.ILogging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.IMessaging\Mitto.IMessaging.csproj">
+      <Project>{3bb1c211-9006-4fee-9f40-7556717431b0}</Project>
+      <Name>Mitto.IMessaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.IRouting\Mitto.IRouting.csproj">
+      <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
+      <Name>Mitto.IRouting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Messaging\Mitto.Messaging.csproj">
+      <Project>{c29037e3-9c2f-4996-8434-36600735d465}</Project>
+      <Name>Mitto.Messaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Routing.RabbitMQ\Mitto.Routing.RabbitMQ.csproj">
+      <Project>{3cb0e6c9-133e-49d7-a393-4fcc9ddeb72b}</Project>
+      <Name>Mitto.Routing.RabbitMQ</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Routing\Mitto.Routing.csproj">
+      <Project>{6ffefef0-8b67-45c8-9aba-a1e6d276b1c2}</Project>
+      <Name>Mitto.Routing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Subscription.Handlers\Mitto.Subscription.Messaging.csproj">
+      <Project>{5d420f78-c169-4615-acb2-a039bf8acbd6}</Project>
+      <Name>Mitto.Subscription.Messaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Subscription.IHandlers\Mitto.Subscription.IMessaging.csproj">
+      <Project>{9ff69878-e3d3-459d-a779-a6cb0091de75}</Project>
+      <Name>Mitto.Subscription.IMessaging</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -41,11 +41,20 @@
     <Compile Include="IAction.cs" />
     <Compile Include="IClient.cs" />
     <Compile Include="IFrame.cs" />
+    <Compile Include="IRequest.cs" />
+    <Compile Include="IRequestManager.cs" />
+    <Compile Include="MessageTypes\IMessage.cs" />
     <Compile Include="IMessageProcessor.cs" />
     <Compile Include="IMessageConverter.cs" />
     <Compile Include="IMessageProvider.cs" />
+    <Compile Include="MessageTypes\INotificationMessasge.cs" />
+    <Compile Include="MessageTypes\IRequestMessage.cs" />
+    <Compile Include="MessageTypes\IResponseMessage.cs" />
     <Compile Include="ISubscriptionHandler.cs" />
     <Compile Include="MessagingFactory.cs" />
+    <Compile Include="RequestManager.cs" />
+    <Compile Include="ResponseCode.cs" />
+    <Compile Include="ResponseStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mitto.IRouting\Mitto.IRouting.csproj">

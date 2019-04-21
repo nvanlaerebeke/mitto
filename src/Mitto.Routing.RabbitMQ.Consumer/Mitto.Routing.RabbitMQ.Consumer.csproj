@@ -43,10 +43,16 @@
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="ConsumerRequest.cs" />
-    <Compile Include="MessageRouter.cs" />
+    <Compile Include="ConsumerRouter.cs" />
     <Compile Include="Consumer.cs" />
+    <Compile Include="RouterProvider.cs" />
+    <Compile Include="SubscriptionRouter.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Mitto.IConnection\Mitto.IConnection.csproj">
+      <Project>{aaf65eba-e48d-491a-ad2e-525bde11ec6f}</Project>
+      <Name>Mitto.IConnection</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Mitto.ILogging\Mitto.ILogging.csproj">
       <Project>{30f11e8a-a8d2-48c7-9d86-d5d007a47609}</Project>
       <Name>Mitto.ILogging</Name>

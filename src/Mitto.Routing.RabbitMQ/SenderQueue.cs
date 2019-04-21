@@ -7,78 +7,80 @@ using System.Collections.Concurrent;
 using System.Threading;
 
 namespace Mitto.Routing.RabbitMQ {
-	public class SenderQueue {
-		public readonly string QueueName;
-		public readonly QueueType QueueType;
-		public readonly bool Shared;
-		public event EventHandler<SenderQueue> Disconnected;
 
-		private ILog Log => LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+    public class SenderQueue {
+        public readonly string QueueName;
+        public readonly QueueType QueueType;
+        public readonly bool Shared;
 
-		private BlockingCollection<RoutingFrame> _lstTransmitQueue = new BlockingCollection<RoutingFrame>();
+        public event EventHandler<SenderQueue> Disconnected;
 
-		private CancellationTokenSource _objCancelationSource = new CancellationTokenSource();
-		private CancellationToken _objCancelationToken;
+        private ILog Log => LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public SenderQueue(QueueType pType, string pQueueName, bool pShared) {
-			QueueType = pType;
-			QueueName = pQueueName;
-			Shared = pShared;
-			
-			_objCancelationToken = _objCancelationSource.Token;
-			StartSending();
-		}
+        private BlockingCollection<RoutingFrame> _lstTransmitQueue = new BlockingCollection<RoutingFrame>();
 
-		/// <summary>
-		/// Start the Sender 
-		/// This runs on a seprate thread that keeps open the RabbitMQ connection
-		/// so it can be reused for every byte[] received from IClientConnection
-		/// </summary>
-		private void StartSending() {
-			new Thread(() => {
-				Thread.CurrentThread.Name = $"{QueueName} Publisher";
-				var objFactory = new ConnectionFactory() { HostName = "test.crazyzone.be" };
-				using (var objConn = objFactory.CreateConnection()) {
-					using (var objChannel = objConn.CreateModel()) {
-						objChannel.ExchangeDeclare(exchange: QueueType.ToString(), type: "fanout");
-						objChannel.QueueDeclare(QueueName, false, false, !Shared);
+        private CancellationTokenSource _objCancelationSource = new CancellationTokenSource();
+        private CancellationToken _objCancelationToken;
 
-						objConn.ConnectionShutdown += Shutdown;
-						objChannel.ModelShutdown += Shutdown;
+        public SenderQueue(QueueType pType, string pQueueName, bool pShared) {
+            QueueType = pType;
+            QueueName = pQueueName;
+            Shared = pShared;
 
-						while (!_objCancelationSource.IsCancellationRequested) {
-							try {
-								var objFrame = _lstTransmitQueue.Take(_objCancelationToken);
-								objChannel.BasicPublish(
-									exchange: QueueType.ToString(),
-									routingKey: QueueName,
-									basicProperties: null,
-									body: objFrame.GetBytes()
-								);
-							} catch (Exception ex) {
-								Log.Error($"Failed sending data on {QueueName}: {ex.Message}, closing connection");
-							}
-						}
+            _objCancelationToken = _objCancelationSource.Token;
+            StartSending();
+        }
 
-						//Connection interupted
-						objConn.ConnectionShutdown -= Shutdown;
-						objChannel.ModelShutdown -= Shutdown;
-					}
-				}
-			}) { IsBackground = true }.Start();
-		}
+        /// <summary>
+        /// Start the Sender
+        /// This runs on a separate thread that keeps open the RabbitMQ connection
+        /// so it can be reused for every byte[] received from IClientConnection
+        /// </summary>
+        private void StartSending() {
+            new Thread(() => {
+                Thread.CurrentThread.Name = $"{QueueName} Publisher";
+                var objFactory = new ConnectionFactory() { HostName = "test.crazyzone.be" };
+                using (var objConn = objFactory.CreateConnection()) {
+                    using (var objChannel = objConn.CreateModel()) {
+                        objChannel.ExchangeDeclare(exchange: QueueType.ToString(), type: "fanout");
+                        objChannel.QueueDeclare(QueueName, false, false, !Shared);
 
-		private void Shutdown(object sender, ShutdownEventArgs e) {
-			Close();
-		}
+                        objConn.ConnectionShutdown += Shutdown;
+                        objChannel.ModelShutdown += Shutdown;
 
-		public void Transmit(RoutingFrame pFrame) {
-			_lstTransmitQueue.Add(pFrame);
-		}
+                        while (!_objCancelationSource.IsCancellationRequested) {
+                            try {
+                                var objFrame = _lstTransmitQueue.Take(_objCancelationToken);
+                                objChannel.BasicPublish(
+                                    exchange: QueueType.ToString(),
+                                    routingKey: QueueName,
+                                    basicProperties: null,
+                                    body: objFrame.GetBytes()
+                                );
+                            } catch (Exception ex) {
+                                Log.Error($"Failed sending data on {QueueName}: {ex.Message}, closing connection");
+                            }
+                        }
 
-		public void Close() {
-			_objCancelationSource.Cancel();
-			Disconnected?.Invoke(this, this);
-		}
-	}
+                        //Connection interrupted
+                        objConn.ConnectionShutdown -= Shutdown;
+                        objChannel.ModelShutdown -= Shutdown;
+                    }
+                }
+            }) { IsBackground = true }.Start();
+        }
+
+        private void Shutdown(object sender, ShutdownEventArgs e) {
+            Close();
+        }
+
+        public void Transmit(RoutingFrame pFrame) {
+            _lstTransmitQueue.Add(pFrame);
+        }
+
+        public void Close() {
+            _objCancelationSource.Cancel();
+            Disconnected?.Invoke(this, this);
+        }
+    }
 }

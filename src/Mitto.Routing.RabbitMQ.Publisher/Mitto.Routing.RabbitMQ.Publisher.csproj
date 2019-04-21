@@ -44,8 +44,6 @@
     </Compile>
     <Compile Include="Action\Request\CanStartRequestAction.cs" />
     <Compile Include="Action\Request\GetMessageStatusRequestAction.cs" />
-    <Compile Include="Request\CanStartActionRequest.cs" />
-    <Compile Include="Response\CanStartActionResponse.cs" />
     <Compile Include="ConsumerRouter.cs" />
     <Compile Include="Router.cs" />
     <Compile Include="RouterCache.cs" />

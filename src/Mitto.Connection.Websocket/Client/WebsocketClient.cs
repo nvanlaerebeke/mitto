@@ -8,166 +8,147 @@ using System.Threading;
 using WebSocketSharp;
 
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
+
 /// <summary>
 /// Class that represents the Websocket Client in Mitto
 /// Provides functionality to communicate with a websocket server
 /// </summary>
 namespace Mitto.Connection.Websocket.Client {
-	public class WebsocketClient : IClient {
-		private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public string ID { get; private set; } = Guid.NewGuid().ToString();
+    public class WebsocketClient : IClient {
+        private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		private IWebSocketClient _objWebSocketClient;
-		private IKeepAliveMonitor _objKeepAliveMonitor;
-		public long CurrentBytesPerSecond { get { return _objWebSocketClient.CurrentBytesPerSecond; } }
+        public string ID { get; private set; } = Guid.NewGuid().ToString();
 
-		public event EventHandler<IClient> Connected;
-		public event EventHandler<IConnection.IConnection> Disconnected;
-		public event EventHandler<byte[]> Rx;
+        private IWebSocketClient _objWebSocketClient;
+        private IKeepAliveMonitor _objKeepAliveMonitor;
+        public long CurrentBytesPerSecond { get { return _objWebSocketClient.CurrentBytesPerSecond; } }
 
-		public static int FragmentLength {
-			get { return WebSocket.FragmentLength; }
-			set { WebSocket.FragmentLength = value; }
-		}
+        public event EventHandler<IClient> Connected;
 
-		internal WebsocketClient(IWebSocketClient pWebSocket, IKeepAliveMonitor pKeepAliveMonitor) {
-			_objWebSocketClient = pWebSocket;
-			_objKeepAliveMonitor = pKeepAliveMonitor;
-		}
+        public event EventHandler<IConnection.IConnection> Disconnected;
 
-		#region Constructor & Connecting
-		public void ConnectAsync(IClientParams pParams) {
-			if (!(pParams is ClientParams objParams)) {
-				Log.Error("Incorrect parameters for Websocket client");
-				throw new Exception("Incorrect parameters for Websocket client");
-			}
-			Log.Info($"Connecting {ID} to {objParams.Hostname}:{objParams.Port}");
+        public event EventHandler<byte[]> Rx;
 
-			_objWebSocketClient.ConnectionTimeoutSeconds = objParams.ConnectionTimeoutSeconds;
-			_objKeepAliveMonitor.SetInterval(objParams.ConnectionTimeoutSeconds);
+        public static int FragmentLength {
+            get { return WebSocket.FragmentLength; }
+            set { WebSocket.FragmentLength = value; }
+        }
 
-			_objWebSocketClient.OnOpen += Connection_OnOpen;
-			_objWebSocketClient.OnClose += Connection_OnClose;
-			_objWebSocketClient.OnError += Connection_OnError;
-			_objWebSocketClient.OnMessage += Connection_OnMessage;
+        internal WebsocketClient(IWebSocketClient pWebSocket, IKeepAliveMonitor pKeepAliveMonitor) {
+            _objWebSocketClient = pWebSocket;
+            _objKeepAliveMonitor = pKeepAliveMonitor;
+        }
 
-			_objWebSocketClient.ConnectAsync(objParams);
+        #region Constructor & Connecting
 
-			_objKeepAliveMonitor.TimeOut += _objKeepAliveMonitor_TimeOut;
-			_objKeepAliveMonitor.UnResponsive += _objKeepAliveMonitor_UnResponsive;
-		}
+        public void ConnectAsync(IClientParams pParams) {
+            if (!(pParams is ClientParams objParams)) {
+                Log.Error("Incorrect parameters for Websocket client");
+                throw new Exception("Incorrect parameters for Websocket client");
+            }
+            Log.Info($"Connecting {ID} to {objParams.Hostname}:{objParams.Port}");
 
-		private void Close() {
-			Log.Info($"Closing connection: {ID}");
-			_objKeepAliveMonitor.TimeOut -= _objKeepAliveMonitor_TimeOut;
-			_objKeepAliveMonitor.UnResponsive -= _objKeepAliveMonitor_UnResponsive;
+            _objWebSocketClient.ConnectionTimeoutSeconds = objParams.ConnectionTimeoutSeconds;
+            _objKeepAliveMonitor.SetInterval(objParams.ConnectionTimeoutSeconds);
 
-			_objWebSocketClient.OnOpen -= Connection_OnOpen;
-			_objWebSocketClient.OnClose -= Connection_OnClose;
-			_objWebSocketClient.OnError -= Connection_OnError;
-			_objWebSocketClient.OnMessage -= Connection_OnMessage;
+            _objWebSocketClient.OnOpen += Connection_OnOpen;
+            _objWebSocketClient.OnClose += Connection_OnClose;
+            _objWebSocketClient.OnError += Connection_OnError;
+            _objWebSocketClient.OnMessage += Connection_OnMessage;
 
-			_objCancelationSource.Cancel();
-			if (_objWebSocketClient.ReadyState != WebSocketState.Closing && _objWebSocketClient.ReadyState != WebSocketState.Closed) {
-				_objWebSocketClient.Close();
-			}
-			_objKeepAliveMonitor.Stop();
-		}
+            _objWebSocketClient.ConnectAsync(objParams);
 
-		private void _objKeepAliveMonitor_TimeOut(object sender, EventArgs e) {
-			Log.Debug($"Connection timeout: {ID}, pinging...");
-			_objKeepAliveMonitor.StartCountDown();
-			if (_objWebSocketClient.Ping()) {
-				_objKeepAliveMonitor.Reset();
-				Log.Debug($"pong received: {ID}");
-			}
-		}
+            _objKeepAliveMonitor.TimeOut += _objKeepAliveMonitor_TimeOut;
+            _objKeepAliveMonitor.UnResponsive += _objKeepAliveMonitor_UnResponsive;
+        }
 
-		private void _objKeepAliveMonitor_UnResponsive(object sender, EventArgs e) {
-			Log.Info($"Connection {ID} lost, closing...");
-			this.Disconnect();
-		}
-		#endregion
+        private void Close() {
+            Log.Info($"Closing connection: {ID}");
+            _objKeepAliveMonitor.TimeOut -= _objKeepAliveMonitor_TimeOut;
+            _objKeepAliveMonitor.UnResponsive -= _objKeepAliveMonitor_UnResponsive;
 
-		#region Websocket Event Handlers
-		private void Connection_OnOpen(object sender, EventArgs e) {
-			Log.Info($"Connection {ID} connected");
+            _objWebSocketClient.OnOpen -= Connection_OnOpen;
+            _objWebSocketClient.OnClose -= Connection_OnClose;
+            _objWebSocketClient.OnError -= Connection_OnError;
+            _objWebSocketClient.OnMessage -= Connection_OnMessage;
 
-			//Start the sending queue before we raise the event
-			//The thread must be running before we say the client is 'connected(ready)'
-			StartTransmitQueue();
-			_objKeepAliveMonitor.Start();
-			Connected?.Invoke(this, this);
-		}
+            if (_objWebSocketClient.ReadyState != WebSocketState.Closing && _objWebSocketClient.ReadyState != WebSocketState.Closed) {
+                _objWebSocketClient.Close();
+            }
+            _objKeepAliveMonitor.Stop();
+        }
 
-		private void Connection_OnError(object sender, IErrorEventArgs e) {
-			Log.Error($"Connection error for {ID}: {e.Message}");
-			this.Close();
-			Disconnected?.Invoke(this, this);
-		}
+        private void _objKeepAliveMonitor_TimeOut(object sender, EventArgs e) {
+            Log.Debug($"Connection timeout: {ID}, pinging...");
+            _objKeepAliveMonitor.StartCountDown();
+            if (_objWebSocketClient.Ping()) {
+                _objKeepAliveMonitor.Reset();
+                Log.Debug($"pong received: {ID}");
+            }
+        }
 
-		private void Connection_OnClose(object sender, ICloseEventArgs e) {
-			Log.Info($"Connection {ID} closed");
-			this.Close();
-			Disconnected?.Invoke(this, this);
-		}
+        private void _objKeepAliveMonitor_UnResponsive(object sender, EventArgs e) {
+            Log.Info($"Connection {ID} lost, closing...");
+            this.Disconnect();
+        }
 
-		private void Connection_OnMessage(object sender, IMessageEventArgs e) {
-			
-			_objKeepAliveMonitor.Reset();
-			if (e.IsText) {
-				Log.Debug($"Text received on {ID}");
-				var data = System.Text.Encoding.UTF32.GetBytes(e.Data);
-				Rx?.Invoke(this, data);
-			} else if (e.IsPing) { // -- do nothing, keepalive is handled in this class
-				Log.Debug($"Ping received on {ID}");
-			} else if (e.IsBinary) {
-				Log.Debug($"Data received on {ID}");
-				Rx?.Invoke(this, e.RawData);
-			}
-		}
-		#endregion
+        #endregion Constructor & Connecting
 
-		#region Client Methods
-		public void Disconnect() {
-			this.Close();
-			Disconnected?.Invoke(this, this);
-		}
+        #region Websocket Event Handlers
 
-		private BlockingCollection<byte[]> _colQueue;
-		private CancellationTokenSource _objCancelationSource;
-		private CancellationToken _objCancelationToken;
+        private void Connection_OnOpen(object sender, EventArgs e) {
+            Log.Info($"Connection {ID} connected");
 
-		/// <summary>
-		/// Transmit adds the data to be transfered to the queue
-		/// </summary>
-		/// <param name="pData"></param>
-		public void Transmit(byte[] pData) {
-			_colQueue.Add(pData);
-		}
+            //Start the sending queue before we raise the event
+            //The thread must be running before we say the client is 'connected(ready)'
+            _objKeepAliveMonitor.Start();
+            Connected?.Invoke(this, this);
+        }
 
-		private void StartTransmitQueue() {
-			_colQueue = new BlockingCollection<byte[]>();
-			_objCancelationSource = new CancellationTokenSource();
-			_objCancelationToken = _objCancelationSource.Token;
+        private void Connection_OnError(object sender, IErrorEventArgs e) {
+            Log.Error($"Connection error for {ID}: {e.Message}");
+            this.Close();
+            Disconnected?.Invoke(this, this);
+        }
 
-			//Do not use Task.Run or ThreadPool here, we need a long running thread for the SenderQueue
-			new Thread(() => {
-				Thread.CurrentThread.Name = "SenderQueue";
-				while (!_objCancelationSource.IsCancellationRequested) {
-					try {
-						var arrData = _colQueue.Take(_objCancelationToken);
-						Log.Trace($"Sending data on {ID}");
-						_objWebSocketClient.Send(arrData);
-					} catch (Exception ex) {
-						Log.Error($"Failed sending data on {ID}: {ex.Message}, closing connection");
-					}
-				}
-			}) {
-				IsBackground = true
-			}.Start();
-		}
-		#endregion
-	}
+        private void Connection_OnClose(object sender, ICloseEventArgs e) {
+            Log.Info($"Connection {ID} closed");
+            this.Close();
+            Disconnected?.Invoke(this, this);
+        }
+
+        private void Connection_OnMessage(object sender, IMessageEventArgs e) {
+            _objKeepAliveMonitor.Reset();
+            if (e.IsText) {
+                Log.Debug($"Text received on {ID}");
+                var data = System.Text.Encoding.UTF32.GetBytes(e.Data);
+                Rx?.Invoke(this, data);
+            } else if (e.IsPing) { // -- do nothing, keepalive is handled in this class
+                Log.Debug($"Ping received on {ID}");
+            } else if (e.IsBinary) {
+                Log.Debug($"Data received on {ID}");
+                Rx?.Invoke(this, e.RawData);
+            }
+        }
+
+        #endregion Websocket Event Handlers
+
+        #region Client Methods
+
+        public void Disconnect() {
+            this.Close();
+            Disconnected?.Invoke(this, this);
+        }
+
+        /// <summary>
+        /// Transmit adds the data to be transfered to the queue
+        /// </summary>
+        /// <param name="pData"></param>
+        public void Transmit(byte[] pData) {
+            _objWebSocketClient.SendAsync(pData);
+        }
+
+        #endregion Client Methods
+    }
 }

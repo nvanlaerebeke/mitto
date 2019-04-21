@@ -81,6 +81,14 @@
       <Project>{ce5f0847-f8b5-4b95-8e86-e007fcdc92a3}</Project>
       <Name>Mitto.Routing.PassThrough</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Mitto.Subscription.Handlers\Mitto.Subscription.Messaging.csproj">
+      <Project>{5d420f78-c169-4615-acb2-a039bf8acbd6}</Project>
+      <Name>Mitto.Subscription.Messaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Subscription.IHandlers\Mitto.Subscription.IMessaging.csproj">
+      <Project>{9ff69878-e3d3-459d-a779-a6cb0091de75}</Project>
+      <Name>Mitto.Subscription.IMessaging</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

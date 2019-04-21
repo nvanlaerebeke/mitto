@@ -5,212 +5,232 @@ using NUnit.Framework;
 using System;
 
 namespace Mitto.Main.Tests.Client {
-	[TestFixture]
-	public class ClientTests {
-		/// <summary>
-		/// Tests the IConnection.IClient connect event
-		/// This means that the Connected event is raised
-		/// </summary>
-		[Test]
-		public void ClientConnectedTest() {
-			//Arrange
-			var objProvider = Substitute.For<IConnectionProvider>();
-			var objConnection = Substitute.For<IClient>();
-			var objHandler = Substitute.For<EventHandler<Mitto.Client>>();
 
-			objProvider.CreateClient().Returns(objConnection);
-			Config.Initialize(new Config.ConfigParams() {
-				ConnectionProvider = objProvider
-			});
+    [TestFixture]
+    public class ClientTests {
 
-			//Act
-			var obj = new Mitto.Client();
-			obj.Connected += objHandler;
-			objConnection.Connected += Raise.Event<EventHandler<IClient>>(new object(), objConnection);
+        /// <summary>
+        /// Tests the IConnection.IClient connect event
+        /// This means that the Connected event is raised
+        /// </summary>
+        [Test]
+        public void ClientConnectedTest() {
+            //Arrange
+            var objProvider = Substitute.For<IConnectionProvider>();
+            var objConnection = Substitute.For<IClient>();
+            var objHandler = Substitute.For<EventHandler<Mitto.Client>>();
+            var objConnectionParams = Substitute.For<IClientParams>();
 
-			//Assert
-			objHandler
-				.Received(1)
-				.Invoke(
-					Arg.Any<object>(),
-					Arg.Is(obj)
-				)
-			;
-		}
+            objProvider.CreateClient().Returns(objConnection);
+            Config.Initialize(new Config.ConfigParams() {
+                ConnectionProvider = objProvider
+            });
 
-		/// <summary>
-		/// Tests the handling of the IConnection.IClient disconnect event
-		/// 
-		/// This means that the Connection subscription handlers are removed,
-		/// the router is cleaned up and that the Disconnected event is called
-		/// </summary>
-		[Test]
-		public void ClientDisconnectedTest() {
-			//Arrange
-			var objConnectionProvider = Substitute.For<IConnectionProvider>();
-			var objRouterProvider = Substitute.For<IRouterProvider>();
+            //Act
+            var obj = new Mitto.Client();
+            obj.ConnectAsync(objConnectionParams);
+            obj.Connected += objHandler;
+            objConnection.Connected += Raise.Event<EventHandler<IClient>>(new object(), objConnection);
 
-			var objConnection = Substitute.For<IClient>();
-			var objRouter = Substitute.For<IRouter>();
-			var objHandler = Substitute.For<EventHandler<Mitto.Client>>();
+            //Assert
+            objHandler
+                .Received(1)
+                .Invoke(
+                    Arg.Any<object>(),
+                    Arg.Is(obj)
+                )
+            ;
+        }
 
-			objConnectionProvider.CreateClient().Returns(objConnection);
-			objRouterProvider.Create(Arg.Is(objConnection)).Returns(objRouter);
+        /// <summary>
+        /// Tests the handling of the IConnection.IClient disconnect event
+        ///
+        /// This means that the Connection subscription handlers are removed,
+        /// the router is cleaned up and that the Disconnected event is called
+        /// </summary>
+        [Test]
+        public void ClientDisconnectedTest() {
+            //Arrange
+            var objConnectionProvider = Substitute.For<IConnectionProvider>();
+            var objRouterProvider = Substitute.For<IRouterProvider>();
 
-			Config.Initialize(new Config.ConfigParams() {
-				ConnectionProvider = objConnectionProvider,
-				RouterProvider = objRouterProvider
-			});
+            var objConnection = Substitute.For<IClient>();
+            var objRouter = Substitute.For<IRouter>();
+            var objHandler = Substitute.For<EventHandler<Mitto.Client>>();
+            var objConnectionParams = Substitute.For<IClientParams>();
 
-			//Act
-			var obj = new Mitto.Client();
-			obj.Disconnected += objHandler;
-			objConnection.Disconnected += Raise.Event<EventHandler<IConnection.IConnection>>(objConnection, objConnection);
+            objConnectionProvider.CreateClient().Returns(objConnection);
+            objRouterProvider.Create(Arg.Is(objConnection)).Returns(objRouter);
 
-			//Assert
-			objConnection.Received(1).Connected -= Arg.Any<EventHandler<IClient>>();
-			objConnection.Received(1).Disconnected -= Arg.Any<EventHandler<IConnection.IConnection>>();
-			objRouter.Received(1).Close();
+            Config.Initialize(new Config.ConfigParams() {
+                ConnectionProvider = objConnectionProvider,
+                RouterProvider = objRouterProvider
+            });
 
-			objHandler
-				.Received(1)
-				.Invoke(Arg.Is(obj), Arg.Is(obj))
-			;
-		}
+            //Act
+            var obj = new Mitto.Client();
+            obj.ConnectAsync(objConnectionParams);
+            obj.Disconnected += objHandler;
+            objConnection.Connected += Raise.Event<EventHandler<IClient>>(new object(), objConnection);
+            System.Threading.Thread.Sleep(50);
+            objConnection.Disconnected += Raise.Event<EventHandler<IConnection.IConnection>>(objConnection, objConnection);
 
-		/// <summary>
-		/// Tests the ConnectAsync method
-		/// This means that the connectasync method is called on the 
-		/// the Connection returned from the ConnectionProvider
-		/// </summary>
-		[Test]
-		public void ConnectAsyncTest() {
-			//Arrange
-			var objProvider = Substitute.For<IConnectionProvider>();
-			var objConnection = Substitute.For<IClient>();
-			var objParams = Substitute.For<IClientParams>();
+            //Assert
+            objConnection.Received(1).Connected -= Arg.Any<EventHandler<IClient>>();
+            objConnection.Received(1).Disconnected -= Arg.Any<EventHandler<IConnection.IConnection>>();
+            objRouter.Received(1).Close();
 
-			objProvider.CreateClient().Returns(objConnection);
+            objHandler
+                .Received(1)
+                .Invoke(Arg.Is(obj), Arg.Is(obj))
+            ;
+        }
 
-			Config.Initialize(new Config.ConfigParams() {
-				ConnectionProvider = objProvider
-			});
+        /// <summary>
+        /// Tests the ConnectAsync method
+        /// This means that the connect <see langword="async"/> method is called on the
+        /// the Connection returned from the ConnectionProvider
+        /// </summary>
+        [Test]
+        public void ConnectAsyncTest() {
+            //Arrange
+            var objProvider = Substitute.For<IConnectionProvider>();
+            var objConnection = Substitute.For<IClient>();
+            var objParams = Substitute.For<IClientParams>();
 
-			//Act
-			var obj = new Mitto.Client();
-			obj.ConnectAsync(objParams);
+            objProvider.CreateClient().Returns(objConnection);
 
-			//Assert
-			objConnection.Received(1).ConnectAsync(Arg.Is(objParams));
-		}
+            Config.Initialize(new Config.ConfigParams() {
+                ConnectionProvider = objProvider
+            });
 
-		/// <summary>
-		/// Tests the Client creation
-		/// This means that the IConnection is set as well as the IQueue
-		/// The event handlers for connected, disconnected, data received are also attached
-		/// </summary>
-		[Test]
-		public void CreateTest() {
-			//Arrange
-			var objConnectionProvider = Substitute.For<IConnectionProvider>();
-			var objRouterProvider = Substitute.For<IRouterProvider>();
+            //Act
+            var obj = new Mitto.Client();
+            obj.ConnectAsync(objParams);
 
-			var objConnection = Substitute.For<IClient>();
-			var objRouter = Substitute.For<IRouter>();
+            //Assert
+            objConnection.Received(1).ConnectAsync(Arg.Is(objParams));
+        }
 
-			objConnectionProvider.CreateClient().Returns(objConnection);
-			objRouterProvider.Create(objConnection).Returns(objRouter);
+        /// <summary>
+        /// Tests the Client creation
+        /// This means that the IConnection is set as well as the IQueue
+        /// The event handlers for connected, disconnected, data received are also attached
+        /// </summary>
+        [Test]
+        public void CreateTest() {
+            //Arrange
+            var objConnectionProvider = Substitute.For<IConnectionProvider>();
+            var objRouterProvider = Substitute.For<IRouterProvider>();
 
-			Config.Initialize(new Config.ConfigParams() {
-				ConnectionProvider = objConnectionProvider,
-				RouterProvider = objRouterProvider
-			});
+            var objConnection = Substitute.For<IClient>();
+            var objRouter = Substitute.For<IRouter>();
+            var objConnectionParams = Substitute.For<IClientParams>();
 
-			//Act
-			var obj = new Mitto.Client();
+            objConnectionProvider.CreateClient().Returns(objConnection);
+            objRouterProvider.Create(objConnection).Returns(objRouter);
 
-			//Assert
-			objConnectionProvider.Received(1).CreateClient();
-			objRouterProvider.Received(1).Create(objConnection);
+            Config.Initialize(new Config.ConfigParams() {
+                ConnectionProvider = objConnectionProvider,
+                RouterProvider = objRouterProvider
+            });
 
-			objConnection.Received(1).Connected += Arg.Any<EventHandler<IClient>>();
-			objConnection.Received(1).Disconnected += Arg.Any<EventHandler<IConnection.IConnection>>();
-		}
+            //Act
+            var obj = new Mitto.Client();
+            obj.ConnectAsync(objConnectionParams);
+            objConnection.Connected += Raise.Event<EventHandler<IClient>>(new object(), objConnection);
 
-		/// <summary>
-		/// Test the Disconnect method
-		/// This means that the close is called and the Disconnect on the IConnection.IClient
-		/// Also verifies that the disconnect event is not fired
-		/// </summary>
-		[Test]
-		public void DisconnectTest() {
-			//Arrange
-			var objConnectionProvider = Substitute.For<IConnectionProvider>();
-			var objRouterProvider = Substitute.For<IRouterProvider>();
+            //Assert
+            objConnectionProvider.Received(1).CreateClient();
+            objRouterProvider.Received(1).Create(objConnection);
 
-			var objConnection = Substitute.For<IClient>();
-			var objHandler = Substitute.For<EventHandler<Mitto.Client>>();
-			var objRouter = Substitute.For<IRouter>();
+            objConnection.Received(1).Connected += Arg.Any<EventHandler<IClient>>();
+            objConnection.Received(1).Disconnected += Arg.Any<EventHandler<IConnection.IConnection>>();
+        }
 
-			objConnectionProvider.CreateClient().Returns(objConnection);
-			objRouterProvider.Create(objConnection).Returns(objRouter);
+        /// <summary>
+        /// Test the Disconnect method
+        /// This means that the close is called and the Disconnect on the IConnection.IClient
+        /// Also verifies that the disconnect event is not fired
+        /// </summary>
+        [Test]
+        public void DisconnectTest() {
+            //Arrange
+            var objConnectionProvider = Substitute.For<IConnectionProvider>();
+            var objRouterProvider = Substitute.For<IRouterProvider>();
 
-			Config.Initialize(new Config.ConfigParams() {
-				ConnectionProvider = objConnectionProvider,
-				RouterProvider = objRouterProvider
-			});
+            var objConnection = Substitute.For<IClient>();
+            var objHandler = Substitute.For<EventHandler<Mitto.Client>>();
+            var objRouter = Substitute.For<IRouter>();
+            var objConnectionParams = Substitute.For<IClientParams>();
 
-			//Act
-			var obj = new Mitto.Client();
-			obj.Disconnected += objHandler;
-			obj.Disconnect();
+            objConnectionProvider.CreateClient().Returns(objConnection);
+            objRouterProvider.Create(objConnection).Returns(objRouter);
 
-			//Assert
-			objConnection.Received(1).Connected -= Arg.Any<EventHandler<IClient>>();
-			objConnection.Received(1).Disconnected -= Arg.Any<EventHandler<IConnection.IConnection>>();
-			objConnection.Received(1).Disconnect();
-			objRouter.Received(1).Close();
-			objHandler
-				.Received(1)
-				.Invoke(
-					Arg.Is(obj),
-					Arg.Is(obj)
-				)
-			;
-		}
+            Config.Initialize(new Config.ConfigParams() {
+                ConnectionProvider = objConnectionProvider,
+                RouterProvider = objRouterProvider
+            });
 
-		/// <summary>
-		/// Tests the Request method
-		/// This means that the Request is passed onto the MessageProcesser
-		/// </summary>
-		[Test]
-		public void RequestTest() {
-			//Arrange
-			var objProvider = Substitute.For<IConnectionProvider>();
-			var objRouterProvider = Substitute.For<IRouterProvider>();
-			var objProcessor = Substitute.For<IMessaging.IMessageProcessor>();
+            //Act
+            var obj = new Mitto.Client();
+            obj.ConnectAsync(objConnectionParams);
+            obj.Disconnected += objHandler;
 
-			var objConnection = Substitute.For<IClient>();
-			var objRouter = Substitute.For<IRouter>();
-			var objRequestMessage = Substitute.For<IRequestMessage>();
-			var objAction = Substitute.For<Action<IResponseMessage>>();
+            objConnection.Connected += Raise.Event<EventHandler<IClient>>(new object(), objConnection);
+            System.Threading.Thread.Sleep(50);
 
-			objProvider.CreateClient().Returns(objConnection);
-			objRouterProvider.Create(objConnection).Returns(objRouter);
+            obj.Disconnect();
 
-			Config.Initialize(new Config.ConfigParams() {
-				ConnectionProvider = objProvider,
-				RouterProvider = objRouterProvider,
-				MessageProcessor = objProcessor
-			});
+            //Assert
+            objConnection.Received(1).Connected -= Arg.Any<EventHandler<IClient>>();
+            objConnection.Received(1).Disconnected -= Arg.Any<EventHandler<IConnection.IConnection>>();
+            objConnection.Received(1).Disconnect();
+            objRouter.Received(1).Close();
+            objHandler
+                .Received(1)
+                .Invoke(
+                    Arg.Is(obj),
+                    Arg.Is(obj)
+                )
+            ;
+        }
 
+        /// <summary>
+        /// Tests the Request method
+        /// This means that the Request is passed onto the MessageProcesser
+        /// </summary>
+        [Test]
+        public void RequestTest() {
+            //Arrange
+            var objProvider = Substitute.For<IConnectionProvider>();
+            var objRouterProvider = Substitute.For<IRouterProvider>();
+            var objProcessor = Substitute.For<IMessaging.IMessageProcessor>();
 
-			//Act
-			var obj = new Mitto.Client();
-			obj.Request(objRequestMessage, objAction);
+            var objConnection = Substitute.For<IClient>();
+            var objRouter = Substitute.For<IRouter>();
+            var objRequestMessage = Substitute.For<IMessaging.IRequestMessage>();
+            var objAction = Substitute.For<Action<IMessaging.IResponseMessage>>();
+            var objConnectionParams = Substitute.For<IClientParams>();
 
-			//Assert
-			objProcessor.Received(1).Request(Arg.Is(objRouter), Arg.Is(objRequestMessage), Arg.Is(objAction));
-		}
-	}
+            objProvider.CreateClient().Returns(objConnection);
+            objRouterProvider.Create(objConnection).Returns(objRouter);
+
+            Config.Initialize(new Config.ConfigParams() {
+                ConnectionProvider = objProvider,
+                RouterProvider = objRouterProvider,
+                MessageProcessor = objProcessor
+            });
+
+            //Act
+            var obj = new Mitto.Client();
+            obj.ConnectAsync(objConnectionParams);
+            objConnection.Connected += Raise.Event<EventHandler<IClient>>(new object(), objConnection);
+            System.Threading.Thread.Sleep(50);
+            obj.Request(objRequestMessage, objAction);
+
+            //Assert
+            objProcessor.Received(1).Request(Arg.Is(objRouter), Arg.Is(objRequestMessage), Arg.Is(objAction));
+        }
+    }
 }

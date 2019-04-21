@@ -1,12 +1,11 @@
 ﻿using Mitto.ILogging;
 using Mitto.IMessaging;
-using Mitto.IRouting;
 using Mitto.Utilities;
 using System;
 using System.Threading.Tasks;
 
 namespace Mitto.Messaging {
-	internal class Request<T> : IRequest where T : IResponseMessage {
+	public class Request<T> : IRequest where T : IResponseMessage {
 		private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		private Delegate _objAction;

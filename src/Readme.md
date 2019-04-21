@@ -9,6 +9,8 @@ Minimum ToDo's:
 	- Hide more classes, make them only available from Mitto.xxx, example the factories like ConnectionFactory
 	  This is to prevent missuse
 	- RabbitMQ Sender/Reader queue recovery after connection lost
+	- Router.IClient is used in Messaging, does it need to be an IClient?, does IClient then belong in IRouting?
+	  Isn't it a IMessaging interface?
 
 Improvements:
 	- Use arrData.CopyTo instead of Array.Copy and if possible use System.Buffer.BlockCopy (much faster):
@@ -86,6 +88,8 @@ Improvements:
 		  This way users do not have to set up a RabbitMQ instance/application that uses Mitto
 
 		- Add a status page (WebPage) that can be viewed when enabled on port x 
+
+		- Remove the Sub and UnSub message types, they're just Requests, no need to seperate them
 
 Documentation:
 	- go over the comments in the code - add/improve/fix them where needed
