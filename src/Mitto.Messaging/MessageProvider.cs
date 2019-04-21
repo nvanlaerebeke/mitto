@@ -121,7 +121,8 @@ namespace Mitto.Messaging {
                         }
                     });
                 } catch (Exception ex) {
-                    Log.Error(ex);
+                    Console.WriteLine("Unable to load types");
+                    Console.WriteLine(ex.Message);
                 }
             }
         }
