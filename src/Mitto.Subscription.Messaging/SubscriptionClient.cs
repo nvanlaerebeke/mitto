@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Mitto.Subscription.Messaging {
 
-    internal class SubscriptionClient<T> : ISubscriptionClient {
+    public class SubscriptionClient<T> : ISubscriptionClient {
         private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly IRouter Router;
@@ -46,21 +46,5 @@ namespace Mitto.Subscription.Messaging {
             objBlock.WaitOne(30000);
             return blnResult;
         }
-
-        /*private RoutingFrame GetFrame(IMessage pMessage) {
-            return new RoutingFrame(
-                RoutingFrameType.Messaging,
-                MessageType.Request,
-                pMessage.ID,
-                Router.SourceID,
-                Router.DestinationID,
-                new Frame(
-                    pMessage.Type,
-                    pMessage.ID,
-                    pMessage.Name,
-                    MessagingFactory.Converter.GetByteArray(pMessage)
-                ).GetByteArray()
-            );
-        }*/
     }
 }

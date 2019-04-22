@@ -28,6 +28,10 @@ namespace Mitto.Subscription.Messaging.Handlers {
 
         private ConcurrentDictionary<string, List<IRouter>> _dicSubscriptions = new ConcurrentDictionary<string, List<IRouter>>();
 
+        public bool Notify(SendToChannelRequest pNotifyMessage) {
+            return Notify(null, pNotifyMessage);
+        }
+
         public bool Notify(IRouter pSender, SendToChannelRequest pNotifyMessage) {
             var lstRouters = new List<IRouter>();
             try {
@@ -44,7 +48,7 @@ namespace Mitto.Subscription.Messaging.Handlers {
                 var objMessage = new ReceiveOnChannelRequest(pNotifyMessage.ChannelName, pNotifyMessage.Message);
 
                 foreach (var objRouter in lstRouters) {
-                    if (objRouter.ConnectionID.Equals(pSender.ConnectionID)) { continue; } // -- skip sender
+                    if (pSender != null && objRouter.ConnectionID.Equals(pSender.ConnectionID)) { continue; } // -- skip sender
                     MessagingFactory.Processor.Request<ACKResponse>(
                         objRouter,
                         objMessage,
@@ -63,7 +67,6 @@ namespace Mitto.Subscription.Messaging.Handlers {
         }
 
         public bool Sub(IRouter pClient, ChannelSubscribe pMessage) {
-            //System.Threading.Thread.Sleep(2000);
             try {
                 if (!_dicSubscriptions.ContainsKey(pMessage.ChannelName)) {
                     _dicSubscriptions.TryAdd(pMessage.ChannelName, new List<IRouter>());

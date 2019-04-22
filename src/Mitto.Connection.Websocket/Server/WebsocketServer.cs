@@ -3,7 +3,6 @@ using Logging;
 using Mitto.IConnection;
 using Mitto.Utilities;
 using System;
-using System.Net;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Mitto.Connection.Websocket.Server {
