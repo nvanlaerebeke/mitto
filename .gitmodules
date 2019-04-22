@@ -4,3 +4,6 @@
 [submodule "Lib/CommandLineMenu"]
 	path = Lib/CommandLineMenu
 	url = https://github.com/nvanlaerebeke/CommandLineMenu.git
+[submodule "Lib/Logging"]
+	path = Lib/Logging
+	url = https://github.com/nvanlaerebeke/Logging.git
