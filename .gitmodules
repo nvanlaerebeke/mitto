@@ -1,3 +1,9 @@
 [submodule "src/Lib/Logging"]
 	path = src/Lib/Logging
 	url = https://github.com/nvanlaerebeke/Logging.git
+[submodule "src/Lib/websocketsharp"]
+	path = src/Lib/websocketsharp
+	url = https://github.com/nvanlaerebeke/websocket-sharp.git
+[submodule "src/Lib/CommandLineMenu"]
+	path = src/Lib/CommandLineMenu
+	url = https://github.com/nvanlaerebeke/CommandLineMenu.git
