@@ -1,4 +1,5 @@
-﻿using Mitto.ILogging;
+﻿using ILogging;
+using Logging;
 using Mitto.IMessaging;
 using Mitto.IRouting;
 using System;

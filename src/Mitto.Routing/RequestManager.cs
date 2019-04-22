@@ -1,6 +1,7 @@
 ﻿using Mitto.IRouting;
 using System.Collections.Concurrent;
-using Mitto.ILogging;
+using ILogging;
+using Logging;
 using System;
 
 namespace Mitto.Routing {

@@ -1,4 +1,5 @@
-﻿using Mitto.ILogging;
+﻿using ILogging;
+using Logging;
 using Mitto.IMessaging;
 using Mitto.IRouting;
 using Mitto.Messaging;
@@ -9,7 +10,9 @@ using System.Collections.Concurrent;
 using System.Reflection;
 
 namespace Mitto.Subscription.Service.RabbitMQ {
+
     public class SubscriptionActionManager : IActionManager {
+
         private ILog Log {
             get { return LogFactory.GetLogger(MethodBase.GetCurrentMethod().DeclaringType); }
         }

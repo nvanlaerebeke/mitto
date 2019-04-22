@@ -54,8 +54,8 @@ namespace Mitto.Messaging.Tests {
             objMessage.Type.Returns(pType);
 
             if (pTransmitExpected) {
-                objAction = Substitute.For<IRequestAction<IResponseMessage>>();
-                objAction.When(a => ((IRequestAction<IResponseMessage>)a).Start()).Do(a => throw new Exception("Some Exception"));
+                objAction = Substitute.For<IRequestAction<IRequestMessage, IResponseMessage>>();
+                objAction.When(a => ((IRequestAction<IRequestMessage, IResponseMessage>)a).Start()).Do(a => throw new Exception("Some Exception"));
             } else {
                 objAction = Substitute.For<INotificationAction>();
                 objAction.When(a => ((INotificationAction)a).Start()).Do(a => throw new Exception("Some Exception"));
@@ -73,7 +73,7 @@ namespace Mitto.Messaging.Tests {
 
             //Assert
             if (pTransmitExpected) {
-                ((IRequestAction<IResponseMessage>)objAction).Received(1).Start();
+                ((IRequestAction<IRequestMessage, IResponseMessage>)objAction).Received(1).Start();
                 objProvider.Received(1).GetResponseMessage(Arg.Any<IRequestMessage>(), Arg.Is<ResponseStatus>(r => r.State == ResponseState.Error));
                 objClient.Received(1).Transmit(Arg.Is(objResponse));
             } else {
@@ -95,7 +95,7 @@ namespace Mitto.Messaging.Tests {
 
             var objClient = Substitute.For<IClient>();
             var objMessage = Substitute.For<IRequestMessage>();
-            var objAction = Substitute.For<IRequestAction<IResponseMessage>>();
+            var objAction = Substitute.For<IRequestAction<IRequestMessage, IResponseMessage>>();
 
             var objResponse = Substitute.For<IResponseMessage>();
 
@@ -161,7 +161,7 @@ namespace Mitto.Messaging.Tests {
             //Arrange
             var objClient = Substitute.For<IClient>();
             var objMessage = Substitute.For<IRequestMessage>();
-            var objAction = Substitute.For<IRequestAction<IResponseMessage>>();
+            var objAction = Substitute.For<IRequestAction<IRequestMessage, IResponseMessage>>();
 
             var objProvider = Substitute.For<IMessageProvider>();
             var objResponse = Substitute.For<IResponseMessage>();
@@ -193,7 +193,7 @@ namespace Mitto.Messaging.Tests {
             //Arrange
             var objClient = Substitute.For<IClient>();
             var objMessage = Substitute.For<IRequestMessage>();
-            var objAction = Substitute.For<IRequestAction<IResponseMessage>>();
+            var objAction = Substitute.For<IRequestAction<IRequestMessage, IResponseMessage>>();
 
             var objProvider = Substitute.For<IMessageProvider>();
             var objResponse = Substitute.For<IResponseMessage>();
@@ -229,7 +229,7 @@ namespace Mitto.Messaging.Tests {
             //Arrange
             var objClient = Substitute.For<IClient>();
             var objMessage = Substitute.For<IMessage>();
-            var objAction = Substitute.For<IRequestAction<IResponseMessage>>();
+            var objAction = Substitute.For<IRequestAction<IRequestMessage, IResponseMessage>>();
 
             //Act
             var obj = new ActionManager();

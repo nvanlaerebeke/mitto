@@ -1,4 +1,5 @@
-﻿using Mitto.ILogging;
+﻿using ILogging;
+using Logging;
 using Mitto.IRouting;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;

@@ -1,7 +1,7 @@
 ﻿using Mitto.IMessaging;
 using Mitto.Messaging.Response;
-using Mitto.Subscription.IMessaging.Handlers;
 using Mitto.Subscription.Messaging.Action.UnSubscribe;
+using Mitto.Subscription.Messaging.Handlers;
 using Mitto.Subscription.Messaging.UnSubscribe;
 using NSubstitute;
 using NUnit.Framework;
@@ -23,10 +23,10 @@ namespace Mitto.Subscription.Messaging.Tests.Action.UnSubscribe {
             var objProvider = Substitute.For<IMessageProvider>();
             var objClient = Substitute.For<IClient>();
             var objRequestMessage = Substitute.For<ChannelUnSubscribe>("MyChannel");
-            var objSubscriptionHandler = Substitute.For<IChannelSubscriptionHandler>();
+            var objSubscriptionHandler = Substitute.For<ChannelSubscriptionHandler>();
 
             objRequestMessage.ID.Returns("MyRequestID");
-            objProvider.GetSubscriptionHandler<IChannelSubscriptionHandler>().Returns(objSubscriptionHandler);
+            objProvider.GetSubscriptionHandler<ChannelSubscriptionHandler>().Returns(objSubscriptionHandler);
             objSubscriptionHandler.UnSub(Arg.Is(objClient.Router), Arg.Is(objRequestMessage)).Returns(true);
 
             Config.Initialize(new Config.ConfigParams() {
@@ -42,7 +42,7 @@ namespace Mitto.Subscription.Messaging.Tests.Action.UnSubscribe {
             Assert.NotNull(objResponse);
             Assert.AreEqual("MyRequestID", objResponse.ID);
             Assert.AreEqual(ResponseState.Success, objResponse.Status.State);
-            objProvider.Received(1).GetSubscriptionHandler<IChannelSubscriptionHandler>();
+            objProvider.Received(1).GetSubscriptionHandler<ChannelSubscriptionHandler>();
             objSubscriptionHandler.Received(1).UnSub(Arg.Is(objClient.Router), Arg.Is(objRequestMessage));
         }
     }

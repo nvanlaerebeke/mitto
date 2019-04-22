@@ -1,7 +1,7 @@
 ﻿using Mitto.IMessaging;
 using Mitto.Messaging.Action;
 using Mitto.Messaging.Response;
-using Mitto.Subscription.IMessaging.Handlers;
+using Mitto.Subscription.Messaging.Handlers;
 using Mitto.Subscription.Messaging.Request;
 
 namespace Mitto.Subscription.Messaging.Tests.Action.Request {
@@ -12,7 +12,7 @@ namespace Mitto.Subscription.Messaging.Tests.Action.Request {
         }
 
         public override ACKResponse Start() {
-            if (MessagingFactory.Provider.GetSubscriptionHandler<IChannelSubscriptionHandler>().Notify(Client.Router, Request)) {
+            if (MessagingFactory.Provider.GetSubscriptionHandler<ChannelSubscriptionHandler>().Notify(Client.Router, Request)) {
                 return new ACKResponse(Request);
             }
             return new ACKResponse(Request, new ResponseStatus(ResponseState.Error, $"Failed to subscribe to {Request.ChannelName}"));

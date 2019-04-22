@@ -2,7 +2,8 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Mitto.IMessaging;
-using Mitto.ILogging;
+using ILogging;
+using Logging;
 using Mitto.IRouting;
 using Mitto.Messaging.Response;
 using Mitto.Subscription.Messaging.Request;

@@ -59,10 +59,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Utilities.Tests", "Mi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Main.Tests", "Mitto.Main.Tests\Mitto.Main.Tests.csproj", "{31F35624-F429-4E40-9E81-ACBB9880BF5A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Logging", "Mitto.Logging\Mitto.Logging.csproj", "{7941EAC6-25F8-4D85-A089-EEA56698D00B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.ILogging", "Mitto.ILogging\Mitto.ILogging.csproj", "{30F11E8A-A8D2-48C7-9D86-D5D007A47609}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Routing.RabbitMQ.Tests", "Mitto.Routing.RabbitMQ.Tests\Mitto.Routing.RabbitMQ.Tests.csproj", "{4D2BF136-C342-4471-ABAB-BD86E0B19D1A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Routing", "Mitto.Routing\Mitto.Routing.csproj", "{6FFEFEF0-8B67-45C8-9ABA-A1E6D276B1C2}"
@@ -285,22 +281,6 @@ Global
 		{31F35624-F429-4E40-9E81-ACBB9880BF5A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{31F35624-F429-4E40-9E81-ACBB9880BF5A}.Release|x64.ActiveCfg = Release|Any CPU
 		{31F35624-F429-4E40-9E81-ACBB9880BF5A}.Release|x64.Build.0 = Release|Any CPU
-		{7941EAC6-25F8-4D85-A089-EEA56698D00B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7941EAC6-25F8-4D85-A089-EEA56698D00B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7941EAC6-25F8-4D85-A089-EEA56698D00B}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{7941EAC6-25F8-4D85-A089-EEA56698D00B}.Debug|x64.Build.0 = Debug|Any CPU
-		{7941EAC6-25F8-4D85-A089-EEA56698D00B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7941EAC6-25F8-4D85-A089-EEA56698D00B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7941EAC6-25F8-4D85-A089-EEA56698D00B}.Release|x64.ActiveCfg = Release|Any CPU
-		{7941EAC6-25F8-4D85-A089-EEA56698D00B}.Release|x64.Build.0 = Release|Any CPU
-		{30F11E8A-A8D2-48C7-9D86-D5D007A47609}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{30F11E8A-A8D2-48C7-9D86-D5D007A47609}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{30F11E8A-A8D2-48C7-9D86-D5D007A47609}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{30F11E8A-A8D2-48C7-9D86-D5D007A47609}.Debug|x64.Build.0 = Debug|Any CPU
-		{30F11E8A-A8D2-48C7-9D86-D5D007A47609}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{30F11E8A-A8D2-48C7-9D86-D5D007A47609}.Release|Any CPU.Build.0 = Release|Any CPU
-		{30F11E8A-A8D2-48C7-9D86-D5D007A47609}.Release|x64.ActiveCfg = Release|Any CPU
-		{30F11E8A-A8D2-48C7-9D86-D5D007A47609}.Release|x64.Build.0 = Release|Any CPU
 		{4D2BF136-C342-4471-ABAB-BD86E0B19D1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4D2BF136-C342-4471-ABAB-BD86E0B19D1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D2BF136-C342-4471-ABAB-BD86E0B19D1A}.Debug|x64.ActiveCfg = Debug|Any CPU

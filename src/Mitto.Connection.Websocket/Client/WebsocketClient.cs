@@ -1,5 +1,6 @@
-﻿using Mitto.IConnection;
-using Mitto.ILogging;
+﻿using ILogging;
+using Logging;
+using Mitto.IConnection;
 using Mitto.Utilities;
 using System;
 using System.Runtime.CompilerServices;

@@ -1,9 +1,10 @@
-﻿using Mitto.Connection.Websocket;
+﻿using ILogging;
+using Logging;
+using Logging.Log4Net;
+using Mitto.Connection.Websocket;
 using Mitto.IConnection;
-using Mitto.ILogging;
 using Mitto.IMessaging;
 using Mitto.IRouting;
-using Mitto.Logging;
 using Mitto.Messaging;
 using Mitto.Messaging.Json;
 using Mitto.Routing.PassThrough;

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Mitto.ILogging;
+using ILogging;
+using Logging;
 using Mitto.IMessaging;
 
 namespace Mitto.Routing.RabbitMQ.Consumer {

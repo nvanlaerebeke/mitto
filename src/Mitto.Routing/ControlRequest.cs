@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Mitto.ILogging;
+using ILogging;
+using Logging;
 using Mitto.IRouting;
 using Mitto.Routing.Request;
 using Mitto.Routing.Response;

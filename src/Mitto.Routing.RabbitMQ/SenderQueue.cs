@@ -1,4 +1,5 @@
-﻿using Mitto.ILogging;
+﻿using ILogging;
+using Logging;
 using Mitto.IRouting;
 using Mitto.Utilities;
 using RabbitMQ.Client;

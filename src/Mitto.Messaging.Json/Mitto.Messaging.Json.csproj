@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Logging, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Logging\bin\Logging.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
@@ -51,10 +55,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Mitto.ILogging\Mitto.ILogging.csproj">
-      <Project>{30F11E8A-A8D2-48C7-9D86-D5D007A47609}</Project>
-      <Name>Mitto.ILogging</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Mitto.IMessaging\Mitto.IMessaging.csproj">
       <Project>{3bb1c211-9006-4fee-9f40-7556717431b0}</Project>
       <Name>Mitto.IMessaging</Name>
