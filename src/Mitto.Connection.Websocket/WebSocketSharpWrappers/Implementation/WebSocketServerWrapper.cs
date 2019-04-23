@@ -25,7 +25,7 @@ namespace Mitto.Connection.Websocket {
         }
 
         private void StartServer(IPAddress pIPAddress, int pPort, X509Certificate2 pCert = null) {
-            Log.Info("Starting Websocket server");
+            Log.Info("Starting WebSocket server");
             Log.Info($"Listening on {pIPAddress.ToString()}:{pPort}");
 
             _objWebSocket = new WebSocketServer(pIPAddress, pPort, (pCert != null));

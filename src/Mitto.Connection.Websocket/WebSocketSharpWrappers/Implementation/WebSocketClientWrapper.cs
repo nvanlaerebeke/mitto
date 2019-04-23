@@ -1,50 +1,61 @@
 ﻿using System;
-using System.Threading;
 using WebSocketSharp;
 
 namespace Mitto.Connection.Websocket {
-	internal class WebSocketClientWrapper : IWebSocketClient {
-		private WebSocket _objWebSocket;
 
-		public WebSocketState ReadyState => _objWebSocket.ReadyState;
+    internal class WebSocketClientWrapper : IWebSocketClient {
+        private WebSocket _objWebSocket;
 
-		public int ConnectionTimeoutSeconds { get; set; } = 30;
-		public long CurrentBytesPerSecond { get { return (_objWebSocket == null) ? 0 : _objWebSocket.CurrentBytesPerSecond; } }
+        public WebSocketState ReadyState {
+            get {
+                if (_objWebSocket == null) {
+                    return WebSocketState.Closed;
+                }
+                return _objWebSocket.ReadyState;
+            }
+        }
 
-		public event EventHandler OnOpen;
-		public event EventHandler<ICloseEventArgs> OnClose;
-		public event EventHandler<IErrorEventArgs> OnError;
-		public event EventHandler<IMessageEventArgs> OnMessage;
+        public int ConnectionTimeoutSeconds { get; set; } = 30;
+        public long CurrentBytesPerSecond { get { return (_objWebSocket == null) ? 0 : _objWebSocket.CurrentBytesPerSecond; } }
 
-		public WebSocketClientWrapper() { }
+        public event EventHandler OnOpen;
 
-		public void Close() {
-			if (_objWebSocket != null) {
-				_objWebSocket.OnOpen -= _objWebSocket_OnOpen;
-				_objWebSocket.OnClose -= _objWebSocket_OnClose;
-				_objWebSocket.OnError -= _objWebSocket_OnError;
-				_objWebSocket.OnMessage -= _objWebSocket_OnMessage;
+        public event EventHandler<ICloseEventArgs> OnClose;
 
-				if (
-					_objWebSocket.ReadyState == WebSocketState.Open ||
-					_objWebSocket.ReadyState == WebSocketState.Connecting
-				) {
-					try {
-						_objWebSocket.Close();
-					} catch { }
-				}
-				_objWebSocket = null;
-			}
-		}
+        public event EventHandler<IErrorEventArgs> OnError;
 
-		/// <summary>
-		/// Connects to the websocket server in an asynchonious way 
-		/// </summary>
-		/// <param name="pUrl"></param>
-		public void ConnectAsync(ClientParams pParams) {
-            _objWebSocket = new WebSocket(String.Format(((pParams.Secure) ? "wss" : "ws") + "://{0}:{1}/", pParams.Hostname, pParams.Port)) { 
-				WaitTime = new TimeSpan(0, 0, ConnectionTimeoutSeconds),
-				EmitOnPing = true,
+        public event EventHandler<IMessageEventArgs> OnMessage;
+
+        public WebSocketClientWrapper() {
+        }
+
+        public void Close() {
+            if (_objWebSocket != null) {
+                _objWebSocket.OnOpen -= _objWebSocket_OnOpen;
+                _objWebSocket.OnClose -= _objWebSocket_OnClose;
+                _objWebSocket.OnError -= _objWebSocket_OnError;
+                _objWebSocket.OnMessage -= _objWebSocket_OnMessage;
+
+                if (
+                    _objWebSocket.ReadyState == WebSocketState.Open ||
+                    _objWebSocket.ReadyState == WebSocketState.Connecting
+                ) {
+                    try {
+                        _objWebSocket.Close();
+                    } catch { }
+                }
+                _objWebSocket = null;
+            }
+        }
+
+        /// <summary>
+        /// Connects to the websocket server in an asynchonious way
+        /// </summary>
+        /// <param name="pUrl"></param>
+        public void ConnectAsync(ClientParams pParams) {
+            _objWebSocket = new WebSocket(String.Format(((pParams.Secure) ? "wss" : "ws") + "://{0}:{1}/", pParams.Hostname, pParams.Port)) {
+                WaitTime = new TimeSpan(0, 0, ConnectionTimeoutSeconds),
+                EmitOnPing = true,
                 EnableRedirection = true,
                 MaxBytesPerSecond = pParams.MaxBytePerSecond
             };
