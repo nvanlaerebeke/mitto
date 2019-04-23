@@ -35,11 +35,17 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Logging">
-      <HintPath>..\Lib\Logging\bin\Logging.dll</HintPath>
+    <Reference Include="ILogging, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Logging\bin\Loggers\ILogging.dll</HintPath>
     </Reference>
-    <Reference Include="Logging.Log4Net">
-      <HintPath>..\Lib\Logging\bin\Logging.Log4Net.dll</HintPath>
+    <Reference Include="Logging, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Logging\bin\Loggers\Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Logging.Log4Net, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Logging\bin\Loggers\Logging.Log4Net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
