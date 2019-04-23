@@ -35,4 +35,4 @@ submodules:
 
 app: submodules
 	nuget restore $(ROOT)/src/$(PROJECT).sln
-	msbuild $(ROOT)/src/$(PROJECT).sln /p:Configuration=$(CONFIGURATION) /p:Platform="Any CPU"
+	msbuild $(ROOT)/src/$(PROJECT).sln /t:$(PROJECT) /p:Configuration="$(CONFIGURATION)" /p:Platform="Any CPU" /p:BuildProjectReferences=false
