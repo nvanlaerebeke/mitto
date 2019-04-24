@@ -1,6 +1,5 @@
-﻿using ILogging;
-using Logging;
-using Mitto.IRouting;
+﻿using Mitto.IRouting;
+using Mitto.Logging;
 using Mitto.Routing.Request;
 using Mitto.Routing.Response;
 using Mitto.Utilities;
@@ -10,7 +9,7 @@ using System.Threading.Tasks;
 namespace Mitto.Routing.RabbitMQ {
 
     public class RabbitMQRequest : IRequest {
-        private static ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public string ID { get { return Request.RequestID; } }
         public MessageStatus Status { get; private set; } = MessageStatus.UnKnown;

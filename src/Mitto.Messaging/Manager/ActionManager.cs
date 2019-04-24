@@ -1,7 +1,6 @@
-﻿using ILogging;
-using Logging;
-using Mitto.IMessaging;
+﻿using Mitto.IMessaging;
 using Mitto.IRouting;
+using Mitto.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Reflection;
@@ -11,7 +10,7 @@ namespace Mitto.Messaging {
     public class ActionManager : IActionManager {
 
         private ILog Log {
-            get { return LogFactory.GetLogger(MethodBase.GetCurrentMethod().DeclaringType); }
+            get { return LoggingFactory.GetLogger(MethodBase.GetCurrentMethod().DeclaringType); }
         }
 
         private ConcurrentDictionary<string, IAction> Actions = new ConcurrentDictionary<string, IAction>();

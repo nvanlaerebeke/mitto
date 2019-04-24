@@ -1,6 +1,5 @@
-﻿using ILogging;
-using Logging;
-using Mitto.IRouting;
+﻿using Mitto.IRouting;
+using Mitto.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
@@ -17,7 +16,7 @@ namespace Mitto.Routing.RabbitMQ {
 
         private ILog Log {
             get {
-                return LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+                return LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
             }
         }
 

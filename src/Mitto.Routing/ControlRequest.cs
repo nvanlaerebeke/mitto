@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ILogging;
-using Logging;
 using Mitto.IRouting;
+using Mitto.Logging;
 using Mitto.Routing.Request;
 using Mitto.Routing.Response;
 
@@ -15,7 +14,7 @@ using Mitto.Routing.Response;
 namespace Mitto.Routing {
 
     public class ControlRequest<T> : IRequest where T : ControlResponse {
-        private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public string ID { get { return Request.ID; } }
         public MessageStatus Status { get; private set; } = MessageStatus.UnKnown;

@@ -1,7 +1,5 @@
-﻿using ILogging;
-using Logging;
-using Mitto.IRouting;
-using Mitto.Utilities;
+﻿using Mitto.IRouting;
+using Mitto.Logging;
 using RabbitMQ.Client;
 using System;
 using System.Collections.Concurrent;
@@ -16,7 +14,7 @@ namespace Mitto.Routing.RabbitMQ {
 
         public event EventHandler<SenderQueue> Disconnected;
 
-        private ILog Log => LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private ILog Log => LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private BlockingCollection<RoutingFrame> _lstTransmitQueue = new BlockingCollection<RoutingFrame>();
 

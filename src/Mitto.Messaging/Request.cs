@@ -1,6 +1,5 @@
-﻿using ILogging;
-using Logging;
-using Mitto.IMessaging;
+﻿using Mitto.IMessaging;
+using Mitto.Logging;
 using Mitto.Utilities;
 using System;
 using System.Threading.Tasks;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 namespace Mitto.Messaging {
 
     public class Request<T> : IRequest where T : IResponseMessage {
-        private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly Delegate _objAction;
         private readonly IClient _objClient;

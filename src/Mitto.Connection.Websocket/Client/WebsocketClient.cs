@@ -1,6 +1,5 @@
-﻿using ILogging;
-using Logging;
-using Mitto.IConnection;
+﻿using Mitto.IConnection;
+using Mitto.Logging;
 using Mitto.Utilities;
 using System;
 using System.Runtime.CompilerServices;
@@ -15,7 +14,7 @@ using WebSocketSharp;
 namespace Mitto.Connection.Websocket.Client {
 
     public class WebsocketClient : IClient {
-        private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public string ID { get; private set; } = Guid.NewGuid().ToString();
 

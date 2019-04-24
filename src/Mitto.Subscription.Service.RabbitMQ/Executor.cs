@@ -1,7 +1,6 @@
-﻿using ILogging;
-using Logging;
-using Mitto.IMessaging;
+﻿using Mitto.IMessaging;
 using Mitto.IRouting;
+using Mitto.Logging;
 using Mitto.Messaging;
 using Mitto.Messaging.Response;
 using Mitto.Subscription.Messaging;
@@ -13,7 +12,7 @@ namespace Mitto.Subscription.Service.RabbitMQ {
     /// ToDo: Rethink the design of this - this class does what ActionManager does with a Request
     /// </summary>
     internal class Executor {
-        private ILog Log { get { return LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType); } }
+        private ILog Log { get { return LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType); } }
         private readonly PublisherRouter Router;
 
         public Executor(PublisherRouter pRouter) {

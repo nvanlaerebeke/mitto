@@ -1,6 +1,4 @@
-﻿using ILogging;
-using Logging;
-using Logging.Log4Net;
+﻿using Mitto.Logging;
 using Mitto.Connection.Websocket;
 using Mitto.IConnection;
 using Mitto.IMessaging;
@@ -32,7 +30,7 @@ namespace Mitto {
         /// </summary>
         /// <param name="pConfig"></param>
         public static void Initialize(ConfigParams pConfig) {
-            LogFactory.Initialize(pConfig.LogProvider);
+            LoggingFactory.Initialize(pConfig.Logger);
             SubscriptionFactory.Initialize();
             RouterFactory.Initialize(pConfig.RouterProvider);
             ConnectionFactory.Initialize(pConfig.ConnectionProvider);
@@ -49,7 +47,7 @@ namespace Mitto {
         /// - Standard way of processing messages
         /// </summary>
         public class ConfigParams {
-            public ILogProvider LogProvider { get; set; } = new LogProvider();
+            public ILog Logger { get; set; } = new ConsoleLog();
             public IRouterProvider RouterProvider { get; set; } = new RouterProvider();
             public IConnectionProvider ConnectionProvider { get; set; } = new WebSocketConnectionProvider();
             public IMessageConverter MessageConverter { get; set; } = new MessageConverter();

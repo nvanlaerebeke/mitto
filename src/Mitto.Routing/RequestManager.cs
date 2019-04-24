@@ -1,8 +1,6 @@
 ﻿using Mitto.IRouting;
 using System.Collections.Concurrent;
-using ILogging;
-using Logging;
-using System;
+using Mitto.Logging;
 
 namespace Mitto.Routing {
 
@@ -10,7 +8,7 @@ namespace Mitto.Routing {
 
         private ILog Log {
             get {
-                return LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+                return LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
             }
         }
 

@@ -30,9 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Logging">
-      <HintPath>..\Lib\Logging\bin\Logging.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
   </ItemGroup>
@@ -68,6 +65,10 @@
     <ProjectReference Include="..\Mitto.IConnection\Mitto.IConnection.csproj">
       <Project>{aaf65eba-e48d-491a-ad2e-525bde11ec6f}</Project>
       <Name>Mitto.IConnection</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Logging\Mitto.Logging.csproj">
+      <Project>{b54de51c-a462-43a7-90c2-6a39e1865300}</Project>
+      <Name>Mitto.Logging</Name>
     </ProjectReference>
     <ProjectReference Include="..\Mitto.Utilities\Mitto.Utilities.csproj">
       <Project>{d184bf09-fd6d-4f36-bc6e-bf05e763e3ac}</Project>

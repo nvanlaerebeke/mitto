@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ILogging;
-using Logging;
 using Mitto.IMessaging;
+using Mitto.Logging;
 
 namespace Mitto.Routing.RabbitMQ.Consumer {
 
@@ -10,7 +9,7 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
     /// ToDo: KeepAlive
     /// </summary>
     internal class ConsumerRequest : IMessaging.IRequest {
-        private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public string ID => Request.RequestID;
 

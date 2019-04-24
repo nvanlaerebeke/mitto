@@ -2,9 +2,8 @@
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using ILogging;
-using Logging;
 using Mitto.IConnection;
+using Mitto.Logging;
 using Mitto.Utilities;
 
 [assembly: InternalsVisibleTo("Mitto.Connection.Websocket.Tests")]
@@ -12,7 +11,7 @@ using Mitto.Utilities;
 namespace Mitto.Connection.Websocket.Server {
 
     internal class Client : IClientConnection {
-        private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IWebSocketBehavior _objClient;
         private IKeepAliveMonitor _objKeepAliveMonitor;
 

@@ -2,14 +2,13 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Mitto.IMessaging;
-using ILogging;
-using Logging;
 using Mitto.IRouting;
 using Mitto.Messaging.Response;
 using Mitto.Subscription.Messaging.Request;
 using Mitto.Subscription.Messaging.UnSubscribe;
 using Mitto.Subscription.Messaging.Subscribe;
 using System.Linq;
+using Mitto.Logging;
 
 namespace Mitto.Subscription.Messaging.Handlers {
 
@@ -22,7 +21,7 @@ namespace Mitto.Subscription.Messaging.Handlers {
 
         private ILog Log {
             get {
-                return LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+                return LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
             }
         }
 

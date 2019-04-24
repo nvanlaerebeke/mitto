@@ -1,7 +1,6 @@
-﻿using ILogging;
-using Logging;
-using Mitto.IMessaging;
+﻿using Mitto.IMessaging;
 using Mitto.IRouting;
+using Mitto.Logging;
 using Mitto.Messaging;
 using Mitto.Messaging.Response;
 using Mitto.Subscription.Messaging;
@@ -14,7 +13,7 @@ namespace Mitto.Subscription.Service.RabbitMQ {
     public class SubscriptionActionManager : IActionManager {
 
         private ILog Log {
-            get { return LogFactory.GetLogger(MethodBase.GetCurrentMethod().DeclaringType); }
+            get { return LoggingFactory.GetLogger(MethodBase.GetCurrentMethod().DeclaringType); }
         }
 
         private ConcurrentDictionary<string, IRequestMessage> Actions = new ConcurrentDictionary<string, IRequestMessage>();

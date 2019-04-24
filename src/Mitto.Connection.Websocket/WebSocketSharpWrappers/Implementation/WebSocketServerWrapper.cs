@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
-using ILogging;
-using Logging;
 using Mitto.Connection.Websocket.Server;
+using Mitto.Logging;
 using WebSocketSharp.Server;
 
 namespace Mitto.Connection.Websocket {
 
     internal class WebSocketServerWrapper : IWebSocketServer {
-        private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private WebSocketServer _objWebSocket;
 
         public int ConnectionTimeoutSeconds { get; set; } = 30;

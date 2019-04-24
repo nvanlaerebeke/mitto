@@ -1,7 +1,6 @@
-﻿using ILogging;
-using Logging;
-using Mitto.IMessaging;
+﻿using Mitto.IMessaging;
 using Mitto.IRouting;
+using Mitto.Logging;
 using Mitto.Messaging.Response;
 using System;
 using System.Collections.Generic;
@@ -18,7 +17,7 @@ namespace Mitto.Messaging {
     public class MessageProvider : IMessageProvider {
 
         private ILog Log {
-            get { return LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType); }
+            get { return LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType); }
         }
 
         /// <summary>

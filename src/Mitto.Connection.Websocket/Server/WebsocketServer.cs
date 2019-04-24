@@ -1,6 +1,5 @@
-﻿using ILogging;
-using Logging;
-using Mitto.IConnection;
+﻿using Mitto.IConnection;
+using Mitto.Logging;
 using Mitto.Utilities;
 using System;
 using System.Security.Cryptography.X509Certificates;
@@ -8,7 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 namespace Mitto.Connection.Websocket.Server {
 
     public class WebsocketServer : IServer {
-        private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private IWebSocketServer _objServer;
         private Action<IClientConnection> _objClientConnected;
         private ServerParams _objParams;
@@ -24,8 +23,8 @@ namespace Mitto.Connection.Websocket.Server {
 
         public void Start(IServerParams pParams, Action<IClientConnection> pClientConnectedAction) {
             if (!(pParams is ServerParams objParams)) {
-                Log.Error("Incorrect parameters for Websocket server");
-                throw new Exception("Incorrect parameters for Websocket server");
+                Log.Error("Incorrect parameters for WebSocket server");
+                throw new Exception("Incorrect parameters for WebSocket server");
             }
             _objParams = objParams;
             _objServer.ConnectionTimeoutSeconds = _objParams.ConnectionTimeoutSeconds;

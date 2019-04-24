@@ -1,6 +1,5 @@
-﻿using ILogging;
-using Logging;
-using Mitto.IRouting;
+﻿using Mitto.IRouting;
+using Mitto.Logging;
 using Mitto.Routing.Response;
 using System;
 using System.Collections.Concurrent;
@@ -8,7 +7,7 @@ using System.Collections.Concurrent;
 namespace Mitto.Routing.Action {
 
     internal class ActionManager {
-        private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private ConcurrentDictionary<string, IControlAction> Actions = new ConcurrentDictionary<string, IControlAction>();
 

@@ -32,9 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Logging">
-      <HintPath>..\Lib\Logging\bin\Logging.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
@@ -79,6 +76,10 @@
     <ProjectReference Include="..\Mitto.IRouting\Mitto.IRouting.csproj">
       <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
       <Name>Mitto.IRouting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Logging\Mitto.Logging.csproj">
+      <Project>{b54de51c-a462-43a7-90c2-6a39e1865300}</Project>
+      <Name>Mitto.Logging</Name>
     </ProjectReference>
     <ProjectReference Include="..\Mitto.Utilities\Mitto.Utilities.csproj">
       <Project>{d184bf09-fd6d-4f36-bc6e-bf05e763e3ac}</Project>

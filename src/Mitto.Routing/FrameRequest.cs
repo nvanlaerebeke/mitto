@@ -1,6 +1,5 @@
-﻿using ILogging;
-using Logging;
-using Mitto.IRouting;
+﻿using Mitto.IRouting;
+using Mitto.Logging;
 using Mitto.Utilities;
 using System;
 
@@ -10,7 +9,7 @@ namespace Mitto.Routing {
     /// ToDo: Add KeepAlives that raise the RequestTimedOut
     /// </summary>
     public class FrameRequest : IRequest {
-        private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly IRouter Origin;
         private readonly RoutingFrame Frame;

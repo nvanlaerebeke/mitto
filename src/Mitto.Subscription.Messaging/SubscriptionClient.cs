@@ -1,7 +1,6 @@
-﻿using ILogging;
-using Logging;
-using Mitto.IMessaging;
+﻿using Mitto.IMessaging;
 using Mitto.IRouting;
+using Mitto.Logging;
 using Mitto.Messaging;
 using Mitto.Messaging.Response;
 using System.Threading;
@@ -10,7 +9,7 @@ using System.Threading.Tasks;
 namespace Mitto.Subscription.Messaging {
 
     public class SubscriptionClient<T> : ISubscriptionClient {
-        private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly IRouter Router;
         private readonly IClient Client;

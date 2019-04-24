@@ -35,9 +35,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Logging">
-      <HintPath>..\Lib\Logging\bin\Logging.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
@@ -63,6 +60,10 @@
     <ProjectReference Include="..\Mitto.IRouting\Mitto.IRouting.csproj">
       <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
       <Name>Mitto.IRouting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mitto.Logging\Mitto.Logging.csproj">
+      <Project>{b54de51c-a462-43a7-90c2-6a39e1865300}</Project>
+      <Name>Mitto.Logging</Name>
     </ProjectReference>
     <ProjectReference Include="..\Mitto.Routing.RabbitMQ\Mitto.Routing.RabbitMQ.csproj">
       <Project>{3cb0e6c9-133e-49d7-a393-4fcc9ddeb72b}</Project>

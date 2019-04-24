@@ -1,14 +1,13 @@
-﻿using ILogging;
-using Logging;
-using Mitto.IMessaging;
+﻿using Mitto.IMessaging;
 using Mitto.IRouting;
+using Mitto.Logging;
 using Mitto.Subscription.Messaging;
 using System;
 
 namespace Mitto.Routing.PassThrough {
 
     internal class PassThroughSubscriptionRouter<T> : IRouter {
-        private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly IRouter Router;
         public string SourceID { get { return Router.ConnectionID; } }
         public string DestinationID { get { return Router.ConnectionID; } }

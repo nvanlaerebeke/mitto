@@ -1,6 +1,5 @@
-﻿using ILogging;
-using Logging;
-using Mitto.IRouting;
+﻿using Mitto.IRouting;
+using Mitto.Logging;
 using Mitto.Routing.Action;
 using Mitto.Routing.Request;
 using Mitto.Routing.Response;
@@ -17,7 +16,7 @@ namespace Mitto.Routing {
     /// ToDo: put all the types into one dictionary
     /// </summary>
     public class ControlProvider {
-        private readonly ILog Log = LogFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         internal List<ActionInfo> Actions = new List<ActionInfo>();
         internal Dictionary<string, Type> Requests = new Dictionary<string, Type>();
