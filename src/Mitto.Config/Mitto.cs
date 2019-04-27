@@ -37,23 +37,12 @@ namespace Mitto {
         /// <param name="pConfig"></param>
         public static void Initialize(ConfigParams pConfig) {
             LoggingFactory.Initialize(pConfig.Logger);
-
-
-            foreach (var strAss in pConfig.Assemblies) {
-                try {
-                    Assembly.Load(strAss);
-                } catch {
-                    Log.Error($"Unable to load {strAss}");
-                }
-            }
-
-
             SubscriptionFactory.Initialize();
             RouterFactory.Initialize(pConfig.RouterProvider);
             ConnectionFactory.Initialize(pConfig.ConnectionProvider);
             MessagingFactory.Initialize(pConfig.MessageProvider, pConfig.MessageConverter, pConfig.MessageProcessor);
 
-            MessagingFactory.Provider.Load();
+            MessagingFactory.Provider.Load(pConfig.Assemblies);
         }
 
         /// <summary>

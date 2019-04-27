@@ -52,7 +52,8 @@ namespace Mitto.Messaging {
         /// </summary>
         public MessageProvider() { }
 
-        public void Load() {
+        public void Load() { Load(new List<string>()); }
+        public void Load(IEnumerable<string> pAssemblies) {
             List<Type> lstSupportedTypes = new List<Type>() {
                 typeof(INotificationMessage),
                 typeof(IRequestMessage),
@@ -62,8 +63,15 @@ namespace Mitto.Messaging {
             };
 
             Log.Info("Loading all referenced assemblies");
-
             var arrAssemblies = new List<Assembly>();
+            foreach (var strAss in pAssemblies) {
+                try {
+                    arrAssemblies.Add(Assembly.Load(strAss));
+                } catch {
+                    Log.Error($"Unable to load {strAss}");
+                }
+            }
+
             GetAssemblies(ref arrAssemblies, Assembly.GetEntryAssembly());
             arrAssemblies.OrderBy(a => a.FullName.Contains("Mitto.Messaging") ? 1 : a.FullName.Contains("Mitto.") ? 2 : 3).ToList();
 
