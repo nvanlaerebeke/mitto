@@ -5,6 +5,7 @@ using Mitto.Messaging.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Mitto.Messaging.Tests")]
@@ -41,7 +42,7 @@ namespace Mitto.Messaging {
         internal List<SubscriptionInfo> SubscriptionHandlers { get; } = new List<SubscriptionInfo>();
 
         /// <summary>
-        /// Loads the types present in the loaded assemblies
+        /// Loads the types present in any of the referenced assemblies
         /// The build-in types will be automatically added first
         ///
         /// It is possible to overwrite the build-in message types and actions by your
@@ -49,12 +50,9 @@ namespace Mitto.Messaging {
         ///
         /// Note that when implementing the same message multiple times the last one will win
         /// </summary>
-        /// <param name="pNamespace"></param>
-        public MessageProvider() {
-            Load();
-        }
+        public MessageProvider() { }
 
-        private void Load() {
+        public void Load() {
             List<Type> lstSupportedTypes = new List<Type>() {
                 typeof(INotificationMessage),
                 typeof(IRequestMessage),
@@ -63,11 +61,17 @@ namespace Mitto.Messaging {
                 typeof(ISubscriptionHandler)
             };
 
-            var arrAssemblies = AppDomain.CurrentDomain.GetAssemblies()
-                .OrderBy(a => a.FullName.Contains("Mitto.Messaging") ? 1 : a.FullName.Contains("Mitto.") ? 2 : 3).ToList();
+            Log.Info("Loading all referenced assemblies");
+
+            var arrAssemblies = new List<Assembly>();
+            GetAssemblies(ref arrAssemblies, Assembly.GetEntryAssembly());
+            arrAssemblies.OrderBy(a => a.FullName.Contains("Mitto.Messaging") ? 1 : a.FullName.Contains("Mitto.") ? 2 : 3).ToList();
+
+            Log.Info($"Found {arrAssemblies.Count} Assemblies");
 
             foreach (var ass in arrAssemblies) {
                 try {
+                    Log.Info($"Loading types from {ass.FullName}");
                     var types = (
                         from t in ass.GetTypes()
                         where
@@ -94,6 +98,7 @@ namespace Mitto.Messaging {
                                     var objActionType = new ActionInfo(objRequestType, objResponseType, t);
                                     Actions.RemoveAll(a => a.ActionType.Name.Equals(objActionType.ActionType.Name));
                                     Actions.Add(objActionType);
+                                    Log.Info($"Found action {objActionType.ActionType.Name} with request {objActionType.RequestType.Name} and response {objActionType.ResponseType.Name}");
                                 }
                             }
                         } else if (
@@ -102,11 +107,13 @@ namespace Mitto.Messaging {
                         ) {
                             Requests.Remove(t.Name);
                             Requests.Add(t.Name, t);
+                            Log.Info($"Found Notification of type {t.Name}");
                         } else if (lstInterfaces.Contains(typeof(IResponseMessage))) {
                             Responses.Remove(t.Name);
                             Responses.Add(t.Name, t);
+                            Log.Info($"Found Response of type {t.Name}");
                         } else if (lstInterfaces.Contains(typeof(ISubscriptionHandler))) {
-                            var tmpType = t.GetInterfaces().Where(i => i.IsInterface && i.FullName.Contains("ISubscriptionHandler") && i.IsAbstract).FirstOrDefault();
+                            var tmpType = t.GetInterfaces().Where(i => i.IsInterface && i.FullName.Contains("ISubscriptionHandler") && i.IsGenericType).FirstOrDefault();
                             if (tmpType != null) {
                                 Type objSubType = (tmpType.GenericTypeArguments.Length > 0) ? tmpType.GenericTypeArguments[0] : null;
                                 Type objUnSubType = (tmpType.GenericTypeArguments.Length > 1) ? tmpType.GenericTypeArguments[1] : null;
@@ -116,15 +123,28 @@ namespace Mitto.Messaging {
                                     var objSubscriptionInfo = new SubscriptionInfo(objSubType, objUnSubType, objNotifyType, objHandler);
                                     SubscriptionHandlers.RemoveAll(s => s.HandlerType.Equals(t.Name));
                                     SubscriptionHandlers.Add(objSubscriptionInfo);
+                                    Log.Info($"Found subscription handler {objSubscriptionInfo.HandlerType.Name}");
                                 }
                             }
                         }
                     });
                 } catch (Exception ex) {
-                    Console.WriteLine("Unable to load types");
-                    Console.WriteLine(ex.Message);
+                    Log.Error("Unable to load types");
+                    Log.Error(ex.Message);
                 }
             }
+        }
+
+        private void GetAssemblies(ref List<Assembly> pLoaded, Assembly pRoot) {
+            var arrReferenced = pRoot.GetReferencedAssemblies();
+            foreach(var objName in arrReferenced) {
+                var ass = Assembly.Load(objName);
+                if(!pLoaded.Contains(ass)) {
+                    pLoaded.Add(ass);
+                    GetAssemblies(ref pLoaded, ass);
+                }
+            }
+
         }
 
         /// <summary>

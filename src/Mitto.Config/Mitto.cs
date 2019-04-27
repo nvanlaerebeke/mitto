@@ -35,6 +35,8 @@ namespace Mitto {
             RouterFactory.Initialize(pConfig.RouterProvider);
             ConnectionFactory.Initialize(pConfig.ConnectionProvider);
             MessagingFactory.Initialize(pConfig.MessageProvider, pConfig.MessageConverter, pConfig.MessageProcessor);
+
+            MessagingFactory.Provider.Load();
         }
 
         /// <summary>

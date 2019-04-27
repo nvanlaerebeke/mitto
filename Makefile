@@ -12,7 +12,7 @@ rpm: clean tar rpmbuild
 build: clean app
 
 clean:
-	echo $(ROOT)
+	rm -rf $(ROOT)/bin
 	rm -rf $(ROOT)/build
 	rm -rf $(ROOT)/*/bin/
 	rm -rf $(ROOT)/*/obj/

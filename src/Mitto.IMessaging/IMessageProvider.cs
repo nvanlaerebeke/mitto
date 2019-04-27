@@ -11,6 +11,8 @@ namespace Mitto.IMessaging {
     /// </summary>
     public interface IMessageProvider {
 
+        void Load();
+
         IMessage GetMessage(byte[] pData);
 
         IResponseMessage GetResponseMessage(IRequestMessage pMessage, ResponseStatus pStatus);

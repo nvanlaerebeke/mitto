@@ -19,13 +19,14 @@ namespace Mitto {
 		public ClientConnection(IClientConnection pConnection) {
 			Connection = pConnection;
 			Router = RouterFactory.Create(pConnection);
-			Connection.Disconnected += Connection_Disconnected;
+            Connection.Disconnected += Connection_Disconnected;
+
 		}
 
 		private void Connection_Disconnected(object sender, IConnection.IConnection e) {
-			Connection.Disconnected -= Connection_Disconnected;
+            Connection.Disconnected -= Connection_Disconnected;
 			Router.Close();
 			Disconnected?.Invoke(this, this);
-		}
-	}
+        }
+    }
 }
