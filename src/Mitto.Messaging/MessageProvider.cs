@@ -107,7 +107,7 @@ namespace Mitto.Messaging {
                         ) {
                             Requests.Remove(t.Name);
                             Requests.Add(t.Name, t);
-                            Log.Info($"Found Notification of type {t.Name}");
+                            Log.Info($"Found Request of type {t.Name}");
                         } else if (lstInterfaces.Contains(typeof(IResponseMessage))) {
                             Responses.Remove(t.Name);
                             Responses.Add(t.Name, t);

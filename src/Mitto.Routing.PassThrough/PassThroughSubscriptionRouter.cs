@@ -49,6 +49,13 @@ namespace Mitto.Routing.PassThrough {
                 Log.Error($"Unsupport message type for subscription router of type {typeof(T)}");
             }
 
+            var objResponse = MessagingFactory.Provider.GetResponseMessage(
+                objMessage as IRequestMessage,
+                new ResponseStatus(
+                    (blnResult) ? ResponseState.Success : ResponseState.Error
+                )
+            );
+
             Receive(
                 new RoutingFrame(
                     RoutingFrameType.Messaging, 
@@ -56,15 +63,25 @@ namespace Mitto.Routing.PassThrough {
                     objMessage.ID,
                     this.ConnectionID,
                     this.ConnectionID,
-                    MessagingFactory.Converter.GetByteArray(MessagingFactory.Provider.GetResponseMessage(
-                            objMessage as IRequestMessage, 
-                            new ResponseStatus(
-                                (blnResult) ? ResponseState.Success : ResponseState.Error
-                            )
-                        )
-                    )
+                    new Frame(
+                        MessageType.Response,
+                        objMessage.ID,
+                        objResponse.Name,
+                        MessagingFactory.Converter.GetByteArray(objResponse)
+                    ).GetByteArray()
                 ).GetBytes()
             );
+
+            /*Receive(
+                MessagingFactory.Converter.GetByteArray(
+                    MessagingFactory.Provider.GetResponseMessage(
+                        objMessage as IRequestMessage,
+                        new ResponseStatus(
+                            (blnResult) ? ResponseState.Success : ResponseState.Error
+                        )
+                    )
+                )
+            );*/
 
             if(!Requests.TryRemove(objRoutingFrame.RequestID, out _)) {
                 Log.Error($"Unable to remove {objMessage.Name}({objMessage.ID}) from tracking list, leaking memory");
