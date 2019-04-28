@@ -43,14 +43,6 @@
     <Compile Include="MessageFormat.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.1</Version>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json.Bson">
-      <Version>1.0.2</Version>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Mitto.IMessaging\Mitto.IMessaging.csproj">
       <Project>{3bb1c211-9006-4fee-9f40-7556717431b0}</Project>
       <Name>Mitto.IMessaging</Name>
@@ -64,6 +56,13 @@
       <Name>Mitto.Logging</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json.Bson">
+      <Version>1.0.2</Version>
+    </PackageReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
