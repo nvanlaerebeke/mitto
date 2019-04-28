@@ -19,6 +19,7 @@ namespace Mitto {
     ///       the types from the known assemblies
     /// </summary>
     public static class Config {
+
         private static ILog Log {
             get { return LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType); }
         }

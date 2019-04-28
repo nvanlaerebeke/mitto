@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 ﻿using System.Collections.Generic;
+=======
+﻿using System;
+using System.Collections.Generic;
+>>>>>>> 6252b712a9ebbbe3e87e6b4b01b399792be3b1af
 using System.Reflection;
 using Mitto.IRouting;
 
@@ -13,12 +18,13 @@ namespace Mitto.IMessaging {
     /// </summary>
     public interface IMessageProvider {
 
-        void Load();
         void Load(IEnumerable<AssemblyName> pAssemblies);
 
         IMessage GetMessage(byte[] pData);
 
         IResponseMessage GetResponseMessage(IRequestMessage pMessage, ResponseStatus pStatus);
+
+        IResponseMessage GetResponseMessage(Type pType, IRequestMessage pMessage, ResponseStatus pStatus);
 
         IAction GetAction(IClient pClient, IRequestMessage pMessage);
 

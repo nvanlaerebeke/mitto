@@ -18,12 +18,7 @@ namespace Mitto.Subscription.Messaging.Handlers {
             ChannelUnSubscribe,
             SendToChannelRequest
         > {
-
-        private ILog Log {
-            get {
-                return LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-            }
-        }
+        private readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private ConcurrentDictionary<string, List<IRouter>> _dicSubscriptions = new ConcurrentDictionary<string, List<IRouter>>();
 

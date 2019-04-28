@@ -34,7 +34,16 @@ namespace Mitto.Messaging {
 
         private void _objKeepAliveMonitor_UnResponsive(object sender, EventArgs e) {
             _objKeepAliveMonitor.Stop();
+
+            SetResponse(
+                MessagingFactory.Provider.GetResponseMessage(
+                    typeof(T),
+                    Message,
+                    new ResponseStatus(ResponseState.TimeOut)
+                )
+            );
             RequestTimedOut?.Invoke(sender, this);
+
             Log.Info($"Request {Message.Name}({Message.ID}) unresponsive on {_objClient.ID}, cleaning up...");
         }
 
