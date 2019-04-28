@@ -4,6 +4,7 @@ using Mitto.IRouting;
 using System.Runtime.CompilerServices;
 using Mitto.Routing.Response;
 using System.Threading;
+using System;
 
 [assembly: InternalsVisibleToAttribute("Mitto.Routing.PassThrough.Tests")]
 namespace Mitto.Routing.PassThrough {
@@ -25,13 +26,16 @@ namespace Mitto.Routing.PassThrough {
 		public string ConnectionID { get { return Connection.ID; } }
 		private IClientConnection Connection;
 
-		/// <summary>
-		/// Constructs the PassThrough router for the provided connection
-		/// </summary>
-		/// <param name="pConnection"></param>
-		public PassThroughRouter(IClientConnection pConnection) {
+        public event EventHandler<IRouter> Disconnected;
+
+        /// <summary>
+        /// Constructs the PassThrough router for the provided connection
+        /// </summary>
+        /// <param name="pConnection"></param>
+        public PassThroughRouter(IClientConnection pConnection) {
 			Connection = pConnection;
 			Connection.Rx += Connection_Rx;
+            Connection.Disconnected += Connection_Disconnected;
 		}
 
 		/// <summary>
@@ -80,6 +84,12 @@ namespace Mitto.Routing.PassThrough {
 			objWait.WaitOne(15000);
 
 			return blnIsAlive;
-		}
-	}
+        }
+
+        void Connection_Disconnected(object sender, IConnection.IConnection e) {
+            Connection.Disconnected -= Connection_Disconnected;
+            Disconnected?.Invoke(sender, this);
+        }
+
+    }
 }

@@ -61,7 +61,7 @@ namespace Mitto {
             public IMessageConverter MessageConverter { get; set; } = new MessageConverter();
             public IMessageProvider MessageProvider { get; set; } = new MessageProvider();
             public IMessageProcessor MessageProcessor { get; set; } = new MessageProcessor();
-            public IEnumerable<string> Assemblies { get; set; } = new List<string>();
+            public IEnumerable<AssemblyName> Assemblies { get; set; } = new List<AssemblyName>();
         }
     }
 }

@@ -14,5 +14,6 @@ namespace Mitto.IMessaging {
         bool UnSub(IRouter pClient, U pMessage);
 
         bool Notify(IRouter pSender, N pNotifyMessage);
+        bool NotifyAll(N pNotifyMessage);
     }
 }

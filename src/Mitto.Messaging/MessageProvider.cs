@@ -52,8 +52,8 @@ namespace Mitto.Messaging {
         /// </summary>
         public MessageProvider() { }
 
-        public void Load() { Load(new List<string>()); }
-        public void Load(IEnumerable<string> pAssemblies) {
+        public void Load() { Load(new List<AssemblyName>()); }
+        public void Load(IEnumerable<AssemblyName> pAssemblies) {
             List<Type> lstSupportedTypes = new List<Type>() {
                 typeof(INotificationMessage),
                 typeof(IRequestMessage),

@@ -11,6 +11,9 @@ namespace Mitto.Routing.PassThrough {
         private ConcurrentDictionary<string, IMessage> Requests = new ConcurrentDictionary<string, IMessage>();
         private readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly IRouter Router;
+
+        public event EventHandler<IRouter> Disconnected;
+
         public string SourceID { get { return Router.ConnectionID; } }
         public string DestinationID { get { return Router.ConnectionID; } }
 
@@ -18,6 +21,7 @@ namespace Mitto.Routing.PassThrough {
 
         public PassThroughSubscriptionRouter(IRouter pRouter) {
             Router = pRouter;
+            Router.Disconnected += Router_Disconnected;
         }
 
         public void Transmit(byte[] pData) {
@@ -45,7 +49,7 @@ namespace Mitto.Routing.PassThrough {
                 blnResult = (bool)objHandler.GetType().GetMethod("UnSub").Invoke(objHandler, new object[] { Router, objMessage });
             } else if (objMessage is IRequestMessage) {
                 blnResult = (bool)objHandler.GetType().GetMethod("Notify").Invoke(objHandler, new object[] { Router, objMessage });
-            } else {
+            } else { 
                 Log.Error($"Unsupport message type for subscription router of type {typeof(T)}");
             }
 
@@ -56,7 +60,7 @@ namespace Mitto.Routing.PassThrough {
                 )
             );
 
-            Receive(
+            Router.Receive(
                 new RoutingFrame(
                     RoutingFrameType.Messaging, 
                     MessageType.Response,
@@ -71,17 +75,6 @@ namespace Mitto.Routing.PassThrough {
                     ).GetByteArray()
                 ).GetBytes()
             );
-
-            /*Receive(
-                MessagingFactory.Converter.GetByteArray(
-                    MessagingFactory.Provider.GetResponseMessage(
-                        objMessage as IRequestMessage,
-                        new ResponseStatus(
-                            (blnResult) ? ResponseState.Success : ResponseState.Error
-                        )
-                    )
-                )
-            );*/
 
             if(!Requests.TryRemove(objRoutingFrame.RequestID, out _)) {
                 Log.Error($"Unable to remove {objMessage.Name}({objMessage.ID}) from tracking list, leaking memory");
@@ -98,6 +91,12 @@ namespace Mitto.Routing.PassThrough {
 
         public bool IsAlive(string pRequestID) {
             return (Requests.ContainsKey(pRequestID));
+        }
+
+
+        void Router_Disconnected(object sender, IRouter e) {
+            Router.Disconnected -= Router_Disconnected;
+            Disconnected?.Invoke(sender, this);
         }
     }
 }

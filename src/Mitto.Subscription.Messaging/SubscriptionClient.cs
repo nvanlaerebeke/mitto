@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Mitto.Subscription.Messaging {
 
-    public class SubscriptionClient<T> : ISubscriptionClient {
+    public class SubscriptionClient<T> : ISubscriptionClient where T: ISubscriptionHandler {
         private readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly IRouter Router;
@@ -32,18 +32,23 @@ namespace Mitto.Subscription.Messaging {
         }
 
         private bool Forward(IRequestMessage pMessage) {
-            ManualResetEvent objBlock = new ManualResetEvent(false);
-            var blnResult = false;
-
-            Task.Run(() => {
-                MessagingFactory.Processor.Request<ACKResponse>(Router, pMessage, (r) => {
-                    blnResult = (r.Status.State == ResponseState.Success);
-                    objBlock.Set();
-                });
-            });
-
-            objBlock.WaitOne(30000);
-            return blnResult;
+            var objRouter = RouterFactory.Provider.GetSubscriptionRouter<T>(Router);
+            objRouter.Transmit(
+                new RoutingFrame(
+                    RoutingFrameType.Messaging,
+                    pMessage.Type,
+                    pMessage.ID,
+                    Router.ConnectionID,
+                    Client.ID,
+                    new Frame(
+                        pMessage.Type,
+                        pMessage.ID,
+                        pMessage.Name,
+                        MessagingFactory.Converter.GetByteArray(pMessage)
+                    ).GetByteArray()
+                ).GetBytes()
+            );
+            return true;
         }
     }
 }

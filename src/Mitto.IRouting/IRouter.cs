@@ -19,6 +19,7 @@ namespace Mitto.IRouting {
 	/// 
 	/// </summary>
 	public interface IRouter {
+        event EventHandler<IRouter> Disconnected;
 		string ConnectionID { get; }
 		void Transmit(byte[] pData);
 		void Receive(byte[] pData);

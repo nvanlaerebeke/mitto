@@ -27,7 +27,7 @@ namespace Mitto.Subscription.Messaging.Handlers {
 
         private ConcurrentDictionary<string, List<IRouter>> _dicSubscriptions = new ConcurrentDictionary<string, List<IRouter>>();
 
-        public bool Notify(SendToChannelRequest pNotifyMessage) {
+        public bool NotifyAll(SendToChannelRequest pNotifyMessage) {
             return Notify(null, pNotifyMessage);
         }
 
