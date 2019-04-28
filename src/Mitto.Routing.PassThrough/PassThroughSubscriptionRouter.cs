@@ -2,6 +2,7 @@
 using Mitto.IRouting;
 using Mitto.Logging;
 using Mitto.Subscription.Messaging;
+using System;
 using System.Collections.Concurrent;
 
 namespace Mitto.Routing.PassThrough {
@@ -13,8 +14,8 @@ namespace Mitto.Routing.PassThrough {
 
         public event EventHandler<IRouter> Disconnected;
 
-        public string SourceID { get { return Router.ConnectionID; } }
-        public string DestinationID { get { return Router.ConnectionID; } }
+        public string SourceID => Router.ConnectionID;
+        public string DestinationID => Router.ConnectionID;
 
         public string ConnectionID => Router.ConnectionID;
 
@@ -52,7 +53,7 @@ namespace Mitto.Routing.PassThrough {
                 Log.Error($"Unsupported message type for subscription router of type {typeof(T)}");
             }
 
-            var objResponse = MessagingFactory.Provider.GetResponseMessage(
+            IResponseMessage objResponse = MessagingFactory.Provider.GetResponseMessage(
                 objMessage as IRequestMessage,
                 new ResponseStatus(
                     (blnResult) ? ResponseState.Success : ResponseState.Error
@@ -92,8 +93,7 @@ namespace Mitto.Routing.PassThrough {
             return (Requests.ContainsKey(pRequestID));
         }
 
-
-        void Router_Disconnected(object sender, IRouter e) {
+        private void Router_Disconnected(object sender, IRouter e) {
             Router.Disconnected -= Router_Disconnected;
             Disconnected?.Invoke(sender, this);
         }

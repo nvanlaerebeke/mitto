@@ -1,11 +1,6 @@
-<<<<<<< HEAD
-﻿using System.Collections.Generic;
-=======
-﻿using System;
+using System;
 using System.Collections.Generic;
->>>>>>> 6252b712a9ebbbe3e87e6b4b01b399792be3b1af
 using System.Reflection;
-using Mitto.IRouting;
 
 namespace Mitto.IMessaging {
 
