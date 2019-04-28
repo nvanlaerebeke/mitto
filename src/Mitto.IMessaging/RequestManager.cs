@@ -50,7 +50,13 @@ namespace Mitto.IMessaging {
         }
 
         private void RequestTimedOut(object sender, IRequest e) {
-            SetResponse(MessagingFactory.Provider.GetResponseMessage(e.Message, new ResponseStatus(ResponseState.TimeOut)));
+            if (Requests.ContainsKey(e.Message.ID)) {
+                if (Requests.TryRemove(e.Message.ID, out IRequest objRequest)) {
+                    objRequest.RequestTimedOut -= RequestTimedOut;
+                } else {
+                    Log.Error($"Unable to remove Request {e.Message.Name}({e.Message.ID}), leaking memory...");
+                }
+            }
         }
     }
 }

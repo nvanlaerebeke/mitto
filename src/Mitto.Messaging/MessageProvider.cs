@@ -52,7 +52,10 @@ namespace Mitto.Messaging {
         /// </summary>
         public MessageProvider() { }
 
-        public void Load() { Load(new List<string>()); }
+        public void Load() {
+            Load(new List<string>());
+        }
+
         public void Load(IEnumerable<string> pAssemblies) {
             List<Type> lstSupportedTypes = new List<Type>() {
                 typeof(INotificationMessage),
@@ -145,14 +148,13 @@ namespace Mitto.Messaging {
 
         private void GetAssemblies(ref List<Assembly> pLoaded, Assembly pRoot) {
             var arrReferenced = pRoot.GetReferencedAssemblies();
-            foreach(var objName in arrReferenced) {
+            foreach (var objName in arrReferenced) {
                 var ass = Assembly.Load(objName);
-                if(!pLoaded.Contains(ass)) {
+                if (!pLoaded.Contains(ass)) {
                     pLoaded.Add(ass);
                     GetAssemblies(ref pLoaded, ass);
                 }
             }
-
         }
 
         /// <summary>
@@ -201,6 +203,10 @@ namespace Mitto.Messaging {
             }
 
             return Activator.CreateInstance(objResponseType, pMessage, pStatus) as IResponseMessage;
+        }
+
+        public IResponseMessage GetResponseMessage(Type pType, IRequestMessage pMessage, ResponseStatus pStatus) {
+            return Activator.CreateInstance(pType, pMessage, pStatus) as IResponseMessage;
         }
 
         /// <summary>
