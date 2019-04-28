@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Mitto.IRouting;
 
 namespace Mitto.IMessaging {
@@ -13,9 +14,7 @@ namespace Mitto.IMessaging {
     /// </summary>
     public interface IMessageProvider {
 
-        void Load();
-
-        void Load(IEnumerable<string> pAssemblies);
+        void Load(IEnumerable<AssemblyName> pAssemblies);
 
         IMessage GetMessage(byte[] pData);
 
