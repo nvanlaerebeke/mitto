@@ -6,6 +6,6 @@ namespace Mitto.IRouting {
 
         IRouter Create(IClientConnection pConnection);
 
-        IRouter GetSubscriptionRouter<T>(IRouter pRouter);
+        //IRouter GetSubscriptionRouter<T>(IClient pClient);
     }
 }

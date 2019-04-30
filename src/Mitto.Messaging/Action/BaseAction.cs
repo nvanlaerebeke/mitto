@@ -1,4 +1,5 @@
 ﻿using Mitto.IMessaging;
+using Mitto.Logging;
 
 namespace Mitto.Messaging.Action {
 
@@ -9,6 +10,8 @@ namespace Mitto.Messaging.Action {
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public abstract class BaseAction<T> : IAction where T : IMessage {
+        protected readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public string RequestID => Request.ID;
         public T Request { get; private set; }
 

@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using Mitto.IMessaging;
-using Mitto.IRouting;
+﻿using Mitto.IMessaging;
+using Mitto.Logging;
 using Mitto.Messaging.Response;
 using Mitto.Subscription.Messaging.Request;
-using Mitto.Subscription.Messaging.UnSubscribe;
 using Mitto.Subscription.Messaging.Subscribe;
+using Mitto.Subscription.Messaging.UnSubscribe;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
-using Mitto.Logging;
 
 namespace Mitto.Subscription.Messaging.Handlers {
 
@@ -20,17 +19,17 @@ namespace Mitto.Subscription.Messaging.Handlers {
         > {
         private readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        private ConcurrentDictionary<string, List<IRouter>> _dicSubscriptions = new ConcurrentDictionary<string, List<IRouter>>();
+        private readonly ConcurrentDictionary<string, List<IClient>> _dicSubscriptions = new ConcurrentDictionary<string, List<IClient>>();
 
         public bool NotifyAll(SendToChannelRequest pNotifyMessage) {
             return Notify(null, pNotifyMessage);
         }
 
-        public bool Notify(IRouter pSender, SendToChannelRequest pNotifyMessage) {
-            var lstRouters = new List<IRouter>();
+        public bool Notify(IClient pSender, SendToChannelRequest pNotifyMessage) {
+            List<IClient> lstClients = new List<IClient>();
             try {
                 if (_dicSubscriptions.ContainsKey(pNotifyMessage.ChannelName)) {
-                    lstRouters = _dicSubscriptions[pNotifyMessage.ChannelName];
+                    lstClients = _dicSubscriptions[pNotifyMessage.ChannelName];
                 }
             } catch (Exception ex) {
                 Log.Error($"Failed getting clients to forward {pNotifyMessage.ChannelName} message to");
@@ -39,19 +38,17 @@ namespace Mitto.Subscription.Messaging.Handlers {
             }
 
             try {
-                var objMessage = new ReceiveOnChannelRequest(pNotifyMessage.ChannelName, pNotifyMessage.Message);
+                ReceiveOnChannelRequest objMessage = new ReceiveOnChannelRequest(pNotifyMessage.ChannelName, pNotifyMessage.Message);
 
-                foreach (var objRouter in lstRouters) {
-                    if (pSender != null && objRouter.ConnectionID.Equals(pSender.ConnectionID)) { continue; } // -- skip sender
-                    MessagingFactory.Processor.Request<ACKResponse>(
-                        objRouter,
-                        objMessage,
-                        (r) => {
-                            if (r.Status.State != ResponseState.Success) {
-                                Log.Error($"Failed to forward {pNotifyMessage.ChannelName} message to {objRouter.ConnectionID}");
-                            }
+                foreach (IClient objClient in lstClients) {
+                    if (pSender != null && objClient.ID.Equals(pSender.ID)) { continue; } // -- skip sender
+                    objClient.Request<ACKResponse>(objMessage, (r) => {
+                        if (r.Status.State == ResponseState.Success) {
+                            Log.Info($"Notification successfully sent to {objClient.ID}");
+                        } else {
+                            Log.Error($"Failed to deliver notification for {objClient.ID}");
                         }
-                    );
+                    });
                 }
                 return true;
             } catch (Exception ex) {
@@ -60,13 +57,13 @@ namespace Mitto.Subscription.Messaging.Handlers {
             }
         }
 
-        public bool Sub(IRouter pClient, ChannelSubscribe pMessage) {
+        public bool Sub(IClient pClient, ChannelSubscribe pMessage) {
             try {
                 if (!_dicSubscriptions.ContainsKey(pMessage.ChannelName)) {
-                    _dicSubscriptions.TryAdd(pMessage.ChannelName, new List<IRouter>());
+                    _dicSubscriptions.TryAdd(pMessage.ChannelName, new List<IClient>());
                 }
                 lock (_dicSubscriptions[pMessage.ChannelName]) {
-                    if (!_dicSubscriptions[pMessage.ChannelName].Any(c => c.ConnectionID.Equals(pClient.ConnectionID))) {
+                    if (!_dicSubscriptions[pMessage.ChannelName].Any(c => c.ID.Equals(pClient.ID))) {
                         _dicSubscriptions[pMessage.ChannelName].Add(pClient);
                     }
                 }
@@ -76,11 +73,11 @@ namespace Mitto.Subscription.Messaging.Handlers {
             }
         }
 
-        public bool UnSub(IRouter pClient, ChannelUnSubscribe pMessage) {
+        public bool UnSub(IClient pClient, ChannelUnSubscribe pMessage) {
             try {
                 if (!_dicSubscriptions.ContainsKey(pMessage.ChannelName)) { return true; } // -- nothing to do
                 lock (_dicSubscriptions[pMessage.ChannelName]) {
-                    _dicSubscriptions[pMessage.ChannelName].RemoveAll(c => c.ConnectionID.Equals(pClient.ConnectionID));
+                    _dicSubscriptions[pMessage.ChannelName].RemoveAll(c => c.ID.Equals(pClient.ID));
                     return true;
                 }
             } catch (Exception) {

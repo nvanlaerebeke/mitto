@@ -10,18 +10,18 @@ namespace Mitto.Routing.PassThrough {
     internal class PassThroughSubscriptionRouter<T> : IRouter {
         private readonly ConcurrentDictionary<string, IMessage> Requests = new ConcurrentDictionary<string, IMessage>();
         private readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly IRouter Router;
+        private readonly IClient Client;
 
         public event EventHandler<IRouter> Disconnected;
 
-        public string SourceID => Router.ConnectionID;
-        public string DestinationID => Router.ConnectionID;
+        public string SourceID => Client.ID;
+        public string DestinationID => Client.ID;
 
-        public string ConnectionID => Router.ConnectionID;
+        public string ConnectionID => Client.ID;
 
-        public PassThroughSubscriptionRouter(IRouter pRouter) {
-            Router = pRouter;
-            Router.Disconnected += Router_Disconnected;
+        public PassThroughSubscriptionRouter(IClient pClient) {
+            Client = pClient;
+            Client.Disconnected += Router_Disconnected;
         }
 
         public void Transmit(byte[] pData) {
@@ -44,11 +44,11 @@ namespace Mitto.Routing.PassThrough {
             }
             bool blnResult = false;
             if (objMessage is SubMessage) {
-                blnResult = (bool)objHandler.GetType().GetMethod("Sub").Invoke(objHandler, new object[] { Router, objMessage });
+                blnResult = (bool)objHandler.GetType().GetMethod("Sub").Invoke(objHandler, new object[] { Client, objMessage });
             } else if (objMessage is UnSubMessage) {
-                blnResult = (bool)objHandler.GetType().GetMethod("UnSub").Invoke(objHandler, new object[] { Router, objMessage });
+                blnResult = (bool)objHandler.GetType().GetMethod("UnSub").Invoke(objHandler, new object[] { Client, objMessage });
             } else if (objMessage is IRequestMessage) {
-                blnResult = (bool)objHandler.GetType().GetMethod("Notify").Invoke(objHandler, new object[] { Router, objMessage });
+                blnResult = (bool)objHandler.GetType().GetMethod("Notify").Invoke(objHandler, new object[] { Client, objMessage });
             } else {
                 Log.Error($"Unsupported message type for subscription router of type {typeof(T)}");
             }
@@ -59,8 +59,9 @@ namespace Mitto.Routing.PassThrough {
                     (blnResult) ? ResponseState.Success : ResponseState.Error
                 )
             );
+            Client.Transmit(objResponse);
 
-            Router.Receive(
+            /*Client.Receive(
                 new RoutingFrame(
                     RoutingFrameType.Messaging,
                     MessageType.Response,
@@ -74,7 +75,7 @@ namespace Mitto.Routing.PassThrough {
                         MessagingFactory.Converter.GetByteArray(objResponse)
                     ).GetByteArray()
                 ).GetBytes()
-            );
+            );*/
 
             if (!Requests.TryRemove(objRoutingFrame.RequestID, out _)) {
                 Log.Error($"Unable to remove {objMessage.Name}({objMessage.ID}) from tracking list, leaking memory");
@@ -82,19 +83,19 @@ namespace Mitto.Routing.PassThrough {
         }
 
         public void Receive(byte[] pData) {
-            Router.Transmit(pData);
+            MessagingFactory.Processor.Process(Client.Router, pData);
         }
 
         public void Close() {
-            //nothing to do - everything will be garbage collected automatically
+            Client.Disconnected -= Router_Disconnected;
         }
 
         public bool IsAlive(string pRequestID) {
             return (Requests.ContainsKey(pRequestID));
         }
 
-        private void Router_Disconnected(object sender, IRouter e) {
-            Router.Disconnected -= Router_Disconnected;
+        private void Router_Disconnected(object sender, IClient e) {
+            Client.Disconnected -= Router_Disconnected;
             Disconnected?.Invoke(sender, this);
         }
     }

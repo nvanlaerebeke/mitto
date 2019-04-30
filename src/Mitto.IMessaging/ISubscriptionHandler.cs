@@ -9,11 +9,12 @@ namespace Mitto.IMessaging {
         where U : IRequestMessage
         where N : IRequestMessage {
 
-        bool Sub(IRouter pClient, S pMessage);
+        bool Sub(IClient pClient, S pMessage);
 
-        bool UnSub(IRouter pClient, U pMessage);
+        bool UnSub(IClient pClient, U pMessage);
 
-        bool Notify(IRouter pSender, N pNotifyMessage);
+        bool Notify(IClient pSender, N pNotifyMessage);
+
         bool NotifyAll(N pNotifyMessage);
     }
 }

@@ -3,10 +3,17 @@ using Mitto.Messaging.Request;
 using Mitto.Messaging.Response;
 
 namespace Mitto.Messaging.Action.Request {
+
     public class PingRequestAction : RequestAction<PingRequest, PongResponse> {
-        public PingRequestAction(IClient pClient, PingRequest pMessage) : base(pClient, pMessage) { }
+
+        public PingRequestAction(IClient pClient, PingRequest pMessage) : base(pClient, pMessage) {
+        }
 
         public override PongResponse Start() {
+            Client.Request<EchoResponse>(new EchoRequest("blaat"), (r) => {
+                Log.Debug(r.Message);
+            });
+
             return new PongResponse(Request);
         }
     }

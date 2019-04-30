@@ -10,13 +10,22 @@ namespace Mitto.Messaging {
     /// Represents an easy to use interface to communicate with the IQueue.IQueue
     /// </summary>
     public class Client : IClient, IEquatable<Client> {
+
+        public event EventHandler<IClient> Disconnected;
+
         public string ID { get { return Router.ConnectionID; } }
         private IRequestManager RequestManager { get; set; }
         public IRouter Router { get; private set; }
 
         public Client(IRouter pRouter, IRequestManager pRequestManager) {
             Router = pRouter;
+            Router.Disconnected += Router_Disconnected;
             RequestManager = pRequestManager;
+        }
+
+        private void Router_Disconnected(object sender, IRouter e) {
+            Router.Disconnected -= Router_Disconnected;
+            Disconnected?.Invoke(this, this);
         }
 
         #region Request Methods
