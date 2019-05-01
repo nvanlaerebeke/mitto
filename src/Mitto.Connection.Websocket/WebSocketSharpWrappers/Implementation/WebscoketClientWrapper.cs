@@ -28,8 +28,8 @@ namespace Mitto.Connection.Websocket.Server {
 			OnErrorReceived?.Invoke(this, new ErrorEventArgWrapper(e));
 		}
 
-		public new void Send(byte[] pData) {
-			base.Send(pData);
+		public new void SendAsync(byte[] pData) {
+			base.SendAsync(pData, (r) => { });
 		}
 
 		public new void Close() {

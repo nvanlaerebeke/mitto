@@ -16,10 +16,8 @@ namespace Mitto.Connection.Websocket.Server {
         private IKeepAliveMonitor _objKeepAliveMonitor;
 
         public event EventHandler<IConnection.IConnection> Disconnected;
-
         public event EventHandler<byte[]> Rx;
 
-        private BlockingCollection<byte[]> _colQueue;
         private CancellationTokenSource _objCancelationSource = new CancellationTokenSource();
         private CancellationToken _objCancelationToken;
 
@@ -32,8 +30,6 @@ namespace Mitto.Connection.Websocket.Server {
             _objKeepAliveMonitor = pKeepAliveMonitor;
             _objKeepAliveMonitor.TimeOut += _objKeepAliveMonitor_TimeOut;
             _objKeepAliveMonitor.UnResponsive += _objKeepAliveMonitor_UnResponsive;
-
-            StartTransmitQueue();
 
             _objClient.OnCloseReceived += _objClient_OnCloseReceived;
             _objClient.OnErrorReceived += _objClient_OnErrorReceived;
@@ -99,31 +95,7 @@ namespace Mitto.Connection.Websocket.Server {
         }
 
         public void Transmit(byte[] pData) {
-            _colQueue.Add(pData);
-        }
-
-        private void StartTransmitQueue() {
-            _colQueue = new BlockingCollection<byte[]>();
-            _objCancelationToken = _objCancelationSource.Token;
-
-            //Do not use Task.Run or ThreadPool here
-            //those are slower and what is needed here is a long running thread
-            new Thread(() => {
-                Thread.CurrentThread.Name = "SenderQueue";
-                while (!_objCancelationSource.IsCancellationRequested) {
-                    try {
-                        var arrData = _colQueue.Take(_objCancelationToken);
-                        Log.Trace($"Sending data on {ID}");
-                        _objClient.Send(arrData);
-                    } catch (OperationCanceledException) {
-                    } catch (Exception ex) {
-                        Log.Error($"Failed sending data on {ID}: {ex.Message}, closing connection");
-                    }
-                }
-                _colQueue.Dispose(); // -- thread is exiting, clean up the collection
-            }) {
-                IsBackground = true
-            }.Start();
+            _objClient.SendAsync(pData);
         }
     }
 }

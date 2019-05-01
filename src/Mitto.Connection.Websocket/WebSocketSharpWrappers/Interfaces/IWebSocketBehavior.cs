@@ -8,7 +8,7 @@ namespace Mitto.Connection.Websocket.Server {
 
 		string ID { get; }
 
-		void Send(byte[] pData);
+		void SendAsync(byte[] pData);
 		void Close();
 		bool Ping();
 	}
