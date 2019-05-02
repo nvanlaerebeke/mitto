@@ -212,12 +212,12 @@ namespace Mitto.Messaging {
         /// <param name="pMessage"></param>
         /// <returns></returns>
         public IAction GetAction(IClient pClient, IRequestMessage pMessage) {
-            var objInfo = Actions.Where(a => a.RequestType.Name == pMessage.Name).FirstOrDefault();
+            ActionInfo objInfo = Actions.Where(a => a.RequestType.Name == pMessage.Name).FirstOrDefault();
             return (objInfo != null) ? (IAction)Activator.CreateInstance(objInfo.ActionType, pClient, pMessage) : null;
         }
 
         public T GetSubscriptionHandler<T>() {
-            var objInfo = SubscriptionHandlers.Where(s => s.HandlerType.Equals(typeof(T))).FirstOrDefault();
+            var objInfo = SubscriptionHandlers.FirstOrDefault(s => s.HandlerType.Equals(typeof(T)));
             ISubscriptionHandler objHandler = null;
             if (objInfo != null) {
                 objHandler = objInfo.Handler;
@@ -226,11 +226,11 @@ namespace Mitto.Messaging {
         }
 
         public ISubscriptionHandler GetSubscriptionHandler(IMessage pMessage) {
-            var objInfo = SubscriptionHandlers.Where(s =>
+            var objInfo = SubscriptionHandlers.FirstOrDefault(s =>
                 s.NotifyType.Name.Equals(pMessage.GetType().Name) ||
                 s.SubType.Name.Equals(pMessage.GetType().Name) ||
                 s.UnSubType.Name.Equals(pMessage.GetType().Name)
-            ).FirstOrDefault();
+);
             if (objInfo != null) {
                 return objInfo.Handler;
             }

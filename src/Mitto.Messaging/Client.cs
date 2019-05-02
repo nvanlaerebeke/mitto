@@ -29,6 +29,9 @@ namespace Mitto.Messaging {
         }
 
         #region Request Methods
+        public void Notify(INotificationMessage pNotifyMessage) {
+            Transmit(pNotifyMessage);
+        }
 
         /// <summary>
         /// Sends a request over the IQueue connection and runs the
@@ -120,5 +123,6 @@ namespace Mitto.Messaging {
         public bool IsAlive(string pRequestID) {
             return Router.IsAlive(pRequestID);
         }
+
     }
 }

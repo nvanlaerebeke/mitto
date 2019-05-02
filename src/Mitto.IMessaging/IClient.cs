@@ -15,5 +15,6 @@ namespace Mitto.IMessaging {
         void Request<R>(IRequestMessage pMessage, Action<R> pAction) where R : IResponseMessage;
 
         bool IsAlive(string pRequestID);
+        void Notify(INotificationMessage pNotifyMessage);
     }
 }
