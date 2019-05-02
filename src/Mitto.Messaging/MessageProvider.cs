@@ -97,11 +97,11 @@ namespace Mitto.Messaging {
                     ).ToList().ForEach(t => {
                         var lstInterfaces = t.GetInterfaces();
                         if (lstInterfaces.Contains(typeof(IAction))) {
-                            var tmpType = lstInterfaces.Where(i => i.IsInterface && i.FullName.Contains("IRequestAction") && i.IsAbstract).FirstOrDefault();
+                            var tmpType = lstInterfaces.Where(i => i.IsInterface && i.IsAbstract && i.FullName.Contains("IRequestAction") || i.FullName.Contains("INotificationAction")).FirstOrDefault();
                             if (tmpType != null) {
                                 Type objRequestType = (tmpType.GenericTypeArguments.Length > 0) ? tmpType.GenericTypeArguments[0] : null;
                                 Type objResponseType = (tmpType.GenericTypeArguments.Length > 1) ? tmpType.GenericTypeArguments[1] : null;
-                                if (objRequestType != null && objResponseType != null) {
+                                if (objRequestType != null) {
                                     var objActionType = new ActionInfo(objRequestType, objResponseType, t);
                                     Actions.RemoveAll(a => a.ActionType.Name.Equals(objActionType.ActionType.Name));
                                     Actions.Add(objActionType);

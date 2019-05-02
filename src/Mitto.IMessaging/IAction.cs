@@ -11,7 +11,7 @@ namespace Mitto.IMessaging {
         O Start();
     }
 
-    public interface INotificationAction : IAction {
+    public interface INotificationAction<I> : IAction {
 
         void Start();
     }

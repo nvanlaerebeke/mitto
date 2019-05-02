@@ -25,7 +25,7 @@ namespace Mitto.Messaging {
                 switch (pMessage.Type) {
                     case MessageType.Notification:
                         try {
-                            ((INotificationAction)pAction).Start();
+                            pAction.GetType().GetMethod("Start").Invoke(pAction, new object[0]);
                         } catch (Exception ex) {
                             Log.Error(
                                 $"Error in Notification Action {pAction.GetType().Name} for {pClient.ID}{Environment.NewLine}" +
