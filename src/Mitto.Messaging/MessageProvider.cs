@@ -94,7 +94,8 @@ namespace Mitto.Messaging {
                             !t.IsAbstract &&
                             t.GetInterfaces().Any(i => lstSupportedTypes.Contains(i))
                         select t
-                    ).ToList().ForEach(t => {
+                    ).ToList().ForEach(t =>
+                    {
                         var lstInterfaces = t.GetInterfaces();
                         if (lstInterfaces.Contains(typeof(IAction))) {
                             var tmpType = lstInterfaces.Where(i => i.IsInterface && i.IsAbstract && i.FullName.Contains("IRequestAction") || i.FullName.Contains("INotificationAction")).FirstOrDefault();
@@ -105,7 +106,11 @@ namespace Mitto.Messaging {
                                     var objActionType = new ActionInfo(objRequestType, objResponseType, t);
                                     Actions.RemoveAll(a => a.ActionType.Name.Equals(objActionType.ActionType.Name));
                                     Actions.Add(objActionType);
-                                    Log.Info($"Found action {objActionType.ActionType.Name} with request {objActionType.RequestType.Name} and response {objActionType.ResponseType.Name}");
+                                    if (objActionType.ResponseType != null) {
+                                        Log.Info($"Found action {objActionType.ActionType.Name} with request {objActionType.RequestType.Name} and response {objActionType.ResponseType.Name}");
+                                    } else {
+                                        Log.Info($"Found action {objActionType.ActionType.Name} with request {objActionType.RequestType.Name}");
+                                    }
                                 }
                             }
                         } else if (
@@ -160,17 +165,21 @@ namespace Mitto.Messaging {
         /// <param name="pData"></param>
         /// <returns>IMessage</returns>
         public IMessage GetMessage(byte[] pData) {
-            var objFrame = new Frame(pData);
-
+            Frame objFrame = new Frame(pData);
             Type objType = null;
-            if (objFrame.Type != MessageType.Response) {
-                if (Requests.ContainsKey(objFrame.Name)) {
-                    objType = Requests[objFrame.Name];
+            try {
+                if (objFrame.Type != MessageType.Response) {
+                    if (Requests.ContainsKey(objFrame.Name)) {
+                        objType = Requests[objFrame.Name];
+                    }
+                } else {
+                    if (Responses.ContainsKey(objFrame.Name)) {
+                        objType = Responses[objFrame.Name];
+                    }
                 }
-            } else {
-                if (Responses.ContainsKey(objFrame.Name)) {
-                    objType = Responses[objFrame.Name];
-                }
+            } catch {
+                Log.Error("Invalid data received, ignoring...");
+                return null;
             }
             if (objType != null) {
                 return MessagingFactory.Converter.GetMessage(objType, objFrame.Data);
