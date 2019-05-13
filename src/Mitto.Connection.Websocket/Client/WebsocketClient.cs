@@ -124,7 +124,7 @@ namespace Mitto.Connection.Websocket.Client {
             _objKeepAliveMonitor.Reset();
             if (e.IsText) {
                 Log.Debug($"Text received on {ID}");
-                var data = System.Text.Encoding.UTF32.GetBytes(e.Data);
+                var data = System.Text.Encoding.UTF8.GetBytes(e.Data);
                 Rx?.Invoke(this, data);
             } else if (e.IsPing) { // -- do nothing, keep-alive is handled in this class
                 Log.Debug($"Ping received on {ID}");

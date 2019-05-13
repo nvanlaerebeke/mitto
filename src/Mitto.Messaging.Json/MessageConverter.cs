@@ -1,4 +1,5 @@
 ﻿using Mitto.IMessaging;
+using Mitto.Logging;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -10,29 +11,35 @@ using System.Text;
 namespace Mitto.Messaging.Json {
 
     public class MessageConverter : IMessageConverter {
+        private static ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Returns the IMessage represented by the byte array
         /// </summary>
         /// <param name="pData"></param>
         public IMessage GetMessage(Type pType, byte[] pData) {
-            var objFrame = new Frame(pData);
-            if (objFrame.Format == MessageFormat.Bson) {
-                using (MemoryStream ms = new MemoryStream(objFrame.Data)) {
-                    using (var reader = new Newtonsoft.Json.Bson.BsonDataReader(ms)) {
-                        return new JsonSerializer()
-                            .Deserialize(
-                                reader,
-                                pType
-                            ) as IMessage;
+            try {
+                var objFrame = new Frame(pData);
+                if (objFrame.Format == MessageFormat.Bson) {
+                    using (MemoryStream ms = new MemoryStream(objFrame.Data)) {
+                        using (var reader = new Newtonsoft.Json.Bson.BsonDataReader(ms)) {
+                            return new JsonSerializer()
+                                .Deserialize(
+                                    reader,
+                                    pType
+                                ) as IMessage;
+                        }
                     }
+                } else {
+                    return JsonConvert.DeserializeObject(
+                        Encoding.UTF8.GetString(objFrame.Data),
+                        pType
+                    ) as IMessage;
                 }
-            } else {
-                return JsonConvert.DeserializeObject(
-                    Encoding.UTF32.GetString(objFrame.Data),
-                    pType
-                ) as IMessage;
+            } catch (Exception ex) {
+                Log.Error($"Failed creating message from provided data: {ex.Message}");
             }
+            return null;
         }
 
         /// <summary>
@@ -48,7 +55,7 @@ namespace Mitto.Messaging.Json {
             //if (true) {
             return new Frame(
                 MessageFormat.Json,
-                Encoding.UTF32.GetBytes(
+                Encoding.UTF8.GetBytes(
                     JsonConvert.SerializeObject(pMessage)
                 )
             ).GetByteArray();

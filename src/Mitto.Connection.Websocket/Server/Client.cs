@@ -16,6 +16,7 @@ namespace Mitto.Connection.Websocket.Server {
         private IKeepAliveMonitor _objKeepAliveMonitor;
 
         public event EventHandler<IConnection.IConnection> Disconnected;
+
         public event EventHandler<byte[]> Rx;
 
         private CancellationTokenSource _objCancelationSource = new CancellationTokenSource();
@@ -58,7 +59,7 @@ namespace Mitto.Connection.Websocket.Server {
             _objKeepAliveMonitor.Reset();
             if (e.IsText) {
                 Log.Debug($"Text received on {ID}");
-                var data = System.Text.Encoding.UTF32.GetBytes(e.Data);
+                var data = System.Text.Encoding.UTF8.GetBytes(e.Data);
                 Rx?.Invoke(this, data);
             } else if (e.IsPing) {
                 Log.Debug($"Ping received on {ID}");
