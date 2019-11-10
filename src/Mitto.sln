@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.28803.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Main", "Mitto.Main\Mitto.Main.csproj", "{958222ED-4BA0-45DD-92E5-6B72BA62ABA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Connection.WebsocketSharp", "Mitto.Connection.Websocket\Mitto.Connection.WebsocketSharp.csproj", "{CF99D3F2-2C06-4A9F-BA22-E2E0CA457B58}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Connection.WebsocketSharp", "Mitto.Connection.WebsocketSharp\Mitto.Connection.WebsocketSharp.csproj", "{CF99D3F2-2C06-4A9F-BA22-E2E0CA457B58}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.IConnection", "Mitto.IConnection\Mitto.IConnection.csproj", "{AAF65EBA-E48D-491A-AD2E-525BDE11EC6F}"
 EndProject
@@ -39,7 +39,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Messaging", "Mitto.Me
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Config.Tests", "Mitto.Config.Tests\Mitto.Config.Tests.csproj", "{68E1570F-98F3-4045-99C1-13F55E7A0F15}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Connection.WebsocketSharp.Tests", "Mitto.Connection.Websocket.Tests\Mitto.Connection.WebsocketSharp.Tests.csproj", "{0320E459-DF90-4AE4-9D85-6F002E99681B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Connection.WebsocketSharp.Tests", "Mitto.Connection.WebsocketSharp.Tests\Mitto.Connection.WebsocketSharp.Tests.csproj", "{0320E459-DF90-4AE4-9D85-6F002E99681B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.IConnection.Tests", "Mitto.IConnection.Tests\Mitto.IConnection.Tests.csproj", "{A4976A44-ED63-4DC9-B698-441F3F712DA5}"
 EndProject

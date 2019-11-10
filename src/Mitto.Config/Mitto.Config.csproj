@@ -45,7 +45,7 @@
     <Compile Include="Mitto.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Mitto.Connection.Websocket\Mitto.Connection.WebsocketSharp.csproj">
+    <ProjectReference Include="..\Mitto.Connection.WebsocketSharp\Mitto.Connection.WebsocketSharp.csproj">
       <Project>{cf99d3f2-2c06-4a9f-ba22-e2e0ca457b58}</Project>
       <Name>Mitto.Connection.WebsocketSharp</Name>
     </ProjectReference>
