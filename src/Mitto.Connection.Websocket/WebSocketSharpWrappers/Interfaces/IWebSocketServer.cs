@@ -1,17 +1,20 @@
-﻿using Mitto.Connection.Websocket.Server;
+﻿using Mitto.Connection.WebsocketSharp.Server;
 using System;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Mitto.Connection.Websocket {
-	interface IWebSocketServer {
-		event EventHandler<IWebSocketBehavior> ClientConnected;
+namespace Mitto.Connection.WebsocketSharp {
 
-		int ConnectionTimeoutSeconds { get; set; } 
+    internal interface IWebSocketServer {
 
-		void Start(IPAddress pIPAddress, int pPort);
-		void Start(IPAddress pIPAddress, int pPort, X509Certificate2 pCert);
+        event EventHandler<IWebSocketBehavior> ClientConnected;
 
-		void Stop();
-	}
+        int ConnectionTimeoutSeconds { get; set; }
+
+        void Start(IPAddress pIPAddress, int pPort);
+
+        void Start(IPAddress pIPAddress, int pPort, X509Certificate2 pCert);
+
+        void Stop();
+    }
 }

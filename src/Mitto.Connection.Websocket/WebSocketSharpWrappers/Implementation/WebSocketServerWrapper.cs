@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
-using Mitto.Connection.Websocket.Server;
+using Mitto.Connection.WebsocketSharp.Server;
 using Mitto.Logging;
 using WebSocketSharp.Server;
 
-namespace Mitto.Connection.Websocket {
+namespace Mitto.Connection.WebsocketSharp {
 
     internal class WebSocketServerWrapper : IWebSocketServer {
         private readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

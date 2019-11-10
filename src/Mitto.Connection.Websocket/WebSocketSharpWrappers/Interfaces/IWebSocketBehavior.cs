@@ -1,15 +1,21 @@
 ﻿using System;
 
-namespace Mitto.Connection.Websocket.Server {
-	internal interface IWebSocketBehavior {
-		event EventHandler<IMessageEventArgs> OnMessageReceived;
-		event EventHandler<ICloseEventArgs> OnCloseReceived;
-		event EventHandler<IErrorEventArgs> OnErrorReceived;
+namespace Mitto.Connection.WebsocketSharp.Server {
 
-		string ID { get; }
+    internal interface IWebSocketBehavior {
 
-		void SendAsync(byte[] pData);
-		void Close();
-		bool Ping();
-	}
+        event EventHandler<IMessageEventArgs> OnMessageReceived;
+
+        event EventHandler<ICloseEventArgs> OnCloseReceived;
+
+        event EventHandler<IErrorEventArgs> OnErrorReceived;
+
+        string ID { get; }
+
+        void SendAsync(byte[] pData);
+
+        void Close();
+
+        bool Ping();
+    }
 }

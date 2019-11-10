@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Mitto.Connection.Websocket {
+namespace Mitto.Connection.WebsocketSharp {
 	internal class ErrorEventArgWrapper : IErrorEventArgs {
 		private WebSocketSharp.ErrorEventArgs _objEventArgs;
 

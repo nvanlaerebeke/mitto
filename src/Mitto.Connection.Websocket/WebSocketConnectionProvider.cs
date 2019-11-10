@@ -1,7 +1,7 @@
 ﻿using Mitto.IConnection;
 using Mitto.Utilities;
 
-namespace Mitto.Connection.Websocket {
+namespace Mitto.Connection.WebsocketSharp {
 	public class WebSocketConnectionProvider: IConnectionProvider {
 		/// <summary>
 		/// Represents the length used to determine whether the data should be fragmented in sending.

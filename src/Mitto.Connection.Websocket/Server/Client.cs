@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Mitto.IConnection;
@@ -8,7 +7,7 @@ using Mitto.Utilities;
 
 [assembly: InternalsVisibleTo("Mitto.Connection.Websocket.Tests")]
 
-namespace Mitto.Connection.Websocket.Server {
+namespace Mitto.Connection.WebsocketSharp.Server {
 
     internal class Client : IClientConnection {
         private readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

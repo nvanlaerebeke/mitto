@@ -1,4 +1,4 @@
-﻿using Mitto.Connection.Websocket.Client;
+﻿using Mitto.Connection.WebsocketSharp.Client;
 using Mitto.IConnection;
 using Mitto.Utilities;
 using NSubstitute;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading;
 using WebSocketSharp;
 
-namespace Mitto.Connection.Websocket.Tests.Client {
+namespace Mitto.Connection.WebsocketSharp.Tests.Client {
 
     [TestFixture]
     public class WebsocketClientTests {
@@ -19,7 +19,7 @@ namespace Mitto.Connection.Websocket.Tests.Client {
         }
 
         /// <summary>
-        /// Tests the timeout event for the kepalive monitor
+        /// Tests the timeout event for the keep-alive monitor
         /// This means that when the TimeOut event is called from the IKeepAliveMonitor class
         /// the IKeepAliveMonitor.StartCountDown() is called
         /// </summary>
@@ -42,7 +42,7 @@ namespace Mitto.Connection.Websocket.Tests.Client {
         }
 
         /// <summary>
-        /// Tests the timeout event for the kepalive monitor
+        /// Tests the timeout event for the keep-alive monitor
         /// This means that when the TimeOut event is called from the IKeepAliveMonitor class
         /// the IKeepAliveMonitor.StartCountDown() is called
         /// </summary>
@@ -65,7 +65,7 @@ namespace Mitto.Connection.Websocket.Tests.Client {
         }
 
         /// <summary>
-        /// Tests the UnResponsive event from the keepalive monitor
+        /// Tests the UnResponsive event from the keep-alive monitor
         /// This means that the Disconnect method is called in the
         /// </summary>
         [Test]
@@ -119,7 +119,7 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 
         /// <summary>
         /// Tests the ConnectAsync method
-        /// This means checking if if the event handlers were added on IWebSocketClient
+        /// This means checking if the event handlers were added on IWebSocketClient
         /// </summary>
         [Test]
         public void ConnectAsyncTest() {
@@ -175,7 +175,7 @@ namespace Mitto.Connection.Websocket.Tests.Client {
 
         /// <summary>
         /// Test the constructing of a WebsocketClient
-        /// This means that the ID is set to a guid
+        /// This means that the ID is set to a GUID
         /// </summary>
         [Test]
         public void CreateTest() {

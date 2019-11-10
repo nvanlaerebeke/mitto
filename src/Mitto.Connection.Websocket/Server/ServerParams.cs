@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Mitto.Messaging.Tests.Action.Request")]
 [assembly: InternalsVisibleTo("Mitto.Connection.Websocket.Tests.Server")]
-namespace Mitto.Connection.Websocket {
+namespace Mitto.Connection.WebsocketSharp {
 	public class ServerParams : Params, IServerParams {
 
 		/// <summary>

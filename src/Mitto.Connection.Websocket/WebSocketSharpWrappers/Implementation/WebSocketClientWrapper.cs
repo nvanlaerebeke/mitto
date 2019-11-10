@@ -1,7 +1,7 @@
 ﻿using System;
 using WebSocketSharp;
 
-namespace Mitto.Connection.Websocket {
+namespace Mitto.Connection.WebsocketSharp {
 
     internal class WebSocketClientWrapper : IWebSocketClient {
         private WebSocket _objWebSocket;

@@ -1,4 +1,4 @@
-﻿using Mitto.Connection.Websocket.Server;
+﻿using Mitto.Connection.WebsocketSharp.Server;
 using Mitto.IConnection;
 using Mitto.Utilities;
 using NSubstitute;
@@ -6,309 +6,310 @@ using NUnit.Framework;
 using System;
 using System.Linq;
 
-namespace Mitto.Connection.Websocket.Tests.Server {
-	[TestFixture]
-	public class ClientTests {
-		[SetUp]
-		public void SetUp() {
-			Config.Initialize();
-		}
+namespace Mitto.Connection.WebsocketSharp.Tests.Server {
 
-		/// <summary>
-		/// Tests the timeout event for the kepalive monitor
-		/// This means that when the TimeOut event is called from the IKeepAliveMonitor class
-		/// the IKeepAliveMonitor.StartCountDown() is called
-		/// </summary>
-		[Test]
-		public void KeepAliveTimeOutPingFailedTest() {
-			//Arrange
-			var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
-			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
-			var objClient = new Websocket.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
-			objWebSocketBehavior.Ping().Returns(false);
+    [TestFixture]
+    public class ClientTests {
 
-			//Act
-			objKeepAliveMonitor.TimeOut += Raise.EventWith(this, new EventArgs());
+        [SetUp]
+        public void SetUp() {
+            Config.Initialize();
+        }
 
-			//Assert
-			objKeepAliveMonitor.Received(1).StartCountDown();
-			objWebSocketBehavior.Received(1).Ping();
-			objKeepAliveMonitor.Received(0).Reset();
-		}
+        /// <summary>
+        /// Tests the timeout event for the keep-alive monitor
+        /// This means that when the TimeOut event is called from the IKeepAliveMonitor class
+        /// the IKeepAliveMonitor.StartCountDown() is called
+        /// </summary>
+        [Test]
+        public void KeepAliveTimeOutPingFailedTest() {
+            //Arrange
+            var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
+            var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
+            var objClient = new WebsocketSharp.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
+            objWebSocketBehavior.Ping().Returns(false);
 
-		/// <summary>
-		/// Tests the timeout event for the kepalive monitor
-		/// This means that when the TimeOut event is called from the IKeepAliveMonitor class
-		/// the IKeepAliveMonitor.StartCountDown() is called
-		/// </summary>
-		[Test]
-		public void KeepAliveTimeOutPingOKTest() {
-			//Arrange
-			var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
-			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
-			var objClient = new Websocket.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
-			objWebSocketBehavior.Ping().Returns(true);
+            //Act
+            objKeepAliveMonitor.TimeOut += Raise.EventWith(this, new EventArgs());
 
-			//Act
-			objKeepAliveMonitor.TimeOut += Raise.EventWith(this, new EventArgs());
+            //Assert
+            objKeepAliveMonitor.Received(1).StartCountDown();
+            objWebSocketBehavior.Received(1).Ping();
+            objKeepAliveMonitor.Received(0).Reset();
+        }
 
-			//Assert
-			objKeepAliveMonitor.Received(1).StartCountDown();
-			objWebSocketBehavior.Received(1).Ping();
-			objKeepAliveMonitor.Received(1).Reset();
-		}
+        /// <summary>
+        /// Tests the timeout event for the keep-alive monitor
+        /// This means that when the TimeOut event is called from the IKeepAliveMonitor class
+        /// the IKeepAliveMonitor.StartCountDown() is called
+        /// </summary>
+        [Test]
+        public void KeepAliveTimeOutPingOKTest() {
+            //Arrange
+            var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
+            var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
+            var objClient = new WebsocketSharp.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
+            objWebSocketBehavior.Ping().Returns(true);
 
-		/// <summary>
-		/// Tests the UnResponsive event from the keepalive monitor
-		/// This means that the Disconnect method is called in the 
-		/// </summary>
-		[Test]
-		public void KeepAliveUnResponsiveTest() {
-			//Arrange
-			var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
-			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
-			var objClient = Substitute.ForPartsOf<Websocket.Server.Client>(objWebSocketBehavior, objKeepAliveMonitor);
-			objClient.WhenForAnyArgs(x => x.Disconnect()).DoNotCallBase();
+            //Act
+            objKeepAliveMonitor.TimeOut += Raise.EventWith(this, new EventArgs());
 
-			//Act
-			objKeepAliveMonitor.UnResponsive += Raise.EventWith(this, new EventArgs());
+            //Assert
+            objKeepAliveMonitor.Received(1).StartCountDown();
+            objWebSocketBehavior.Received(1).Ping();
+            objKeepAliveMonitor.Received(1).Reset();
+        }
 
-			//Assert
-			objClient.Received(1).Disconnect();
-		}
+        /// <summary>
+        /// Tests the UnResponsive event from the keep-alive monitor
+        /// This means that the Disconnect method is called in the
+        /// </summary>
+        [Test]
+        public void KeepAliveUnResponsiveTest() {
+            //Arrange
+            var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
+            var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
+            var objClient = Substitute.ForPartsOf<WebsocketSharp.Server.Client>(objWebSocketBehavior, objKeepAliveMonitor);
+            objClient.WhenForAnyArgs(x => x.Disconnect()).DoNotCallBase();
 
-		/// <summary>
-		/// Test closing a connection 
-		/// This means the disconnect event is raised and there are no more subscriptions
-		/// to the events from the IWebSocketBehavior
-		/// 
-		/// ToDo: Find a way to test the CancelationToken and SenderQueue thread
-		/// </summary>
-		[Test]
-		public void DisconnectTest() {
-			//Setup
-			var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
-			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
-			var objClient = new Websocket.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
-			var objHandler = Substitute.For<EventHandler<IConnection.IConnection>>();
-			objClient.Disconnected += objHandler;
+            //Act
+            objKeepAliveMonitor.UnResponsive += Raise.EventWith(this, new EventArgs());
 
-			//Act
-			objClient.Disconnect();
+            //Assert
+            objClient.Received(1).Disconnect();
+        }
 
-			//Assert
-			objKeepAliveMonitor.Received(1).TimeOut -= Arg.Any<EventHandler>();
-			objKeepAliveMonitor.Received(1).UnResponsive -= Arg.Any<EventHandler>();
-			objWebSocketBehavior.Received(1).OnCloseReceived -= Arg.Any<EventHandler<ICloseEventArgs>>();
-			objWebSocketBehavior.Received(1).OnErrorReceived -= Arg.Any<EventHandler<IErrorEventArgs>>();
-			objWebSocketBehavior.Received(1).OnMessageReceived -= Arg.Any<EventHandler<IMessageEventArgs>>();
-			objKeepAliveMonitor.Received(1).Stop();
-			objWebSocketBehavior.Received(1).Close();
-				
-			objHandler
-				.Received(1)
-				.Invoke(
-					Arg.Is<IConnection.IConnection>(c => c.Equals(objClient)),
-					Arg.Is(objClient)
-				)
-			;
-		}
+        /// <summary>
+        /// Test closing a connection
+        /// This means the disconnect event is raised and there are no more subscriptions
+        /// to the events from the IWebSocketBehavior
+        ///
+        /// ToDo: Find a way to test the CancelationToken and SenderQueue thread
+        /// </summary>
+        [Test]
+        public void DisconnectTest() {
+            //Setup
+            var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
+            var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
+            var objClient = new WebsocketSharp.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
+            var objHandler = Substitute.For<EventHandler<IConnection.IConnection>>();
+            objClient.Disconnected += objHandler;
 
-		/// <summary>
-		/// Test the creation of the Client class
-		/// This means that the OnClose/OnError and OnMesage event handers are added and the ID is available 
-		/// 
-		/// ToDo: Find a way to test the senderqueue thread
-		/// </summary>
-		[Test]
-		public void CreateTest() {
-			//Setup
-			var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
-			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
+            //Act
+            objClient.Disconnect();
 
-			//Act
-			var objClient = new Websocket.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
+            //Assert
+            objKeepAliveMonitor.Received(1).TimeOut -= Arg.Any<EventHandler>();
+            objKeepAliveMonitor.Received(1).UnResponsive -= Arg.Any<EventHandler>();
+            objWebSocketBehavior.Received(1).OnCloseReceived -= Arg.Any<EventHandler<ICloseEventArgs>>();
+            objWebSocketBehavior.Received(1).OnErrorReceived -= Arg.Any<EventHandler<IErrorEventArgs>>();
+            objWebSocketBehavior.Received(1).OnMessageReceived -= Arg.Any<EventHandler<IMessageEventArgs>>();
+            objKeepAliveMonitor.Received(1).Stop();
+            objWebSocketBehavior.Received(1).Close();
 
-			//Assert
-			objKeepAliveMonitor.Received(1).TimeOut += Arg.Any<EventHandler>();
-			objKeepAliveMonitor.Received(1).UnResponsive += Arg.Any<EventHandler>();
-			objWebSocketBehavior.Received(1).OnCloseReceived += Arg.Any<EventHandler<ICloseEventArgs>>();
-			objWebSocketBehavior.Received(1).OnErrorReceived += Arg.Any<EventHandler<IErrorEventArgs>>();
-			objWebSocketBehavior.Received(1).OnMessageReceived += Arg.Any<EventHandler<IMessageEventArgs>>();
+            objHandler
+                .Received(1)
+                .Invoke(
+                    Arg.Is<IConnection.IConnection>(c => c.Equals(objClient)),
+                    Arg.Is(objClient)
+                )
+            ;
+        }
 
-			objKeepAliveMonitor.Received(1).Start();
-			Assert.IsTrue(Guid.TryParse(objClient.ID, out Guid objGuid));
-		}
+        /// <summary>
+        /// Test the creation of the Client class
+        /// This means that the OnClose/OnError and OnMesage event handers are added and the ID is available
+        ///
+        /// ToDo: Find a way to test the SenderQueue thread
+        /// </summary>
+        [Test]
+        public void CreateTest() {
+            //Setup
+            var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
+            var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
 
-		/// <summary>
-		/// Tests the Disconnect event when the WebSocketBehavior.OnClose is raised
-		/// This means the Close method is being called
-		/// </summary>
-		[Test]
-		public void DisconnectedOnCloseTest() {
-			//Setup
-			var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
-			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
-			var objClient = new Websocket.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
-			var objEventArgs = Substitute.For<ICloseEventArgs>();
-			var objHandler = Substitute.For<EventHandler<IConnection.IConnection>>();
-			objClient.Disconnected += objHandler;
+            //Act
+            var objClient = new WebsocketSharp.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
 
-			//Act
-			objWebSocketBehavior.OnCloseReceived += Raise.Event<EventHandler<ICloseEventArgs>>(objClient, objEventArgs);
+            //Assert
+            objKeepAliveMonitor.Received(1).TimeOut += Arg.Any<EventHandler>();
+            objKeepAliveMonitor.Received(1).UnResponsive += Arg.Any<EventHandler>();
+            objWebSocketBehavior.Received(1).OnCloseReceived += Arg.Any<EventHandler<ICloseEventArgs>>();
+            objWebSocketBehavior.Received(1).OnErrorReceived += Arg.Any<EventHandler<IErrorEventArgs>>();
+            objWebSocketBehavior.Received(1).OnMessageReceived += Arg.Any<EventHandler<IMessageEventArgs>>();
 
-			//Assert
-			objWebSocketBehavior.Received().OnCloseReceived -= Arg.Any<EventHandler<ICloseEventArgs>>();
-			objWebSocketBehavior.Received().OnErrorReceived -= Arg.Any<EventHandler<IErrorEventArgs>>();
-			objWebSocketBehavior.Received().OnMessageReceived -= Arg.Any<EventHandler<IMessageEventArgs>>();
+            objKeepAliveMonitor.Received(1).Start();
+            Assert.IsTrue(Guid.TryParse(objClient.ID, out Guid objGuid));
+        }
 
-			objHandler
-				.Received(1)
-				.Invoke(
-					Arg.Is<IConnection.IConnection>(c => c.Equals(objClient)),
-					Arg.Is(objClient)
-				)
-			;
+        /// <summary>
+        /// Tests the Disconnect event when the WebSocketBehavior.OnClose is raised
+        /// This means the Close method is being called
+        /// </summary>
+        [Test]
+        public void DisconnectedOnCloseTest() {
+            //Setup
+            var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
+            var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
+            var objClient = new WebsocketSharp.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
+            var objEventArgs = Substitute.For<ICloseEventArgs>();
+            var objHandler = Substitute.For<EventHandler<IConnection.IConnection>>();
+            objClient.Disconnected += objHandler;
 
-		}
+            //Act
+            objWebSocketBehavior.OnCloseReceived += Raise.Event<EventHandler<ICloseEventArgs>>(objClient, objEventArgs);
 
-		/// <summary>
-		/// Tests the Disconnect event when the WebSocketBehavior.OnError is raised
-		/// This means the Close method is being called
-		/// </summary>
-		[Test]
-		public void DisconnectedOnErrorTest() {
-			//Setup
-			var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
-			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
-			var objClient = new Websocket.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
-			var objEventArgs = Substitute.For<IErrorEventArgs>();
-			var objHandler = Substitute.For<EventHandler<IConnection.IConnection>>();
-			objClient.Disconnected += objHandler;
+            //Assert
+            objWebSocketBehavior.Received().OnCloseReceived -= Arg.Any<EventHandler<ICloseEventArgs>>();
+            objWebSocketBehavior.Received().OnErrorReceived -= Arg.Any<EventHandler<IErrorEventArgs>>();
+            objWebSocketBehavior.Received().OnMessageReceived -= Arg.Any<EventHandler<IMessageEventArgs>>();
 
-			//Act
-			objWebSocketBehavior.OnErrorReceived += Raise.Event<EventHandler<IErrorEventArgs>>(objClient, objEventArgs);
+            objHandler
+                .Received(1)
+                .Invoke(
+                    Arg.Is<IConnection.IConnection>(c => c.Equals(objClient)),
+                    Arg.Is(objClient)
+                )
+            ;
+        }
 
-			//Assert
-			objWebSocketBehavior.Received().OnCloseReceived -= Arg.Any<EventHandler<ICloseEventArgs>>();
-			objWebSocketBehavior.Received().OnErrorReceived -= Arg.Any<EventHandler<IErrorEventArgs>>();
-			objWebSocketBehavior.Received().OnMessageReceived -= Arg.Any<EventHandler<IMessageEventArgs>>();
+        /// <summary>
+        /// Tests the Disconnect event when the WebSocketBehavior.OnError is raised
+        /// This means the Close method is being called
+        /// </summary>
+        [Test]
+        public void DisconnectedOnErrorTest() {
+            //Setup
+            var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
+            var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
+            var objClient = new WebsocketSharp.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
+            var objEventArgs = Substitute.For<IErrorEventArgs>();
+            var objHandler = Substitute.For<EventHandler<IConnection.IConnection>>();
+            objClient.Disconnected += objHandler;
 
-			objHandler
-				.Received(1)
-				.Invoke(Arg.Is(objClient), Arg.Is(objClient));
-		}
+            //Act
+            objWebSocketBehavior.OnErrorReceived += Raise.Event<EventHandler<IErrorEventArgs>>(objClient, objEventArgs);
 
-		/// <summary>
-		/// Test the Rx (receive) event for binary data
-		/// This means that when WebSocketBehavior.OnMessage is triggered 
-		/// an Rx event with the binary data is expected
-		/// </summary>
-		[Test]
-		public void RxBinaryTest() {
-			//Setup
-			var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
-			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
-			var objClient = new Websocket.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
-			var objHandler = Substitute.For<EventHandler<byte[]>>();
-			var objEventArgs = Substitute.For<IMessageEventArgs>();
-			objEventArgs.IsBinary.Returns(true);
-			objEventArgs.IsText.Returns(false);
-			objEventArgs.IsPing.Returns(false);
-			objEventArgs.RawData.Returns(new byte[] { 1, 2, 3, 4 });
+            //Assert
+            objWebSocketBehavior.Received().OnCloseReceived -= Arg.Any<EventHandler<ICloseEventArgs>>();
+            objWebSocketBehavior.Received().OnErrorReceived -= Arg.Any<EventHandler<IErrorEventArgs>>();
+            objWebSocketBehavior.Received().OnMessageReceived -= Arg.Any<EventHandler<IMessageEventArgs>>();
 
-			objClient.Rx += objHandler;
+            objHandler
+                .Received(1)
+                .Invoke(Arg.Is(objClient), Arg.Is(objClient));
+        }
 
-			//Act
-			objWebSocketBehavior.OnMessageReceived += Raise.Event<EventHandler<IMessageEventArgs>>(objClient, objEventArgs);
+        /// <summary>
+        /// Test the Rx (receive) event for binary data
+        /// This means that when WebSocketBehavior.OnMessage is triggered
+        /// an Rx event with the binary data is expected
+        /// </summary>
+        [Test]
+        public void RxBinaryTest() {
+            //Setup
+            var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
+            var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
+            var objClient = new WebsocketSharp.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
+            var objHandler = Substitute.For<EventHandler<byte[]>>();
+            var objEventArgs = Substitute.For<IMessageEventArgs>();
+            objEventArgs.IsBinary.Returns(true);
+            objEventArgs.IsText.Returns(false);
+            objEventArgs.IsPing.Returns(false);
+            objEventArgs.RawData.Returns(new byte[] { 1, 2, 3, 4 });
 
-			//Assert
-			objHandler
-				.Received(1)
-				.Invoke(Arg.Is<IConnection.IConnection>(c => c.Equals(objClient)), Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })))
-			;
-		}
+            objClient.Rx += objHandler;
 
-		/// <summary>
-		/// Test the Rx (receive) event when receiving a ping
-		/// This means that when WebSocketBehavior.OnMessage is triggered for a ping
-		/// no Rx event is expected, this is ignored
-		/// </summary>
-		[Test]
-		public void RxPingTest() {
-			//Setup
-			var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
-			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
-			var objClient = new Websocket.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
-			var objEventArgs = Substitute.For<IMessageEventArgs>();
-			objEventArgs.IsBinary.Returns(false);
-			objEventArgs.IsText.Returns(false);
-			objEventArgs.IsPing.Returns(true);
+            //Act
+            objWebSocketBehavior.OnMessageReceived += Raise.Event<EventHandler<IMessageEventArgs>>(objClient, objEventArgs);
 
-			var eventReceived = false;
-			objClient.Rx += delegate(object sender, byte[] data) {
-				eventReceived = true;
-			};
+            //Assert
+            objHandler
+                .Received(1)
+                .Invoke(Arg.Is<IConnection.IConnection>(c => c.Equals(objClient)), Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })))
+            ;
+        }
 
-			//Act
-			objWebSocketBehavior.OnMessageReceived += Raise.Event<EventHandler<IMessageEventArgs>>(objClient, objEventArgs);
+        /// <summary>
+        /// Test the Rx (receive) event when receiving a ping
+        /// This means that when WebSocketBehavior.OnMessage is triggered for a ping
+        /// no Rx event is expected, this is ignored
+        /// </summary>
+        [Test]
+        public void RxPingTest() {
+            //Setup
+            var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
+            var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
+            var objClient = new WebsocketSharp.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
+            var objEventArgs = Substitute.For<IMessageEventArgs>();
+            objEventArgs.IsBinary.Returns(false);
+            objEventArgs.IsText.Returns(false);
+            objEventArgs.IsPing.Returns(true);
 
-			//Assert
-			Assert.IsFalse(eventReceived, "Event received for ping while this should have been ignored");
-		}
+            var eventReceived = false;
+            objClient.Rx += delegate (object sender, byte[] data) {
+                eventReceived = true;
+            };
 
-		/// <summary>
-		/// Test the Rx (receive) event for text data
-		/// This means that when WebSocketBehavior.OnMessage is triggered 
-		/// an Rx event with the binary data that represents the text
-		/// </summary>
-		[Test]
-		public void RxTextTest() {
-			//Setup
-			var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
-			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
-			var objClient = new Websocket.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
-			var objHandler = Substitute.For<EventHandler<byte[]>>();
-			var objEventArgs = Substitute.For<IMessageEventArgs>();
-			objEventArgs.IsBinary.Returns(false);
-			objEventArgs.IsText.Returns(true);
-			objEventArgs.IsPing.Returns(false);
-			objEventArgs.Data.Returns("MyString");
+            //Act
+            objWebSocketBehavior.OnMessageReceived += Raise.Event<EventHandler<IMessageEventArgs>>(objClient, objEventArgs);
 
-			objClient.Rx += objHandler;
+            //Assert
+            Assert.IsFalse(eventReceived, "Event received for ping while this should have been ignored");
+        }
 
-			//Act
-			objWebSocketBehavior.OnMessageReceived += Raise.Event<EventHandler<IMessageEventArgs>>(objClient, objEventArgs);
+        /// <summary>
+        /// Test the Rx (receive) event for text data
+        /// This means that when WebSocketBehavior.OnMessage is triggered
+        /// an Rx event with the binary data that represents the text
+        /// </summary>
+        [Test]
+        public void RxTextTest() {
+            //Setup
+            var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
+            var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
+            var objClient = new WebsocketSharp.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
+            var objHandler = Substitute.For<EventHandler<byte[]>>();
+            var objEventArgs = Substitute.For<IMessageEventArgs>();
+            objEventArgs.IsBinary.Returns(false);
+            objEventArgs.IsText.Returns(true);
+            objEventArgs.IsPing.Returns(false);
+            objEventArgs.Data.Returns("MyString");
 
-			//Assert
-			var data = System.Text.Encoding.UTF32.GetBytes("MyString");
-			objHandler
-				.Received(1)
-				.Invoke(
-					Arg.Is<IConnection.IConnection>(c => c.Equals(objClient)), 
-					Arg.Is<byte[]>(b => b.SequenceEqual(data))
-				)
-			;
-		}
+            objClient.Rx += objHandler;
 
-		/// <summary>
-		/// Testing the transmit method
-		/// This means that when transmitting binary data the WebSocketBehavior.Send() method is called
-		/// with said binary data shortly after (runs on separate thread)
-		/// </summary>
-		[Test]
-		public void TransmitTest() {
-			//Setup
-			var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
-			var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
-			var objClient = new Websocket.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
+            //Act
+            objWebSocketBehavior.OnMessageReceived += Raise.Event<EventHandler<IMessageEventArgs>>(objClient, objEventArgs);
 
-			//Act
-			objClient.Transmit(new byte[] { 1, 2, 3, 4 });
-			System.Threading.Thread.Sleep(50); // wait a bit, data is being transmitted to IWebSocketBehavior on a separate thread
+            //Assert
+            var data = System.Text.Encoding.UTF32.GetBytes("MyString");
+            objHandler
+                .Received(1)
+                .Invoke(
+                    Arg.Is<IConnection.IConnection>(c => c.Equals(objClient)),
+                    Arg.Is<byte[]>(b => b.SequenceEqual(data))
+                )
+            ;
+        }
 
-			//Assert
-			objWebSocketBehavior.Received(1).Send(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
-		}
-	}
+        /// <summary>
+        /// Testing the transmit method
+        /// This means that when transmitting binary data the WebSocketBehavior.Send() method is called
+        /// with said binary data shortly after (runs on separate thread)
+        /// </summary>
+        [Test]
+        public void TransmitTest() {
+            //Setup
+            var objWebSocketBehavior = Substitute.For<IWebSocketBehavior>();
+            var objKeepAliveMonitor = Substitute.For<IKeepAliveMonitor>();
+            var objClient = new WebsocketSharp.Server.Client(objWebSocketBehavior, objKeepAliveMonitor);
+
+            //Act
+            objClient.Transmit(new byte[] { 1, 2, 3, 4 });
+            System.Threading.Thread.Sleep(50); // wait a bit, data is being transmitted to IWebSocketBehavior on a separate thread
+
+            //Assert
+            objWebSocketBehavior.Received(1).SendAsync(Arg.Is<byte[]>(b => b.SequenceEqual(new byte[] { 1, 2, 3, 4 })));
+        }
+    }
 }

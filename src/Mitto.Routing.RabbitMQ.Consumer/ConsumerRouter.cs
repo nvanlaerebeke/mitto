@@ -4,6 +4,7 @@ using Mitto.Routing.RabbitMQ.Request;
 using Mitto.Routing.RabbitMQ.Response;
 using Mitto.Routing.Request;
 using Mitto.Routing.Response;
+using System;
 using System.Threading;
 
 namespace Mitto.Routing.RabbitMQ.Consumer {
@@ -18,6 +19,8 @@ namespace Mitto.Routing.RabbitMQ.Consumer {
 
         public readonly RoutingFrame Request;
         public readonly SenderQueue Publisher;
+
+        public event EventHandler<IRouter> Disconnected;
 
         public ConsumerRouter(string pConsumerID, SenderQueue pPublisher, RoutingFrame pFrame) {
             ConnectionID = pConsumerID;

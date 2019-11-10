@@ -1,5 +1,5 @@
 ﻿using Mitto.Logging;
-using Mitto.Connection.Websocket;
+using Mitto.Connection.WebsocketSharp;
 using Mitto.IConnection;
 using Mitto.IMessaging;
 using Mitto.IRouting;

@@ -5,7 +5,7 @@ Mitto is a scalable Client/Server framework with a Request/Response model writte
 
 The aim is to provide a simple framework that is easy to start with and can be scaled up when needed and have each component as interchangable as possible so the user has the flexability to customerize each component for its project
 
-Note that this was created as a proof of concept and learning exercise. 
+Note that this was created as a proof of concept and learning exercise.
 
 For a more mature option that's maintained a good alternative [RocketLib](http://rockframework.org/) is a good option.
 
@@ -26,7 +26,7 @@ Introduction
 Mitto was created to solve the problem of communication between a Client/Server and build on a few simple concepts:
 
 - reusable: easy to set up and use in multiple projects & languages
-- scalable: both the client as server should be able to scale horizontally 
+- scalable: both the client as server should be able to scale horizontally
 - moduler: have the ability switch out technologies, Websockets/Json messages, message queing
 
 
@@ -224,7 +224,7 @@ Next is the Queing system just as what we did for the client:
 
 The messaging configuration for the server is the same as the client.
 
-See the [documentation](https://mitto.readthedocs.io/en/latest) how to learn how to add new messages and actions (handlers) 
+See the [documentation](https://mitto.readthedocs.io/en/latest) how to learn how to add new messages and actions (handlers)
 
     IMessaging.MessagingFactory.UnityContainer.RegisterType<IMessaging.IMessageCreator, Messaging.Json.MessageCreator>();
     IMessaging.MessagingFactory.UnityContainer.RegisterType<IMessaging.IMessageProvider, Messaging.App.Server.ServerMessageProvider>();
@@ -233,3 +233,12 @@ After the configuration the actual server can be started:
 
     var objServer = new Server();
     objServer.Start(IPAddress.Any, 80);
+
+
+ToDo's
+======
+
+- Make the connection types plugins:
+    ./Mitto.dll
+    ./plugins/Mitto.WebsocketSharp.dll (implements IConnection)
+    ./plugins/Mitto.Log4Net.dll (impements ILog)

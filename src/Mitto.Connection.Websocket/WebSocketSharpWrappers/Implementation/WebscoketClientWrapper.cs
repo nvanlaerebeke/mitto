@@ -2,42 +2,46 @@
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
-namespace Mitto.Connection.Websocket.Server {
-	internal class WebsocketClientWrapper : WebSocketBehavior, IWebSocketBehavior {
-		public event EventHandler<IMessageEventArgs> OnMessageReceived;
-		public event EventHandler<ICloseEventArgs> OnCloseReceived;
-		public event EventHandler<IErrorEventArgs> OnErrorReceived;
+namespace Mitto.Connection.WebsocketSharp.Server {
 
-		protected override void OnOpen() {
-			base.EmitOnPing = true;
-			base.OnOpen();
-		}
+    internal class WebsocketClientWrapper : WebSocketBehavior, IWebSocketBehavior {
 
-		protected override void OnMessage(MessageEventArgs e) {
-			base.OnMessage(e);
-			OnMessageReceived?.Invoke(this, new MessageEventArgWrapper(e));
-		}
+        public event EventHandler<IMessageEventArgs> OnMessageReceived;
 
-		protected override void OnClose(CloseEventArgs e) {
-			base.OnClose(e);
-			OnCloseReceived?.Invoke(this, new CloseEventArgWrapper(e));
-		}
+        public event EventHandler<ICloseEventArgs> OnCloseReceived;
 
-		protected override void OnError(ErrorEventArgs e) {
-			base.OnError(e);
-			OnErrorReceived?.Invoke(this, new ErrorEventArgWrapper(e));
-		}
+        public event EventHandler<IErrorEventArgs> OnErrorReceived;
 
-		public new void SendAsync(byte[] pData) {
-			base.SendAsync(pData, (r) => { });
-		}
+        protected override void OnOpen() {
+            base.EmitOnPing = true;
+            base.OnOpen();
+        }
 
-		public new void Close() {
-			base.CloseAsync();
-		}
+        protected override void OnMessage(MessageEventArgs e) {
+            base.OnMessage(e);
+            OnMessageReceived?.Invoke(this, new MessageEventArgWrapper(e));
+        }
 
-		public bool Ping() {
-			return (Context != null) ? Context.WebSocket.Ping() : false;
-		}
-	}
+        protected override void OnClose(CloseEventArgs e) {
+            base.OnClose(e);
+            OnCloseReceived?.Invoke(this, new CloseEventArgWrapper(e));
+        }
+
+        protected override void OnError(ErrorEventArgs e) {
+            base.OnError(e);
+            OnErrorReceived?.Invoke(this, new ErrorEventArgWrapper(e));
+        }
+
+        public void SendAsync(byte[] pData) {
+            base.SendAsync(pData, (r) => { });
+        }
+
+        public new void Close() {
+            base.CloseAsync();
+        }
+
+        public bool Ping() {
+            return (Context != null) ? Context.WebSocket.Ping() : false;
+        }
+    }
 }

@@ -49,9 +49,9 @@
       <Project>{e3e0d40d-99ac-4ed4-9e64-19cdc10813b0}</Project>
       <Name>Mitto.Config</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mitto.Connection.Websocket\Mitto.Connection.Websocket.csproj">
+    <ProjectReference Include="..\Mitto.Connection.Websocket\Mitto.Connection.WebsocketSharp.csproj">
       <Project>{cf99d3f2-2c06-4a9f-ba22-e2e0ca457b58}</Project>
-      <Name>Mitto.Connection.Websocket</Name>
+      <Name>Mitto.Connection.WebsocketSharp</Name>
     </ProjectReference>
     <ProjectReference Include="..\Mitto.IConnection\Mitto.IConnection.csproj">
       <Project>{aaf65eba-e48d-491a-ad2e-525bde11ec6f}</Project>

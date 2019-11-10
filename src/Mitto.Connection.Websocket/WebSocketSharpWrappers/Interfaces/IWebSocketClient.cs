@@ -4,7 +4,7 @@ using WebSocketSharp;
 
 [assembly: InternalsVisibleToAttribute("Mitto.Connection.Websocket.Tests")]
 
-namespace Mitto.Connection.Websocket {
+namespace Mitto.Connection.WebsocketSharp {
 
     internal interface IWebSocketClient {
 

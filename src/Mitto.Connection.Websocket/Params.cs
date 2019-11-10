@@ -1,4 +1,4 @@
-﻿namespace Mitto.Connection.Websocket {
+﻿namespace Mitto.Connection.WebsocketSharp {
 	public abstract class Params {
 		/// <summary>
 		/// The number of seconds a connection may be idle before a ping

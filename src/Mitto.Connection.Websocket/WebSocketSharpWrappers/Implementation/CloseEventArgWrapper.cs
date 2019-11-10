@@ -1,4 +1,4 @@
-﻿namespace Mitto.Connection.Websocket {
+﻿namespace Mitto.Connection.WebsocketSharp {
 	internal class CloseEventArgWrapper : ICloseEventArgs {
 		private WebSocketSharp.CloseEventArgs _objEventArgs;
 
