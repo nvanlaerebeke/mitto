@@ -39,7 +39,6 @@
     </Compile>
     <Compile Include="Action\Request\GetMessageStatusRequestAction.cs" />
     <Compile Include="PassThroughRouter.cs" />
-    <Compile Include="PassThroughSubscriptionRouter.cs" />
     <Compile Include="RouterProvider.cs" />
   </ItemGroup>
   <ItemGroup>

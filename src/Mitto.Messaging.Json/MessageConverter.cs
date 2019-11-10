@@ -11,7 +11,7 @@ using System.Text;
 namespace Mitto.Messaging.Json {
 
     public class MessageConverter : IMessageConverter {
-        private static ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Returns the IMessage represented by the byte array
@@ -21,7 +21,7 @@ namespace Mitto.Messaging.Json {
             try {
                 var objFrame = new Frame(pData);
                 if (objFrame.Format == MessageFormat.Bson) {
-                    using (MemoryStream ms = new MemoryStream(objFrame.Data)) {
+                    using (var ms = new MemoryStream(objFrame.Data)) {
                         using (var reader = new Newtonsoft.Json.Bson.BsonDataReader(ms)) {
                             return new JsonSerializer()
                                 .Deserialize(

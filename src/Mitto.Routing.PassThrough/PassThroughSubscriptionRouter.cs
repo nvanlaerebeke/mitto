@@ -25,15 +25,15 @@ namespace Mitto.Routing.PassThrough {
         }
 
         public void Transmit(byte[] pData) {
-            RoutingFrame objRoutingFrame = new RoutingFrame(pData);
-            IMessage objMessage = MessagingFactory.Provider.GetMessage(objRoutingFrame.Data);
+            var objRoutingFrame = new RoutingFrame(pData);
+            var objMessage = MessagingFactory.Provider.GetMessage(objRoutingFrame.Data);
 
             if (objMessage == null) {
                 Log.Error($"Unable to create message for request {objRoutingFrame.RequestID}");
                 return;
             }
 
-            T objHandler = MessagingFactory.Provider.GetSubscriptionHandler<T>();
+            var objHandler = MessagingFactory.Provider.GetSubscriptionHandler<T>();
             if (objHandler == null) {
                 Log.Error($"Unable to get subscription handler for {typeof(T)}");
                 return;
@@ -42,7 +42,7 @@ namespace Mitto.Routing.PassThrough {
             if (!Requests.TryAdd(objRoutingFrame.RequestID, objMessage)) {
                 Log.Error($"Unable to add Request {objMessage.Name}({objRoutingFrame.RequestID}) to list, unable to track");
             }
-            bool blnResult = false;
+            var blnResult = false;
             if (objMessage is SubMessage) {
                 blnResult = (bool)objHandler.GetType().GetMethod("Sub").Invoke(objHandler, new object[] { Client, objMessage });
             } else if (objMessage is UnSubMessage) {
@@ -53,10 +53,10 @@ namespace Mitto.Routing.PassThrough {
                 Log.Error($"Unsupported message type for subscription router of type {typeof(T)}");
             }
 
-            IResponseMessage objResponse = MessagingFactory.Provider.GetResponseMessage(
+            var objResponse = MessagingFactory.Provider.GetResponseMessage(
                 objMessage as IRequestMessage,
                 new ResponseStatus(
-                    (blnResult) ? ResponseState.Success : ResponseState.Error
+                    blnResult ? ResponseState.Success : ResponseState.Error
                 )
             );
             Client.Transmit(objResponse);
@@ -91,7 +91,7 @@ namespace Mitto.Routing.PassThrough {
         }
 
         public bool IsAlive(string pRequestID) {
-            return (Requests.ContainsKey(pRequestID));
+            return Requests.ContainsKey(pRequestID);
         }
 
         private void Router_Disconnected(object sender, IClient e) {
