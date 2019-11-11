@@ -1,16 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CF99D3F2-2C06-4A9F-BA22-E2E0CA457B58}</ProjectGuid>
+    <ProjectGuid>{5557B374-341E-4176-9D46-BE8606136ADA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Mitto.Connection.WebsocketSharp</RootNamespace>
-    <AssemblyName>Mitto.Connection.WebsocketSharp</AssemblyName>
+    <RootNamespace>Mitto.Connection.Websocket</RootNamespace>
+    <AssemblyName>Mitto.Connection.Websocket</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,38 +32,31 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Mitto\Properties\AssemblyInfo.cs">
-      <Link>Properties\AssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="Client\WebsocketClient.cs" />
-    <Compile Include="Params.cs" />
-    <Compile Include="Server\ServerParams.cs" />
     <Compile Include="Client\ClientParams.cs" />
-    <Compile Include="WebSocketConnectionProvider.cs" />
-    <Compile Include="WebSocketSharpWrappers\Interfaces\IMessageEventArgs.cs" />
-    <Compile Include="WebSocketSharpWrappers\Implementation\MessageEventArgWrapper.cs" />
-    <Compile Include="WebSocketSharpWrappers\Implementation\ErrorEventArgWrapper.cs" />
-    <Compile Include="WebSocketSharpWrappers\Implementation\CloseEventArgWrapper.cs" />
-    <Compile Include="WebSocketSharpWrappers\Interfaces\IErrorEventArgs.cs" />
-    <Compile Include="WebSocketSharpWrappers\Interfaces\ICloseEventArgs.cs" />
-    <Compile Include="WebSocketSharpWrappers\Interfaces\IWebSocketClient.cs" />
-    <Compile Include="WebSocketSharpWrappers\Interfaces\IWebSocketServer.cs" />
+    <Compile Include="Client\WebsocketClient.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Params.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server\Client.cs" />
-    <Compile Include="WebSocketSharpWrappers\Interfaces\IWebSocketBehavior.cs" />
-    <Compile Include="WebSocketSharpWrappers\Implementation\WebscoketClientWrapper.cs" />
-    <Compile Include="Server\WebsocketServer.cs" />
-    <Compile Include="WebSocketSharpWrappers\Implementation\WebSocketServerWrapper.cs" />
-    <Compile Include="WebSocketSharpWrappers\Implementation\WebSocketClientWrapper.cs" />
+    <Compile Include="Server\ServerParams.cs" />
+    <Compile Include="Server\WebSocketServer.cs" />
+    <Compile Include="WebSocketConnectionProvider.cs" />
+    <Compile Include="Wrapper\Implementation\WebSocketClientWrapper.cs" />
+    <Compile Include="Wrapper\Implementation\WebSocketServerWrapper.cs" />
+    <Compile Include="Wrapper\Interfaces\IWebSocketServerWrapper.cs" />
+    <Compile Include="Wrapper\Interfaces\IWebSocketClientWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Lib\websocketsharp\websocket-sharp\websocket-sharp.csproj">
-      <Project>{b357bac7-529e-4d81-a0d2-71041b19c8de}</Project>
-      <Name>websocket-sharp</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Mitto.IConnection\Mitto.IConnection.csproj">
       <Project>{aaf65eba-e48d-491a-ad2e-525bde11ec6f}</Project>
       <Name>Mitto.IConnection</Name>

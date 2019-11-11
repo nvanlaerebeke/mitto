@@ -18,13 +18,14 @@ namespace Mitto.Connection.WebsocketSharp.Server {
 
         public event EventHandler<byte[]> Rx;
 
-        private CancellationTokenSource _objCancelationSource = new CancellationTokenSource();
-        private CancellationToken _objCancelationToken;
+        //private CancellationTokenSource _objCancelationSource = new CancellationTokenSource();
+        //private CancellationToken _objCancelationToken;
 
         public string ID { get; private set; }
 
         public Client(IWebSocketBehavior pClient, IKeepAliveMonitor pKeepAliveMonitor) {
             ID = Guid.NewGuid().ToString();
+            //_objCancelationToken = _objCancelationSource.Token;
 
             _objClient = pClient;
             _objKeepAliveMonitor = pKeepAliveMonitor;
@@ -87,7 +88,7 @@ namespace Mitto.Connection.WebsocketSharp.Server {
             _objClient.OnErrorReceived -= _objClient_OnErrorReceived;
             _objClient.OnMessageReceived -= _objClient_OnMessageReceived;
 
-            _objCancelationSource.Cancel();
+            //_objCancelationSource.Cancel();
             Disconnected?.Invoke(this, this);
 
             _objClient.Close();

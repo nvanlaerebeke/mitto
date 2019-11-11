@@ -75,6 +75,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Subscription.Service.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Logging", "Mitto.Logging\Mitto.Logging.csproj", "{B54DE51C-A462-43A7-90C2-6A39E1865300}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mitto.Connection.Websocket", "Mitto.Connection.Websocket\Mitto.Connection.Websocket.csproj", "{5557B374-341E-4176-9D46-BE8606136ADA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -347,6 +349,14 @@ Global
 		{B54DE51C-A462-43A7-90C2-6A39E1865300}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B54DE51C-A462-43A7-90C2-6A39E1865300}.Release|x64.ActiveCfg = Release|Any CPU
 		{B54DE51C-A462-43A7-90C2-6A39E1865300}.Release|x64.Build.0 = Release|Any CPU
+		{5557B374-341E-4176-9D46-BE8606136ADA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5557B374-341E-4176-9D46-BE8606136ADA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5557B374-341E-4176-9D46-BE8606136ADA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5557B374-341E-4176-9D46-BE8606136ADA}.Debug|x64.Build.0 = Debug|Any CPU
+		{5557B374-341E-4176-9D46-BE8606136ADA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5557B374-341E-4176-9D46-BE8606136ADA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5557B374-341E-4176-9D46-BE8606136ADA}.Release|x64.ActiveCfg = Release|Any CPU
+		{5557B374-341E-4176-9D46-BE8606136ADA}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

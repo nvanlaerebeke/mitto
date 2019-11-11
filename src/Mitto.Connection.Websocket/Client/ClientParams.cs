@@ -1,4 +1,4 @@
-﻿namespace Mitto.Connection.WebsocketSharp {
+﻿namespace Mitto.Connection.Websocket {
 
     public class ClientParams : Params, IConnection.IClientParams {
 

@@ -45,7 +45,7 @@ namespace Mitto.Connection.WebsocketSharp.Client {
                 Log.Error("Incorrect parameters for WebSocket client");
                 throw new Exception("Incorrect parameters for WebSocket client");
             }
-            Log.Info($"Connecting {ID} to {objParams.Hostname}:{objParams.Port}");
+            Log.Info($"Connecting {ID} to {objParams.HostName}:{objParams.Port}");
 
             _objWebSocketClient.ConnectionTimeoutSeconds = objParams.ConnectionTimeoutSeconds;
             _objKeepAliveMonitor.SetInterval(objParams.ConnectionTimeoutSeconds);

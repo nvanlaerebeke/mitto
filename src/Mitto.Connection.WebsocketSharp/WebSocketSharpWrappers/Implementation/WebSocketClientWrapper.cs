@@ -53,7 +53,7 @@ namespace Mitto.Connection.WebsocketSharp {
         /// </summary>
         /// <param name="pUrl"></param>
         public void ConnectAsync(ClientParams pParams) {
-            _objWebSocket = new WebSocket(String.Format(((pParams.Secure) ? "wss" : "ws") + "://{0}:{1}/", pParams.Hostname, pParams.Port)) {
+            _objWebSocket = new WebSocket(String.Format(((pParams.Secure) ? "wss" : "ws") + "://{0}:{1}/", pParams.HostName, pParams.Port)) {
                 WaitTime = new TimeSpan(0, 0, ConnectionTimeoutSeconds),
                 EmitOnPing = true,
                 EnableRedirection = true,
