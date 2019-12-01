@@ -10,17 +10,17 @@ namespace Mitto.Connection.Websocket.Server {
 
     internal class WebSocketServer : IServer {
         private readonly IWebSocketServerWrapper Listener;
-        private readonly int _intBufferSize = 1024;
+        private ServerParams Params { get; set; }
 
         private ILog Log => LoggingFactory.GetLogger(GetType());
 
-        public WebSocketServer(IWebSocketServerWrapper pListener, int pFragmentSize) {
+        public WebSocketServer(IWebSocketServerWrapper pListener, ServerParams pParams) {
             Listener = pListener;
-            _intBufferSize = pFragmentSize;
+            Params = pParams;
         }
 
         public void Start(IServerParams pParams, Action<IClientConnection> pClientConnectedAction) {
-            Listener.Prefixes.Add("http://+:8080/");
+            Listener.Prefixes.Add($"http{(Params.Secure ? "s" : "")}://+:" + Params.Port + "/" + Params.Path.TrimStart('/'));
             new Thread(() => {
                 Listener.Start();
                 Log.Info("Started Listening");
@@ -39,8 +39,8 @@ namespace Mitto.Connection.Websocket.Server {
                 } catch (TaskCanceledException) {
                 } catch (OperationCanceledException) {
                     //ignore
-                } catch (Exception ex) {
-                    Console.WriteLine($"Error: {ex.Message}, closing server...");
+                } finally {
+                    Console.WriteLine("closing server...");
                     Stop();
                 }
             }) {
@@ -61,7 +61,7 @@ namespace Mitto.Connection.Websocket.Server {
                             new TimeSpan(0, 0, 30)
                         )
                     ).WebSocket,
-                    _intBufferSize
+                    Params.FragmentSize
                 );
                 objClient.Start();
                 pClientConnectedAction.Invoke(objClient);

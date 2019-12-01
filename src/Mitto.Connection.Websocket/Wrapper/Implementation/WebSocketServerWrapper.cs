@@ -3,7 +3,6 @@ using System.Net;
 using System.Threading.Tasks;
 
 namespace Mitto.Connection.Websocket.Wrapper {
-
     internal class WebSocketServerWrapper : IWebSocketServerWrapper {
         private readonly HttpListener Listener;
 

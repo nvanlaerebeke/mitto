@@ -12,7 +12,6 @@ using WebSocketSharp;
 /// Provides functionality to communicate with a WebSocket server
 /// </summary>
 namespace Mitto.Connection.WebsocketSharp.Client {
-
     public class WebsocketClient : IClient {
         private readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 

@@ -51,13 +51,13 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Lib\websocketsharp\websocket-sharp\websocket-sharp.csproj">
-      <Project>{b357bac7-529e-4d81-a0d2-71041b19c8de}</Project>
-      <Name>websocket-sharp</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\src\Mitto.IConnection\Mitto.IConnection.csproj">
       <Project>{aaf65eba-e48d-491a-ad2e-525bde11ec6f}</Project>
       <Name>Mitto.IConnection</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Lib\websocketsharp\websocket-sharp\websocket-sharp.csproj">
+      <Project>{b357bac7-529e-4d81-a0d2-71041b19c8de}</Project>
+      <Name>websocket-sharp</Name>
     </ProjectReference>
     <ProjectReference Include="..\Mitto.Config\Mitto.Config.csproj">
       <Project>{e3e0d40d-99ac-4ed4-9e64-19cdc10813b0}</Project>

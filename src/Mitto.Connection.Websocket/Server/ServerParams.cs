@@ -1,6 +1,4 @@
-﻿using Mitto.IConnection;
-using System;
-using System.Net;
+﻿using System.Net;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Mitto.Messaging.Tests.Action.Request")]
@@ -8,64 +6,50 @@ using System.Runtime.CompilerServices;
 
 namespace Mitto.Connection.Websocket {
 
-    public class ServerParams : Params, IServerParams {
+    public class ServerParams {
 
-        /// <summary>
-        /// Parameters the Websocket server will use to start
-        /// </summary>
-        /// <param name="pIPAddress">IP Address to listen on</param>
-        /// <param name="pPort">Port the websocket server will listen on </param>
-        /// <param name="pCallback">Action to execute when a client connects</param>
-        public ServerParams(IPAddress pIPAddress, int pPort) {
-            IP = pIPAddress;
-            Port = pPort;
+        public ServerParams() {
         }
-
-        /// <summary>
-        /// Parameters the Websocket server will use to start
-        /// </summary>
-        /// <param name="pIPAddress">IP Address to listen on</param>
-        /// <param name="pPort">Port the websocket server will listen on </param>
-        /// <param name="pCallback">Action to execute when a client connects</param>
-        /// <param name="pCertPath">Certificate to use for the websocket server</param>
-        /// <param name="pCertPassword">Certificate password to use</param>
-        public ServerParams(IPAddress pIPAddress, int pPort, string pCertPath, string pCertPassword) {
-            IP = pIPAddress;
-            Port = pPort;
-            CertPath = pCertPath;
-            CertPassword = pCertPassword;
-        }
-
-        #region Required Parameters
 
         /// <summary>
         /// IP Address to listen on
         ///
         /// default: IPAddress.Any
         /// </summary>
-        public IPAddress IP { get; } = IPAddress.Any;
+        public IPAddress IP { get; set; } = IPAddress.Any;
 
         /// <summary>
-        /// Certificate password to use
-        ///
-        /// default: none
-        /// </summary>
-        public string CertPassword { get; } = "";
-
-        /// <summary>
-        /// Port the websocket server will listen on
+        /// Port to listen on
         ///
         /// default: 80
         /// </summary>
-        public int Port { get; } = 80;
+        public int Port { get; set; } = 80;
 
         /// <summary>
-        /// Certificate to use for the websocket server
+        /// Is this a secure connection? (https)
         ///
-        /// default: none
+        /// default: false
         /// </summary>
-        public string CertPath { get; } = "";
+        public bool Secure { get; set; } = false;
 
-        #endregion Required Parameters
+        /// <summary>
+        /// Path to listen on (http(s)://<IP>:<Port>/<Path>)
+        /// </summary>
+        public string Path { get; set; } = "/";
+
+        /// <summary>
+        /// Represents the length used to determine whether the data should be fragmented in sending.
+        /// </summary>
+        /// <remarks>
+        ///   <para>
+        ///   The data will be fragmented if that length is greater than the value of this field.
+        ///   </para>
+        ///   <para>
+        ///   If you would like to change the value, you must set it to a value between <c>125</c> and
+        ///   <c>Int32.MaxValue - 14</c> inclusive.
+        ///   </para>
+        /// </remarks>
+
+        public int FragmentSize { get; set; } = 1024;
     }
 }

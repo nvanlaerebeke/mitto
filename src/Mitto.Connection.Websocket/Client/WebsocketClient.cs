@@ -62,8 +62,12 @@ namespace Mitto.Connection.Websocket.Client {
                     ),
                     _objCancelationToken
                 ).ContinueWith((t) => {
-                    _ = Receive();
-                    Connected?.Invoke(this, this);
+                    if (!t.IsFaulted) {
+                        _ = Receive();
+                        Connected?.Invoke(this, this);
+                    } else {
+                        Disconnect();
+                    }
                 });
             } catch (TaskCanceledException) {
             } catch (OperationCanceledException) {
@@ -92,13 +96,15 @@ namespace Mitto.Connection.Websocket.Client {
                     }
                 }
             } catch (TaskCanceledException) {
-            } catch(OperationCanceledException) { 
+            } catch (OperationCanceledException) {
                 //ignore
             } catch (Exception ex) {
                 Log.Info($"Error receiving data: {ex.Message}, closing connection");
                 Disconnect();
             }
         }
+
+        private Mutex _objSendAsyncLock = new Mutex();
 
         public void Transmit(byte[] pData) {
             try {
@@ -120,13 +126,15 @@ namespace Mitto.Connection.Websocket.Client {
                             }
                             Array.Copy(pData, Start, buffer, 0, intChunkSize);
                         }
-                        var objTask = WebSocket.SendAsync(
-                            new ArraySegment<byte>(buffer),
-                            WebSocketMessageType.Binary,
-                            EOD,
-                            _objCancelationToken
-                        );
-                        objTask.Wait();
+                        lock (_objSendAsyncLock) {
+                            var objTask = WebSocket.SendAsync(
+                                new ArraySegment<byte>(buffer),
+                                WebSocketMessageType.Binary,
+                                EOD,
+                                _objCancelationToken
+                            );
+                            objTask.Wait();
+                        }
                         intPage++;
                     }
                 }
@@ -141,18 +149,27 @@ namespace Mitto.Connection.Websocket.Client {
 
         public void Disconnect() {
             //Prevent multiple disconnect calls
-            if (!_objCancelationToken.IsCancellationRequested) {
+            if (!_objCancelationToken.IsCancellationRequested && _objCancelationSource != null) {
                 _objCancelationSource.Cancel();
-                _ = WebSocket.CloseAsync(
-                    WebSocketCloseStatus.NormalClosure,
-                    string.Empty,
-                    CancellationToken.None
-                ).ContinueWith(s =>
-                    Disconnected?.Invoke(this, this)
-                );
+                if (
+                    WebSocket.State == WebSocketState.Connecting ||
+                    WebSocket.State == WebSocketState.Open
+                ) {
+                    _ = WebSocket.CloseAsync(
+                        WebSocketCloseStatus.NormalClosure,
+                        string.Empty,
+                        CancellationToken.None
+                    ).ContinueWith(s =>
+                       Disconnected?.Invoke(this, this)
+                    );
+                }
             }
         }
 
-        ~WebsocketClient() => _objCancelationSource.Dispose();
+        ~WebsocketClient() {
+            if (_objCancelationSource != null) {
+                _objCancelationSource.Dispose();
+            }
+        }
     }
 }

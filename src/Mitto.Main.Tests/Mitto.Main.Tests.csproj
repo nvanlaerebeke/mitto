@@ -66,9 +66,9 @@
       <Project>{7a80e47b-c82f-4a16-83f0-e0c65f22885a}</Project>
       <Name>Mitto.IRouting</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mitto.Main\Mitto.Main.csproj">
+    <ProjectReference Include="..\Mitto.Main\Mitto.csproj">
       <Project>{958222ed-4ba0-45dd-92e5-6b72ba62aba6}</Project>
-      <Name>Mitto.Main</Name>
+      <Name>Mitto</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
