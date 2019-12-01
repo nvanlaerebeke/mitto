@@ -2,7 +2,3 @@
 	path = src/Lib/websocketsharp
 	url = https://github.com/nvanlaerebeke/websocket-sharp.git
 	branch = master
-[submodule "src/Lib/CommandLineMenu"]
-	path = src/Lib/CommandLineMenu
-	url = https://github.com/nvanlaerebeke/CommandLineMenu.git
-	branch = master
