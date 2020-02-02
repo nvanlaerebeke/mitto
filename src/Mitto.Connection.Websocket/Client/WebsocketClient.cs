@@ -87,12 +87,21 @@ namespace Mitto.Connection.Websocket.Client {
                     if (result.MessageType == WebSocketMessageType.Close) {
                         Disconnect();
                     } else {
-                        var lstMessage = new List<byte>(buffer);
-                        while (!result.EndOfMessage && result.CloseStatus == WebSocketCloseStatus.Empty) {
+                        var arrMessage = new byte[result.Count];
+                        Array.Copy(buffer, 0, arrMessage, 0, result.Count);
+
+                        while (
+                            !result.EndOfMessage &&
+                            (
+                                result.CloseStatus == null ||
+                                result.CloseStatus == WebSocketCloseStatus.Empty
+                            )
+                        ) {
                             result = await WebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), _objCancelationToken);
-                            lstMessage.AddRange(buffer);
+                            Array.Resize(ref arrMessage, arrMessage.Length + result.Count);
+                            Array.Copy(buffer, 0, arrMessage, arrMessage.Length - result.Count, result.Count);
                         }
-                        Rx?.Invoke(this, lstMessage.ToArray());
+                        Rx?.Invoke(this, arrMessage);
                     }
                 }
             } catch (TaskCanceledException) {

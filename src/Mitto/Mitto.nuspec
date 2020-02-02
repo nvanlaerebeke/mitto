@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <license type="expression">GPL-2.0-or-later</license>
+    <projectUrl>https://github.com/nvanlaerebeke/mitto</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Mitto is a scalable Client/Server communication framework with a Request/Response model written in C#.</description>
+    <releaseNotes>Initial mitto release</releaseNotes>
+    <copyright>Copyright 2019</copyright>
+    <tags>messaging websocket communication</tags>
+  </metadata>
+</package>
