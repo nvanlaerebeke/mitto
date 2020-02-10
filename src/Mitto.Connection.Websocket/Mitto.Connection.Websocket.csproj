@@ -44,7 +44,6 @@
   <ItemGroup>
     <Compile Include="Client\ClientParams.cs" />
     <Compile Include="Client\WebsocketClient.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Params.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server\Client.cs" />

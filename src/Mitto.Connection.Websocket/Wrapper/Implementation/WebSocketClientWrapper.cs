@@ -26,6 +26,8 @@ namespace Mitto.Connection.Websocket.Wrapper {
         public Task SendAsync(ArraySegment<byte> pData, WebSocketMessageType pMessageType, bool pEOD, CancellationToken pCancellationToken)
             => WebSocket.SendAsync(pData, pMessageType, pEOD, pCancellationToken);
 
+        public ClientWebSocketOptions Options { get { return WebSocket.Options; } }
+
         // Destructor - cleanup
         ~WebSocketClientWrapper() {
             try {

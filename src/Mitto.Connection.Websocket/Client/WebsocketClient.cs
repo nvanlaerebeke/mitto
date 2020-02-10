@@ -1,9 +1,7 @@
 ﻿using Mitto.Connection.Websocket.Wrapper;
 using Mitto.IConnection;
 using Mitto.Logging;
-using Mitto.Utilities;
 using System;
-using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -20,7 +18,8 @@ namespace Mitto.Connection.Websocket.Client {
     public class WebsocketClient : IClient {
         private readonly ILog Log = LoggingFactory.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly IWebSocketClientWrapper WebSocket;
-        private readonly int BufferSize = 0;
+
+        #region Events
 
         public event EventHandler<IClient> Connected;
 
@@ -28,20 +27,27 @@ namespace Mitto.Connection.Websocket.Client {
 
         public event EventHandler<byte[]> Rx;
 
+        #endregion Events
+
         /// <summary>
-        /// Used to stop the Receive loop
+        /// Used to stop the Receive loop+
         /// </summary>
         private CancellationTokenSource _objCancelationSource;
 
         private CancellationToken _objCancelationToken;
 
+        #region Properties
+
         public string ID { get; private set; } = Guid.NewGuid().ToString();
+        public int BufferSize { get; set; } = 512;
+        public long CurrentBytesPerSecond { get; } = 0;
 
-        public long CurrentBytesPerSecond => 0;
+        #endregion Properties
 
-        internal WebsocketClient(IWebSocketClientWrapper pWebSocket, int pFragmentLength) {
+        internal WebsocketClient(IWebSocketClientWrapper pWebSocket, int pBufferSize) {
             WebSocket = pWebSocket;
-            BufferSize = pFragmentLength;
+            //WebSocket.Options.KeepAliveInterval = new TimeSpan(0, 0, 30);
+            BufferSize = pBufferSize;
         }
 
         public void ConnectAsync(IClientParams pParams) {
@@ -85,7 +91,7 @@ namespace Mitto.Connection.Websocket.Client {
                     var result = await WebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), _objCancelationToken);
 
                     if (result.MessageType == WebSocketMessageType.Close) {
-                        Disconnect();
+                        throw new Exception("Client Disconnected");
                     } else {
                         var arrMessage = new byte[result.Count];
                         Array.Copy(buffer, 0, arrMessage, 0, result.Count);
@@ -109,17 +115,17 @@ namespace Mitto.Connection.Websocket.Client {
                 //ignore
             } catch (Exception ex) {
                 Log.Info($"Error receiving data: {ex.Message}, closing connection");
-                Disconnect();
             }
+            Disconnect();
         }
 
-        private Mutex _objSendAsyncLock = new Mutex();
+        private readonly Mutex _objSendAsyncLock = new Mutex();
 
         public void Transmit(byte[] pData) {
             try {
                 if (WebSocket.State == WebSocketState.Open) {
                     var EOD = false;
-                    var intPage = 1;
+                    var intPage = 0;
                     while (!EOD) {
                         var buffer = new byte[BufferSize];
                         if (pData.Length <= BufferSize) {
@@ -171,6 +177,8 @@ namespace Mitto.Connection.Websocket.Client {
                     ).ContinueWith(s =>
                        Disconnected?.Invoke(this, this)
                     );
+                } else if (WebSocket.State == WebSocketState.Aborted) {
+                    Disconnected?.Invoke(this, this);
                 }
             }
         }

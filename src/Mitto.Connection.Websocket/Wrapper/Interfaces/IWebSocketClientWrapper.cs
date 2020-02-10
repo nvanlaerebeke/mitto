@@ -14,6 +14,8 @@ namespace Mitto.Connection.Websocket.Wrapper {
 
         Task ConnectAsync(Uri pUri, CancellationToken pCancellationToken);
 
+        ClientWebSocketOptions Options { get; }
+
         Task<WebSocketReceiveResult> ReceiveAsync(ArraySegment<byte> pArraySegment, CancellationToken pCancellationToken);
 
         Task CloseAsync(WebSocketCloseStatus pCloseStatus, string pStatusDescription, CancellationToken pCancellationToken);

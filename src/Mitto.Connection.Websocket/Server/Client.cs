@@ -38,6 +38,12 @@ namespace Mitto.Connection.Websocket.Server {
             Log.Info($"Client {ID} connected");
         }
 
+        /// <summary>
+        /// ToDo:
+        ///     Test performance and ease of use from how it's done here:
+        ///     https://stackoverflow.com/a/41926694/2106514
+        ///
+        /// </summary>
         public async void Start() {
             try {
                 if (_objCancelationSource != null) {
@@ -48,27 +54,27 @@ namespace Mitto.Connection.Websocket.Server {
 
                 while (!_objCancelationToken.IsCancellationRequested) {
                     var buffer = new byte[_intBufferSize];
-                    var result = await _objClient.ReceiveAsync(
-                        new ArraySegment<byte>(buffer),
-                        _objCancelationToken
-                    );
+                    var result = await _objClient.ReceiveAsync(new ArraySegment<byte>(buffer), _objCancelationToken);
 
                     if (result.MessageType == WebSocketMessageType.Close) {
-                        Disconnect();
-                        return;
-                    }
+                        throw new Exception("Client Disconnected");
+                    } else {
+                        var arrMessage = new byte[result.Count];
+                        Array.Copy(buffer, 0, arrMessage, 0, result.Count);
 
-                    var lstMessage = new List<byte>(buffer);
-
-                    //ToDo: dynamic sizing of the buffer
-                    while (!result.EndOfMessage) {
-                        result = await _objClient.ReceiveAsync(
-                            new ArraySegment<byte>(buffer),
-                            _objCancelationToken
-                        );
-                        lstMessage.AddRange(buffer);
+                        while (
+                            !result.EndOfMessage &&
+                            (
+                                result.CloseStatus == null ||
+                                result.CloseStatus == WebSocketCloseStatus.Empty
+                            )
+                        ) {
+                            result = await _objClient.ReceiveAsync(new ArraySegment<byte>(buffer), _objCancelationToken);
+                            Array.Resize(ref arrMessage, arrMessage.Length + result.Count);
+                            Array.Copy(buffer, 0, arrMessage, arrMessage.Length - result.Count, result.Count);
+                        }
+                        Rx?.Invoke(this, arrMessage);
                     }
-                    Rx(this, lstMessage.ToArray());
                 }
             } catch (TaskCanceledException) {
                 //ignore

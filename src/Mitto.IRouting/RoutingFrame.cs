@@ -2,15 +2,46 @@
 using System.Text;
 
 namespace Mitto.IRouting {
-	/// <summary>
-	/// ToDo: see where source and destination id's are used
-	/// if not used anywhere but rabbitmq it might be a good idea to split it off
-	/// into it's own frame type
-	/// </summary>
-	public class RoutingFrame {
+    /// <summary>
+    /// 
+    /// Represents a frame that is a wrapper around the actual data
+    /// The Frame consists in:
+    /// 
+    /// - FrameType
+    /// - MessageType
+    /// - RequestID
+    /// - SourceID
+    /// - DestinationID
+    /// - Data
+    /// 
+    /// Uses ASCII encoding for the ID's as it's expected that these will be a GUID
+    /// 
+    /// ToDo: 
+    ///     See where source and destination id's are used 
+    ///     if not used anywhere but rabbitmq it might be a good idea to split it off
+    ///     into it's own frame type and use a 'internal' frame type that's 
+    ///     for communication inside the app
+    ///     
+    ///     Note that this would be a much cleaner division between  how
+    ///     the Client <=> Server communicates and how the Server-Connection <=> Server-Messaging communicates.
+    ///     Would also be much more flexible when implementing new ways the internal routing is done and
+    ///     can be optimized for that. For example a passthrough router needs no framing, while rabbitmq does
+    ///     
+    /// </summary>
+    public class RoutingFrame {
 		private byte[] _arrByteArray;
 
 		public RoutingFrame(byte[] data) { _arrByteArray = data; }
+        
+        /// <summary>
+        /// Constructs the RoutingFrame based on the given parameters
+        /// </summary>
+        /// <param name="pFrameType"></param>
+        /// <param name="pMessageType"></param>
+        /// <param name="pRequestID"></param>
+        /// <param name="pSourceID"></param>
+        /// <param name="pDestinationID"></param>
+        /// <param name="pData"></param>
 		public RoutingFrame(RoutingFrameType pFrameType, MessageType pMessageType, string pRequestID, string pSourceID, string pDestinationID, byte[] pData) {
 			var arrRequestID = Encoding.ASCII.GetBytes(pRequestID);
 			var arrSourceID = Encoding.ASCII.GetBytes(pSourceID);
