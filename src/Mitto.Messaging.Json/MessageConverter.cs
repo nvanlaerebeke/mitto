@@ -31,8 +31,9 @@ namespace Mitto.Messaging.Json {
                         }
                     }
                 } else {
+                    var str = Encoding.UTF8.GetString(objFrame.Data);
                     return JsonConvert.DeserializeObject(
-                        Encoding.UTF8.GetString(objFrame.Data),
+                        str,
                         pType
                     ) as IMessage;
                 }

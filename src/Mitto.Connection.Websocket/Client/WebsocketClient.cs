@@ -2,6 +2,8 @@
 using Mitto.IConnection;
 using Mitto.Logging;
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -12,6 +14,8 @@ using System.Threading.Tasks;
 /// <summary>
 /// Class that represents the WebSocket Client in Mitto
 /// Provides functionality to communicate with a WebSocket server
+///
+/// ToDo: a lot of code is in both in this class and in Client.cs for the server side, move this to a behavior?
 /// </summary>
 namespace Mitto.Connection.Websocket.Client {
 
@@ -119,46 +123,26 @@ namespace Mitto.Connection.Websocket.Client {
             Disconnect();
         }
 
-        private readonly Mutex _objSendAsyncLock = new Mutex();
+        /**
+         * ToDo: implement chunking
+         */
+        private Mutex _SenderBlock = new Mutex();
 
         public void Transmit(byte[] pData) {
-            try {
-                if (WebSocket.State == WebSocketState.Open) {
-                    var EOD = false;
-                    var intPage = 0;
-                    while (!EOD) {
-                        var buffer = new byte[BufferSize];
-                        if (pData.Length <= BufferSize) {
-                            EOD = true;
-                            buffer = pData;
-                        } else {
-                            var Start = intPage * BufferSize;
-                            var End = (intPage + 1) * BufferSize;
-                            var intChunkSize = BufferSize;
-                            if (End > pData.Length) {
-                                EOD = true;
-                                intChunkSize = pData.Length - Start;
-                            }
-                            Array.Copy(pData, Start, buffer, 0, intChunkSize);
-                        }
-                        lock (_objSendAsyncLock) {
-                            var objTask = WebSocket.SendAsync(
-                                new ArraySegment<byte>(buffer),
-                                WebSocketMessageType.Binary,
-                                EOD,
-                                _objCancelationToken
-                            );
-                            objTask.Wait();
-                        }
-                        intPage++;
-                    }
+            lock (_SenderBlock) {
+                try {
+                    WebSocket.SendAsync(
+                        new ArraySegment<byte>(pData),
+                        WebSocketMessageType.Binary,
+                        true,
+                        _objCancelationToken
+                    ).Wait();
+                } catch (TaskCanceledException) {
+                    //ignore
+                } catch (Exception ex) {
+                    Log.Error($"Error sending data: {ex.Message}, closing connection...");
+                    Disconnect();
                 }
-            } catch (TaskCanceledException) {
-            } catch (OperationCanceledException) {
-                //ignore
-            } catch (Exception ex) {
-                Log.Info($"Error sending data: {ex.Message}, closing connection...");
-                Disconnect();
             }
         }
 

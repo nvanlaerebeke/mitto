@@ -17,10 +17,13 @@ namespace Mitto {
     ///   - routes incomming data to be processed by the messaging
     ///   - routes data to be transmitted to be placed on the connection
     ///
+    /// ToDo: Add connection state so that no transmit is done on a 'null' router
     /// </summary>
     public class Client {
 
         #region Connection stuff
+
+        public ConnectionState Status;
 
         /// <summary>
         /// Triggered when the connection has been established
@@ -63,6 +66,7 @@ namespace Mitto {
         /// </summary>
         public Client() {
             Connection = ConnectionFactory.CreateClient();
+            Status = ConnectionState.None;
         }
 
         /// <summary>
@@ -77,6 +81,7 @@ namespace Mitto {
 
             Connection.Connected += ObjClient_Connected;
             Connection.Disconnected += ObjClient_Disconnected;
+            Status = ConnectionState.Connecting;
             Connection.ConnectAsync(pParams);
         }
 
@@ -89,9 +94,8 @@ namespace Mitto {
         /// <param name="sender"></param>
         /// <param name="pClient"></param>
         private void ObjClient_Connected(object sender, IConnection.IClient pClient) {
-            Task.Run(() => {
-                Connected?.Invoke(sender, this);
-            });
+            Status = ConnectionState.Open;
+            Connected?.Invoke(sender, this);
         }
 
         /// <summary>
@@ -108,6 +112,7 @@ namespace Mitto {
         /// Calls the close so that everything gets cleaned up
         /// </summary>
         public void Disconnect() {
+            Status = ConnectionState.CloseSent;
             Close();
             Connection.Disconnect();
         }
@@ -116,6 +121,7 @@ namespace Mitto {
         /// Does the closing/cleanup so nothing is left behind after the client disconnects
         /// </summary>
         private void Close() {
+            Status = ConnectionState.Closed;
             Connection.Connected -= ObjClient_Connected;
             Connection.Disconnected -= ObjClient_Disconnected;
             if (Router != null) {
@@ -146,6 +152,10 @@ namespace Mitto {
         /// <param name="pRequest"></param>
         /// <param name="pResponseAction"></param>
         public void Request<R>(IRequestMessage pRequest, Action<R> pResponseAction) where R : IResponseMessage {
+            if (Status != ConnectionState.Open) {
+                //throw new Exception("Connection not open");
+                //ToDo: Call the pResponseAction with a connection closed error, or let the MessageFactory do it or something?
+            }
             MessagingFactory.Processor.Request(Router, pRequest, pResponseAction);
         }
 

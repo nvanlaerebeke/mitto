@@ -10,10 +10,6 @@ namespace Mitto.Messaging.Action.Request {
         }
 
         public override PongResponse Start() {
-            Client.Request<EchoResponse>(new EchoRequest("blaat"), (r) => {
-                Log.Debug(r.Message);
-            });
-
             return new PongResponse(Request);
         }
     }

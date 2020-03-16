@@ -29,6 +29,7 @@ namespace Mitto.Messaging {
         }
 
         #region Request Methods
+
         public void Notify(INotificationMessage pNotifyMessage) {
             Transmit(pNotifyMessage);
         }
@@ -123,6 +124,5 @@ namespace Mitto.Messaging {
         public bool IsAlive(string pRequestID) {
             return Router.IsAlive(pRequestID);
         }
-
     }
 }

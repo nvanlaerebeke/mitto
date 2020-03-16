@@ -38,6 +38,7 @@
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="ConnectionFactory.cs" />
+    <Compile Include="ConnectionState.cs" />
     <Compile Include="IConnectionParams.cs" />
     <Compile Include="IClient.cs" />
     <Compile Include="IConnectionProvider.cs" />

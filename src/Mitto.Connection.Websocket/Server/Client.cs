@@ -73,6 +73,7 @@ namespace Mitto.Connection.Websocket.Server {
                             Array.Resize(ref arrMessage, arrMessage.Length + result.Count);
                             Array.Copy(buffer, 0, arrMessage, arrMessage.Length - result.Count, result.Count);
                         }
+                        Log.Debug($"Size: {arrMessage.Length}");
                         Rx?.Invoke(this, arrMessage);
                     }
                 }
@@ -84,19 +85,28 @@ namespace Mitto.Connection.Websocket.Server {
             }
         }
 
+        /**
+         * ToDo: implement chunking
+         */
+
+        //only one async send at a time is allowed, so basically make it synchronous
+        private Mutex _objSenderBlock = new Mutex();
+
         public void Transmit(byte[] pData) {
-            try {
-                _objClient.SendAsync(
-                    new ArraySegment<byte>(pData),
-                    WebSocketMessageType.Binary,
-                    true,
-                    _objCancelationToken
-                );
-            } catch (TaskCanceledException) {
-                //ignore
-            } catch (Exception ex) {
-                Log.Error($"Error sending data: {ex.Message}, closing connection...");
-                Disconnect();
+            lock (_objSenderBlock) {
+                try {
+                    _objClient.SendAsync(
+                        new ArraySegment<byte>(pData),
+                        WebSocketMessageType.Binary,
+                        true,
+                        _objCancelationToken
+                    );
+                } catch (TaskCanceledException) {
+                    //ignore
+                } catch (Exception ex) {
+                    Log.Error($"Error sending data: {ex.Message}, closing connection...");
+                    Disconnect();
+                }
             }
         }
 
