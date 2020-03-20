@@ -11,7 +11,11 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Mitto is a scalable Client/Server communication framework with a Request/Response model written in C#.</description>
     <releaseNotes>Initial mitto release</releaseNotes>
-    <copyright>Copyright 2019</copyright>
+    <copyright>Copyright 2020</copyright>
     <tags>messaging websocket communication</tags>
+    <repository type="git" url="https://github.com/nvanlaerebeke/mitto.git" />
+    <dependencies>
+      <group targetFramework=".NETFramework4.6" />
+    </dependencies>
   </metadata>
 </package>
