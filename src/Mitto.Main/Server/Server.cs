@@ -1,10 +1,10 @@
-﻿using Mitto.IConnection;
-using System;
+﻿using System;
+using Mitto.IConnection;
 
 namespace Mitto {
 
     public class Server {
-        private IServer _objServer;
+        private readonly IServer _objServer;
 
         public Server() {
             _objServer = ConnectionFactory.CreateServer();
@@ -17,6 +17,10 @@ namespace Mitto {
         /// <param name="pAction">Action that will be run when a client connects</param>
         public void Start(IServerParams pParams, Action<ClientConnection> pAction) {
             _objServer.Start(pParams, c => pAction.Invoke(new ClientConnection(c)));
+        }
+
+        public void Stop() {
+            _objServer.Stop();
         }
     }
 }

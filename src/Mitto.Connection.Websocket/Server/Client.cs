@@ -1,11 +1,10 @@
 ﻿using System;
+using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Mitto.IConnection;
 using Mitto.Logging;
-using System.Net.WebSockets;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("Mitto.Connection.Websocket.Tests")]
 
@@ -73,7 +72,6 @@ namespace Mitto.Connection.Websocket.Server {
                             Array.Resize(ref arrMessage, arrMessage.Length + result.Count);
                             Array.Copy(buffer, 0, arrMessage, arrMessage.Length - result.Count, result.Count);
                         }
-                        Log.Debug($"Size: {arrMessage.Length}");
                         Rx?.Invoke(this, arrMessage);
                     }
                 }
@@ -90,7 +88,7 @@ namespace Mitto.Connection.Websocket.Server {
          */
 
         //only one async send at a time is allowed, so basically make it synchronous
-        private Mutex _objSenderBlock = new Mutex();
+        private readonly Mutex _objSenderBlock = new Mutex();
 
         public void Transmit(byte[] pData) {
             lock (_objSenderBlock) {

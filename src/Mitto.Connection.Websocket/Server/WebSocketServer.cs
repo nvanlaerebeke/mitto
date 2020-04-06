@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Net;
-using Mitto.Logging;
 using System.Threading;
-using Mitto.IConnection;
-using Mitto.Connection.Websocket.Wrapper;
 using System.Threading.Tasks;
+using Mitto.Connection.Websocket.Wrapper;
+using Mitto.IConnection;
+using Mitto.Logging;
 
 namespace Mitto.Connection.Websocket.Server {
 
@@ -12,7 +12,11 @@ namespace Mitto.Connection.Websocket.Server {
         private readonly IWebSocketServerWrapper Listener;
         private ServerParams Params { get; set; }
 
-        private ILog Log => LoggingFactory.GetLogger(GetType());
+        private ILog Log {
+            get {
+                return LoggingFactory.GetLogger(GetType());
+            }
+        }
 
         public WebSocketServer(IWebSocketServerWrapper pListener, ServerParams pParams) {
             Listener = pListener;
@@ -21,10 +25,9 @@ namespace Mitto.Connection.Websocket.Server {
 
         public void Start(IServerParams pParams, Action<IClientConnection> pClientConnectedAction) {
             Listener.Prefixes.Add($"http{(Params.Secure ? "s" : "")}://+:" + Params.Port + "/" + Params.Path.TrimStart('/'));
+            Listener.Start();
+            Log.Info("Started Listening");
             new Thread(() => {
-                Listener.Start();
-                Log.Info("Started Listening");
-
                 //ToDo: change while true to use a cancellationtoken that's set when disconnect/close is called
                 try {
                     while (true) {
@@ -77,6 +80,8 @@ namespace Mitto.Connection.Websocket.Server {
             }
         }
 
-        public void Stop() => Listener.Abort();
+        public void Stop() {
+            Listener.Abort();
+        }
     }
 }
