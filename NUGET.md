@@ -2,7 +2,7 @@
 
 ## Generate Mitto NuGet Package
 
-    cd ./src/Mitto/
+    cd ./src/Mitto.Main/
     nuget pack Mitto.csproj -IncludeReferencedProjects
 
     nuget push Mitto.<version>.nupkg <apikey> -Source https://api.nuget.org/v3/index.json

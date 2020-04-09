@@ -1,11 +1,11 @@
-﻿using NUnit.Framework;
+﻿using Mitto.IMessaging;
+using Mitto.IRouting;
 using NSubstitute;
+using NUnit.Framework;
 using System;
 using System.Linq;
-using Mitto.IMessaging;
-using System.Threading.Tasks;
 using System.Threading;
-using Mitto.IRouting;
+using System.Threading.Tasks;
 
 namespace Mitto.Messaging.Tests {
 
@@ -57,8 +57,8 @@ namespace Mitto.Messaging.Tests {
                 objAction = Substitute.For<IRequestAction<IRequestMessage, IResponseMessage>>();
                 objAction.When(a => ((IRequestAction<IRequestMessage, IResponseMessage>)a).Start()).Do(a => throw new Exception("Some Exception"));
             } else {
-                objAction = Substitute.For<INotificationAction>();
-                objAction.When(a => ((INotificationAction)a).Start()).Do(a => throw new Exception("Some Exception"));
+                objAction = Substitute.For<INotificationAction<IRequestMessage>>();
+                objAction.When(a => ((INotificationAction<IRequestMessage>)a).Start()).Do(a => throw new Exception("Some Exception"));
             }
             objProvider.GetResponseMessage(Arg.Is(objMessage), Arg.Is<ResponseStatus>(r => r.State == ResponseState.Error)).Returns(objResponse);
 
@@ -77,7 +77,7 @@ namespace Mitto.Messaging.Tests {
                 objProvider.Received(1).GetResponseMessage(Arg.Any<IRequestMessage>(), Arg.Is<ResponseStatus>(r => r.State == ResponseState.Error));
                 objClient.Received(1).Transmit(Arg.Is(objResponse));
             } else {
-                ((INotificationAction)objAction).Received(1).Start();
+                ((INotificationAction<IRequestMessage>)objAction).Received(1).Start();
                 objClient.Received(0).Transmit(Arg.Any<IMessage>());
             }
         }
@@ -128,7 +128,7 @@ namespace Mitto.Messaging.Tests {
             //Arrange
             var objClient = Substitute.For<IClient>();
             var objMessage = Substitute.For<IRequestMessage>();
-            var objAction = Substitute.For<INotificationAction>();
+            var objAction = Substitute.For<INotificationAction<IRequestMessage>>();
 
             var objProvider = Substitute.For<IMessageProvider>();
 

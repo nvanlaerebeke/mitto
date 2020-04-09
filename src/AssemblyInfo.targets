@@ -6,7 +6,7 @@
     <Company>CrazyTown Productions</Company>
     <Year>$([System.DateTime]::Now.ToString(yyyy))</Year>
     <Copyright>Copyright ©$(Year)</Copyright>
-    <Version>0.0.1.0</Version>
+    <Version>0.0.9.0</Version>
   </PropertyGroup>
 
   <Target Name="GenAssemblyInfo" BeforeTargets="Build">
@@ -20,7 +20,6 @@
           AssemblyCopyright="$(Copyright)"
           AssemblyFileVersion="$(Version)"
           AssemblyInformationalVersion="$(Version)"
-          AssemblyVersion="$(Version)"
-    />
+          AssemblyVersion="$(Version)" />
   </Target>
 </Project>

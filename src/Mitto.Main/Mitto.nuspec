@@ -15,7 +15,10 @@
     <tags>messaging websocket communication</tags>
     <repository type="git" url="https://github.com/nvanlaerebeke/mitto.git" />
     <dependencies>
-      <group targetFramework=".NETFramework4.6" />
+        <group targetFramework=".NETFramework4.6">
+            <dependency id="Newtonsoft.Json" version="12.0.3" />
+            <dependency id="Newtonsoft.Json.Bson" version="1.0.2" />
+        </group>
     </dependencies>
   </metadata>
 </package>
