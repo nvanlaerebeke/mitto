@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1A58FD60-74EB-4945-840F-F96243882EC9}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Quickstart.Client</RootNamespace>
+    <AssemblyName>Quickstart.Client</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\mitto\src\Lib\websocketsharp\websocket-sharp\websocket-sharp.csproj">
+      <Project>{b357bac7-529e-4d81-a0d2-71041b19c8de}</Project>
+      <Name>websocket-sharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\mitto\src\Mitto.Config\Mitto.Config.csproj">
+      <Project>{e3e0d40d-99ac-4ed4-9e64-19cdc10813b0}</Project>
+      <Name>Mitto.Config</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\mitto\src\Mitto.Connection.Websocket\Mitto.Connection.Websocket.csproj">
+      <Project>{cf99d3f2-2c06-4a9f-ba22-e2e0ca457b58}</Project>
+      <Name>Mitto.Connection.Websocket</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\mitto\src\Mitto.IConnection\Mitto.IConnection.csproj">
+      <Project>{aaf65eba-e48d-491a-ad2e-525bde11ec6f}</Project>
+      <Name>Mitto.IConnection</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\mitto\src\Mitto.IMessaging\Mitto.IMessaging.csproj">
+      <Project>{3bb1c211-9006-4fee-9f40-7556717431b0}</Project>
+      <Name>Mitto.IMessaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\mitto\src\Mitto.Main\Mitto.Main.csproj">
+      <Project>{958222ed-4ba0-45dd-92e5-6b72ba62aba6}</Project>
+      <Name>Mitto.Main</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\mitto\src\Mitto.Messaging\Mitto.Messaging.csproj">
+      <Project>{c29037e3-9c2f-4996-8434-36600735d465}</Project>
+      <Name>Mitto.Messaging</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

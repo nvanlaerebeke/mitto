@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.156
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Channel.Client - nuget", "Client\Channel.Client - nuget.csproj", "{1A58FD60-74EB-4945-840F-F96243882EC9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug_Ubuntu|Any CPU = Debug_Ubuntu|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		Release_Ubuntu|Any CPU = Release_Ubuntu|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1A58FD60-74EB-4945-840F-F96243882EC9}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A58FD60-74EB-4945-840F-F96243882EC9}.Debug_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
+		{1A58FD60-74EB-4945-840F-F96243882EC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A58FD60-74EB-4945-840F-F96243882EC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A58FD60-74EB-4945-840F-F96243882EC9}.Release_Ubuntu|Any CPU.ActiveCfg = Release|Any CPU
+		{1A58FD60-74EB-4945-840F-F96243882EC9}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
+		{1A58FD60-74EB-4945-840F-F96243882EC9}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A58FD60-74EB-4945-840F-F96243882EC9}.Release|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0199331F-0B79-436A-8EEA-449A2FF14E6D}
+	EndGlobalSection
+EndGlobal
